@@ -1,0 +1,10 @@
+**/.git
+**/.gitignore
+**/.dockerignore
+**/Dockerfile
+**/.next
+**/node_modules
+**/dist
+**/README.md
+
+**/.env

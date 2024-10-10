@@ -1,0 +1,10 @@
+{
+  "extends": "@xstory/typescript-config/storybook.json",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

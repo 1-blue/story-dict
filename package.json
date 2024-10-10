@@ -1,0 +1,33 @@
+{
+  "name": "xstory",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+
+    "be:dev": "pnpm --filter be dev",
+    "be:build": "pnpm --filter be build",
+    "be:start": "pnpm --filter be start",
+
+    "fe:dev": "pnpm --filter fe dev",
+    "fe:build": "pnpm --filter fe build",
+    "fe:start": "pnpm --filter fe start",
+
+    "storybook": "pnpm --filter storybook storybook",
+
+    "ui:add": "pnpm --filter ui ui:add",
+
+    "clean": "rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "turbo": "^2.1.3",
+    "typescript": "^5.4.5"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
