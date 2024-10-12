@@ -6,6 +6,7 @@ import { TrpcModule } from "#be/apis/v0/trpc/trpc.module";
 import { AuthModule } from "#be/apis/v1/auth/auth.module";
 import { ImagesModule } from "#be/apis/v1/images/images.module";
 import { UsersModule } from "#be/apis/v1/users/users.module";
+import { PostsModule } from "#be/apis/v1/posts/posts.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { UsersModule } from "#be/apis/v1/users/users.module";
     AuthModule,
     ImagesModule,
     UsersModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [PrismaService],

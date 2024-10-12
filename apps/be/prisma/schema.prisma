@@ -152,15 +152,15 @@ model Post {
   deletedAt DateTime?
 
   /// 게시글 제목
-  title     String
+  title       String
   /// 게시글 내용
-  content   String
+  content     String
   /// 게시글 카테고리
-  category  PostCategory @default(GENERAL_KNOWLEDGE)
+  category    PostCategory @default(GENERAL_KNOWLEDGE)
   /// 게시글 썸네일 이미지
-  thumbnail Image?       @relation(fields: [imageId], references: [id])
+  thumbnail   Image?       @relation(fields: [thumbnailId], references: [id])
   /// [1:N] 이미지 식별자
-  imageId   String?
+  thumbnailId String?
 
   /// [1:N] 게시글의 유저
   user   User   @relation(fields: [userId], references: [id])

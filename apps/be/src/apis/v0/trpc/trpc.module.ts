@@ -8,6 +8,8 @@ import { CatsRouter } from "#be/apis/v1/cats/cats.router";
 import { CatsService } from "#be/apis/v1/cats/cats.service";
 import { UsersService } from "#be/apis/v1/users/users.service";
 import { UsersRouter } from "#be/apis/v1/users/users.router";
+import { PostsService } from "#be/apis/v1/posts/posts.service";
+import { PostsRouter } from "#be/apis/v1/posts/posts.router";
 
 @Module({
   controllers: [TrpcController],
@@ -19,6 +21,8 @@ import { UsersRouter } from "#be/apis/v1/users/users.router";
     CatsRouter,
     UsersService,
     UsersRouter,
+    PostsService,
+    PostsRouter,
   ],
 })
 export class TrpcModule {}

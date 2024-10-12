@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  HttpStatus,
 } from "@nestjs/common";
 
 import { FindByIdDto } from "#be/dtos/find-by-id.dto";
@@ -19,7 +20,7 @@ export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Post()
-  @HttpCode(201)
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() createCatDto: CreateCatDto) {
     return this.catsService.create(createCatDto);
   }
