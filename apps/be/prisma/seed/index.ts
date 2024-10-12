@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 import { seedCats } from "./cats";
+import { seedImages } from "./images";
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,12 @@ async function main() {
   console.log(`✅ seeding to cats ...`);
   await prisma.cat.createMany({
     data: seedCats,
+    skipDuplicates: true,
+  });
+
+  console.log(`✅ seeding to images ...`);
+  await prisma.image.createMany({
+    data: seedImages,
     skipDuplicates: true,
   });
 

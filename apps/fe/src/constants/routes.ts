@@ -1,6 +1,6 @@
 import { CrumpledPaperIcon } from "@radix-ui/react-icons";
 
-import { RouteGroup, type IRoute, type ISitemap } from "#fe/types";
+import { AccessLevel, RouteGroup, type IRoute, type ISitemap } from "#fe/types";
 
 const DEFAULT_SITEMAP: ISitemap = {
   priority: 1,
@@ -8,64 +8,78 @@ const DEFAULT_SITEMAP: ISitemap = {
   changefreq: "daily",
 };
 
+// 경로 상수 정의
+export const PATHS = {
+  HOME: "/",
+  RANDOM: "/random",
+  CATEGORY: "/category",
+  LOGIN: "/login",
+  SIGNUP: "/signup",
+  ME: {
+    PROFILE: "/me/profile",
+    BOOKMARK: "/me/bookmark",
+  },
+} as const;
+
 /** 전체 경로 */
 export const ROUTES: IRoute[] = [
+  // ============================ MAIN ============================
   {
-    path: "/",
+    path: PATHS.HOME,
     Icon: CrumpledPaperIcon,
-    label: "메인",
+    label: "홈",
     hidden: false,
+    accessLevel: AccessLevel.PUBLIC,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.MAIN,
   },
+
+  // ============================ CONTENT ============================
   {
-    path: "/random",
+    path: PATHS.RANDOM,
     Icon: CrumpledPaperIcon,
     label: "랜덤",
     hidden: false,
+    accessLevel: AccessLevel.PUBLIC,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.CONTENT,
   },
   {
-    path: "/category",
+    path: PATHS.CATEGORY,
     Icon: CrumpledPaperIcon,
     label: "카테고리",
     hidden: false,
+    accessLevel: AccessLevel.PUBLIC,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.CONTENT,
   },
   {
-    path: "/bookmark",
+    path: PATHS.ME.BOOKMARK,
     Icon: CrumpledPaperIcon,
     label: "북마크",
     hidden: false,
+    accessLevel: AccessLevel.AUTHENTICATED,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.CONTENT,
   },
+
+  // ============================ AUTH ============================
   {
-    path: "/signin",
+    path: PATHS.LOGIN,
     Icon: CrumpledPaperIcon,
     label: "로그인",
     hidden: false,
+    accessLevel: AccessLevel.UNAUTHENTICATED,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.AUTH,
   },
   {
-    path: "/signup",
+    path: PATHS.SIGNUP,
     Icon: CrumpledPaperIcon,
     label: "회원가입",
     hidden: false,
+    accessLevel: AccessLevel.UNAUTHENTICATED,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.AUTH,
   },
 ];
-
-/** 컨텐츠 경로 */
-export const CONTENT_ROUTES = ROUTES.filter(
-  (route) => route.group === RouteGroup.CONTENT,
-);
-
-/** 인증 경로 */
-export const AUTH_ROUTES = ROUTES.filter(
-  (route) => route.group === RouteGroup.AUTH,
-);

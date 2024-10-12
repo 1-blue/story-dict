@@ -15,7 +15,7 @@ const TRPCProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
           url: `${process.env.NEXT_PUBLIC_SERVER_URL}/api/v0/trpc`,
         }),
       ],
-    })
+    }),
   );
 
   return (

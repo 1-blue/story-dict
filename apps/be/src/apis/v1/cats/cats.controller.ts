@@ -14,7 +14,7 @@ import { CatsService } from "#be/apis/v1/cats/cats.service";
 import { CreateCatDto } from "#be/apis/v1/cats/dto/create-cat.dto";
 import { UpdateCatDto } from "#be/apis/v1/cats/dto/update-cat.dto";
 
-@Controller("api/v1/cats")
+@Controller("apis/v1/cats")
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 

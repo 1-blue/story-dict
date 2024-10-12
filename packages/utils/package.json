@@ -1,0 +1,22 @@
+{
+  "name": "@xstory/utils",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts"
+  },
+  "dependencies": {
+    "@xstory/eslint-config": "workspace:*",
+    "@xstory/typescript-config": "workspace:*",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsup": "^7.1.0"
+  }
+}

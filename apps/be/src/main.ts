@@ -1,8 +1,11 @@
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import passport from "passport";
 
 import { AppModule } from "#be/app.module";
-import { TrpcRouter } from "./apis/v0/trpc/trpc.router";
+import { TrpcRouter } from "#be/apis/v0/trpc/trpc.router";
 
 const bootstrap = async () => {
   try {
@@ -13,6 +16,24 @@ const bootstrap = async () => {
       credentials: true,
       origin: [process.env.CLIENT_URL],
     });
+
+    // cookie
+    app.use(cookieParser());
+
+    // session ( passport )
+    app.use(
+      session({
+        resave: false,
+        saveUninitialized: false,
+        secret: process.env.COOKIE_SECRET,
+        cookie: {
+          httpOnly: true,
+          sameSite: "lax",
+        },
+      }),
+    );
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     // DTO에서 정의된 값만 받도록 체크
     app.useGlobalPipes(

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 
 import "@xstory/tailwind-config/globals.css";
 
-import { ThemeProvider, ThemeToggle } from "@xstory/ui/theme";
+import { ThemeProvider } from "@xstory/ui/theme";
 import TRPCProvider from "#fe/providers/TRPCProvider";
 import Header from "#fe/components/layouts/Header";
 import Main from "#fe/components/layouts/Main";
 import Footer from "#fe/components/layouts/Footer";
+import ShortCutProvider from "#fe/providers/ShortCutProvider";
+import { Toaster } from "@xstory/ui";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,22 +24,18 @@ export default function RootLayout({
     <html lang="ko">
       <head></head>
       <body className="m-4 flex h-[calc(100vh-32px)] flex-col rounded-lg border">
-        <div className="flex flex-1 border-b">
-          <Header />
-          <Main>
-            <TRPCProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-              >
-                <ThemeToggle />
-                {children}
-              </ThemeProvider>
-            </TRPCProvider>
-          </Main>
-        </div>
-        <Footer />
+        <TRPCProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <ShortCutProvider />
+            <Toaster />
+
+            <div className="flex flex-1 border-b">
+              <Main>{children}</Main>
+              <Header />
+            </div>
+            <Footer />
+          </ThemeProvider>
+        </TRPCProvider>
       </body>
     </html>
   );

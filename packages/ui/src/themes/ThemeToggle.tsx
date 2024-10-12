@@ -5,7 +5,10 @@ import { useTheme } from "next-themes";
 
 import { Button } from "#/src/components/Button";
 
-const ThemeToggle = () => {
+interface IProps
+  extends Omit<React.HTMLAttributes<HTMLButtonElement>, "onClick"> {}
+
+const ThemeToggle: React.FC<IProps> = (props) => {
   const { theme, setTheme } = useTheme();
 
   return (
@@ -13,6 +16,7 @@ const ThemeToggle = () => {
       variant="outline"
       size="icon"
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      {...props}
     >
       <SunIcon className="transition-all scale-100 rotate-0 dark:-rotate-90 dark:scale-0" />
       <MoonIcon className="absolute transition-all scale-0 rotate-90 dark:rotate-0 dark:scale-100" />

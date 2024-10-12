@@ -34,4 +34,7 @@ module.exports = {
     "node_modules/",
   ],
   overrides: [{ files: ["*.js?(x)", "*.ts?(x)"] }],
+  rules: {
+    "@typescript-eslint/no-empty-object-type": "off",
+  },
 };
