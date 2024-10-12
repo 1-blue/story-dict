@@ -68,6 +68,8 @@ model Image {
 
   /// [1:N] 연결된 유저
   users User[]
+  /// [1:N] 연결된 게시글
+  posts Post[]
 }
 
 /// 유저 역할
@@ -124,4 +126,44 @@ model User {
   image   Image?  @relation(fields: [imageId], references: [id])
   /// [1:N] 이미지 식별자
   imageId String?
+
+  /// [1:N] 유저의 게시글
+  Post Post[]
+}
+
+/// 게시글 카테고리
+enum PostCategory {
+  /// 상식 관련 게시글
+  GENERAL_KNOWLEDGE
+  /// 어원 관련 게시글
+  ETYMOLOGY
+  /// 순우리말 관련 게시글
+  PURE_KOREAN
+}
+
+model Post {
+  /// 게시글 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 게시글 제목
+  title     String
+  /// 게시글 내용
+  content   String
+  /// 게시글 카테고리
+  category  PostCategory @default(GENERAL_KNOWLEDGE)
+  /// 게시글 썸네일 이미지
+  thumbnail Image?       @relation(fields: [imageId], references: [id])
+  /// [1:N] 이미지 식별자
+  imageId   String?
+
+  /// [1:N] 게시글의 유저
+  user   User   @relation(fields: [userId], references: [id])
+  /// [1:N] 유저 식별자
+  userId String
 }
