@@ -32,9 +32,20 @@ const phone = z
     message: "'-'를 포함해서 휴대폰 번호 형식에 맞게 입력해주세요!",
   });
 
+/** 제목 유효성 검사 스키마 */
+const title = z
+  .string()
+  .min(1, { message: "제목을 입력해주세요!" })
+  .max(40, { message: "제목은 최대 40자입니다!" });
+
+/** 내용 유효성 검사 스키마 */
+const content = z.string().min(1, { message: "내용을 입력해주세요!" });
+
 export const schemas = {
   email,
   password,
   nickname,
   phone,
+  title,
+  content,
 };

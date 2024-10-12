@@ -10,3 +10,4 @@ export * from "./Tooltip";
 export * from "./DropdownMenu";
 export * from "./Toast";
 export * from "./Toaster";
+export * from "./Select";

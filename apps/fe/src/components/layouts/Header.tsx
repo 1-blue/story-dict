@@ -23,19 +23,28 @@ import { ROUTES } from "#fe/constants";
 import useMe from "#fe/hooks/useMe";
 import { ThemeToggle } from "@xstory/ui/theme";
 
+/** 인증 경로 */
+const AUTH_ROUTES = ROUTES.filter((route) => route.group === RouteGroup.AUTH);
+/** 로그아웃시에만 접근 가능한 경로 */
+const UNAUTHENTICATED_AUTH_ROUTES = AUTH_ROUTES.filter((route) =>
+  [AccessLevel.PUBLIC, AccessLevel.UNAUTHENTICATED].includes(route.accessLevel),
+);
+/** 로그인시에만 접근 가능한 경로 */
+const AUTHENTICATED_AUTH_ROUTES = AUTH_ROUTES.filter((route) =>
+  [AccessLevel.PUBLIC, AccessLevel.AUTHENTICATED].includes(route.accessLevel),
+);
+
 /** 컨텐츠 경로 */
 const CONTENT_ROUTES = ROUTES.filter(
   (route) => route.group === RouteGroup.CONTENT,
 );
-/** 인증 경로 */
-const AUTH_ROUTES = ROUTES.filter((route) => route.group === RouteGroup.AUTH);
 /** 로그아웃시에만 접근 가능한 경로 */
-const UNAUTHENTICATED_ROUTES = AUTH_ROUTES.filter(
-  (route) => route.accessLevel === AccessLevel.UNAUTHENTICATED,
+const UNAUTHENTICATED_CONTENT_ROUTES = CONTENT_ROUTES.filter((route) =>
+  [AccessLevel.PUBLIC, AccessLevel.UNAUTHENTICATED].includes(route.accessLevel),
 );
 /** 로그인시에만 접근 가능한 경로 */
-const AUTHENTICATED_ROUTES = AUTH_ROUTES.filter(
-  (route) => route.accessLevel === AccessLevel.AUTHENTICATED,
+const AUTHENTICATED_CONTENT_ROUTES = CONTENT_ROUTES.filter((route) =>
+  [AccessLevel.PUBLIC, AccessLevel.AUTHENTICATED].includes(route.accessLevel),
 );
 
 const Header = () => {
@@ -49,7 +58,13 @@ const Header = () => {
     }
   };
 
-  const authRoutes = me ? AUTHENTICATED_ROUTES : UNAUTHENTICATED_ROUTES;
+  const authRoutes = me
+    ? AUTHENTICATED_AUTH_ROUTES
+    : UNAUTHENTICATED_AUTH_ROUTES;
+
+  const contentRoutes = me
+    ? AUTHENTICATED_CONTENT_ROUTES
+    : UNAUTHENTICATED_CONTENT_ROUTES;
 
   return (
     <header className="flex w-60 flex-col divide-y-2 border-l">
@@ -93,7 +108,7 @@ const Header = () => {
         </section>
       )}
       <ul className="p-1">
-        {CONTENT_ROUTES.map((route) => (
+        {contentRoutes.map((route) => (
           <Link
             key={route.path}
             href={route.path}

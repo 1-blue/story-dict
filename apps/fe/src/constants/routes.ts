@@ -15,6 +15,9 @@ export const PATHS = {
   CATEGORY: "/category",
   LOGIN: "/login",
   SIGNUP: "/signup",
+  POST: {
+    WRITE: "/post/write",
+  },
   ME: {
     PROFILE: "/me/profile",
     BOOKMARK: "/me/bookmark",
@@ -50,6 +53,15 @@ export const ROUTES: IRoute[] = [
     label: "카테고리",
     hidden: false,
     accessLevel: AccessLevel.PUBLIC,
+    sitemap: DEFAULT_SITEMAP,
+    group: RouteGroup.CONTENT,
+  },
+  {
+    path: PATHS.POST.WRITE,
+    Icon: CrumpledPaperIcon,
+    label: "글쓰기",
+    hidden: false,
+    accessLevel: AccessLevel.AUTHENTICATED,
     sitemap: DEFAULT_SITEMAP,
     group: RouteGroup.CONTENT,
   },
