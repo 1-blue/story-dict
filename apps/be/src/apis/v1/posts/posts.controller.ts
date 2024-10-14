@@ -29,8 +29,8 @@ export class PostsController {
   }
 
   @Get()
-  findAll() {
-    return this.postsService.findAll();
+  findMany() {
+    return this.postsService.findMany();
   }
 
   @Get(":id")

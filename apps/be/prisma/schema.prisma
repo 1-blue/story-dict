@@ -44,6 +44,8 @@ enum ImageStatus {
 enum ImagePurpose {
   /// 유저 프로필 이미지
   USER_PROFILE
+  /// 게시글 썸네일 이미지
+  POST_THUMBNAIL
 }
 
 /// 이미지 모델
@@ -139,6 +141,8 @@ enum PostCategory {
   ETYMOLOGY
   /// 순우리말 관련 게시글
   PURE_KOREAN
+  /// 명대사 관련 게시글
+  QUOTATION
 }
 
 model Post {
@@ -153,6 +157,8 @@ model Post {
 
   /// 게시글 제목
   title       String
+  /// 게시글 요약
+  summary     String
   /// 게시글 내용
   content     String
   /// 게시글 카테고리

@@ -1,10 +1,9 @@
-import Test from "./_components/Test";
+import LatestPosts from "#fe/app/(home)/_components/LatestPosts";
 
 const Page = () => {
   return (
     <div>
-      Page
-      <Test />
+      <LatestPosts />
     </div>
   );
 };

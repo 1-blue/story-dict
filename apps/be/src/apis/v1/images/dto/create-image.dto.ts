@@ -6,10 +6,7 @@ import {
   IsUUID,
   IsUrl,
 } from "class-validator";
-import { Transform } from "class-transformer";
-import type { ImagePurpose, ImageStatus } from "@prisma/client";
-
-import { IMAGE_PURPOSE, IMAGE_STATUSES } from "#be/apis/v1/images/constant";
+import { ImagePurpose, ImageStatus } from "@prisma/client";
 
 export class CreateImageDto {
   @IsOptional()
@@ -25,12 +22,14 @@ export class CreateImageDto {
   url: string;
 
   @IsOptional()
-  @IsEnum(IMAGE_STATUSES, { message: "유효하지 않은 이미지 상태입니다." })
-  @Transform(({ value }) => value.toUpperCase())
+  @IsEnum(Object.values(ImageStatus), {
+    message: "유효하지 않은 이미지 상태입니다.",
+  })
   status?: ImageStatus = "TEMP";
 
   @IsOptional()
-  @IsEnum(IMAGE_PURPOSE, { message: "유효하지 않은 이미지 목적입니다." })
-  @Transform(({ value }) => value.toUpperCase())
+  @IsEnum(Object.values(ImagePurpose), {
+    message: "유효하지 않은 이미지 목적입니다.",
+  })
   purpose?: ImagePurpose = "USER_PROFILE";
 }

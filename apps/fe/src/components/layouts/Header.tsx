@@ -67,7 +67,7 @@ const Header = () => {
     : UNAUTHENTICATED_CONTENT_ROUTES;
 
   return (
-    <header className="flex w-60 flex-col divide-y-2 border-l">
+    <header className="flex flex-1 flex-col divide-y-2">
       <section className="p-4">
         <Input placeholder="ex) ..." />
       </section>

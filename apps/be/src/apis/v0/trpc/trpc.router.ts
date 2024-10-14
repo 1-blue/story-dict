@@ -5,6 +5,7 @@ import { TrpcService } from "#be/apis/v0/trpc/trpc.service";
 import { CatsRouter } from "#be/apis/v1/cats/cats.router";
 import { UsersRouter } from "#be/apis/v1/users/users.router";
 import { PostsRouter } from "#be/apis/v1/posts/posts.router";
+import { ImagesRouter } from "#be/apis/v1/images/images.router";
 
 @Injectable()
 export class TrpcRouter {
@@ -13,11 +14,13 @@ export class TrpcRouter {
     private readonly catsRouter: CatsRouter,
     private readonly usersRouter: UsersRouter,
     private readonly postsRouter: PostsRouter,
+    private readonly imagesRouter: ImagesRouter,
   ) {}
   appRouter = this.trpcService.router({
     cats: this.catsRouter.router,
     users: this.usersRouter.router,
     posts: this.postsRouter.router,
+    images: this.imagesRouter.router,
   });
 
   async applyMiddleware(app: INestApplication) {

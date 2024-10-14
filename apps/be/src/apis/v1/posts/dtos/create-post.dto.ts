@@ -5,9 +5,7 @@ import {
   IsString,
   IsEnum,
 } from "class-validator";
-import type { PostCategory } from "@prisma/client";
-
-import { POST_CATEGORIES } from "#be/apis/v1/posts/constant";
+import { PostCategory } from "@prisma/client";
 
 export class CreatePostDto {
   @IsOptional()
@@ -19,11 +17,17 @@ export class CreatePostDto {
   title: string;
 
   @IsNotEmpty({ message: "게시글 내용은 필수값입니다." })
+  @IsString({ message: "게시글 요약은 문자열 형태만 가능합니다." })
+  summary: string;
+
+  @IsNotEmpty({ message: "게시글 내용은 필수값입니다." })
   @IsString({ message: "게시글 내용은 문자열 형태만 가능합니다." })
   content: string;
 
   @IsOptional()
-  @IsEnum(POST_CATEGORIES, { message: "유효하지 않은 게시글 카테고리입니다." })
+  @IsEnum(Object.values(PostCategory), {
+    message: "유효하지 않은 게시글 카테고리입니다.",
+  })
   category?: PostCategory = "GENERAL_KNOWLEDGE";
 
   @IsOptional()

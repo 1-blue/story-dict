@@ -1,8 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional, Matches } from "class-validator";
-import { Transform } from "class-transformer";
-import type { ImageStatus } from "@prisma/client";
-
-import { IMAGE_STATUSES } from "#be/apis/v1/images/constant";
+import { ImageStatus } from "@prisma/client";
 
 export class CreatePresignedURLDto {
   @IsNotEmpty({ message: "파일명은 필수값입니다." })
@@ -12,7 +9,8 @@ export class CreatePresignedURLDto {
   filename: string;
 
   @IsOptional()
-  @IsEnum(IMAGE_STATUSES, { message: "유효하지 않은 이미지 상태입니다." })
-  @Transform(({ value }) => value.toLowerCase())
-  status?: Lowercase<ImageStatus> = "temp";
+  @IsEnum(Object.values(ImageStatus), {
+    message: "유효하지 않은 이미지 상태입니다.",
+  })
+  status?: ImageStatus = "TEMP";
 }

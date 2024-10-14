@@ -1,2 +1,2 @@
 export * from "./RFHInput";
-export * from "./RFHSelect";
+export * from "./RFHTextarea";

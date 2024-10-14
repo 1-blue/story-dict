@@ -18,15 +18,33 @@ export class PostsService {
     });
   }
 
-  /** 모든 게시글들 찾기 */
-  async findAll() {
-    return await this.prismaService.cat.findMany({});
+  /** 특정 게시글들 찾기 */
+  async findMany() {
+    return await this.prismaService.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        thumbnail: {
+          select: {
+            url: true,
+          },
+        },
+      },
+    });
   }
 
   /** 특정 게시글 찾기 */
   async findOne({ id }: FindByIdDto) {
     const exPost = await this.prismaService.post.findUnique({
       where: { id },
+      include: {
+        thumbnail: {
+          select: {
+            url: true,
+          },
+        },
+      },
     });
     if (!exPost) {
       throw new NotFoundException("찾는 게시글이 존재하지 않습니다.");

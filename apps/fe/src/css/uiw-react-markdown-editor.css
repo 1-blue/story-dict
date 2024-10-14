@@ -1,0 +1,8 @@
+.md-editor-preview {
+  ol {
+    list-style: auto;
+  }
+  ul {
+    list-style: disc;
+  }
+}

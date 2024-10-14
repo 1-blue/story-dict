@@ -195,14 +195,14 @@ export class ImagesService {
    * 나만의 이미지 저장 규칙 ( `images / 실행환경 / 저장상태 / 원본파일명_시간.확장자` )
    * + 실행환경: `development` | `production` | `test`
    * + 저장상태
-   *   0. `default`: 공용으로 사용하는 이미지
-   *   1. `temp`: 임시 저장 ( 게시글 업로드 시 썸네일 입력 후 생성 취소한 경우 )
-   *   2. `use`: 실제로 사용되는 이미지들
-   *   3. `deleted`: 실제로 사용되다가 중지된 이미지 ( 업로드된 게시글을 지운 경우 썸네일 이미지 )
+   *   0. `DEFAULT`: 공용으로 사용하는 이미지
+   *   1. `TEMP`: 임시 저장 ( 게시글 업로드 시 썸네일 입력 후 생성 취소한 경우 )
+   *   2. `USE`: 실제로 사용되는 이미지들
+   *   3. `DELETED`: 실제로 사용되다가 중지된 이미지 ( 업로드된 게시글을 지운 경우 썸네일 이미지 )
    **/
   async createPresignedURL({
     filename,
-    status = "temp",
+    status = "TEMP",
   }: CreatePresignedURLDto) {
     const [, ext] = filename.split(".");
 

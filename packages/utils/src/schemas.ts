@@ -38,6 +38,12 @@ const title = z
   .min(1, { message: "제목을 입력해주세요!" })
   .max(40, { message: "제목은 최대 40자입니다!" });
 
+/** 요약 유효성 검사 스키마 */
+const summary = z
+  .string()
+  .min(1, { message: "설명을 입력해주세요!" })
+  .max(120, { message: "설명은 최대 120자입니다!" });
+
 /** 내용 유효성 검사 스키마 */
 const content = z.string().min(1, { message: "내용을 입력해주세요!" });
 
@@ -47,5 +53,6 @@ export const schemas = {
   nickname,
   phone,
   title,
+  summary,
   content,
 };

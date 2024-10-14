@@ -19,6 +19,7 @@ export class PostsRouter {
         z.object({
           id: z.string().optional(),
           title: schemas.title,
+          summary: schemas.summary,
           content: schemas.content,
           category: z.nativeEnum(PostCategory).optional(),
           thumbnailId: z.string().optional(),
@@ -35,8 +36,8 @@ export class PostsRouter {
       )
       .query(async ({ input }) => await this.postsService.findOne(input)),
     /** 모든 게시글 가져오기 */
-    getAll: this.trpc.procedure.query(
-      async () => await this.postsService.findAll(),
+    getMany: this.trpc.procedure.query(
+      async () => await this.postsService.findMany(),
     ),
     /** 단일 게시글 수정하기 */
     updateOne: this.trpc.procedure

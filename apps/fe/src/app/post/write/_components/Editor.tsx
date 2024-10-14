@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(() => import("@uiw/react-markdown-editor"), {
   ssr: false,
 });
+import "#fe/css/uiw-react-markdown-editor.css";
 
 interface IProps {
   content: string;
