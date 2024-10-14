@@ -7,6 +7,8 @@ import {
 import Main from "#fe/components/layouts/Main";
 import Header from "#fe/components/layouts/Header";
 import Footer from "#fe/components/layouts/Footer";
+import SheetButton from "./SheetButton";
+import { DashboardIcon } from "@radix-ui/react-icons";
 
 const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
@@ -23,8 +25,11 @@ const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
             <ResizablePanel defaultSize={85} className="flex">
               <Main>{children}</Main>
             </ResizablePanel>
-            <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={15} className="flex">
+            <ResizableHandle withHandle className="hidden lg:flex" />
+            <ResizablePanel
+              defaultSize={15}
+              className="hidden min-w-56 lg:flex"
+            >
               <Header />
             </ResizablePanel>
           </ResizablePanelGroup>
@@ -34,6 +39,15 @@ const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
           <Footer />
         </ResizablePanel>
       </ResizablePanelGroup>
+
+      <SheetButton
+        type="button"
+        size="icon"
+        variant="default"
+        className="rounded-full"
+      >
+        <DashboardIcon className="h-4 w-4" />
+      </SheetButton>
     </>
   );
 };

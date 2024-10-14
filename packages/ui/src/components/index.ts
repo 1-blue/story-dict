@@ -19,3 +19,4 @@ export * from "./Textarea";
 export * from "./AspectRatio";
 export * from "./Popover";
 export * from "./Alert";
+export * from "./Sheet";
