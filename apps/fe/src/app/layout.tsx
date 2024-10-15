@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head></head>
-      <body className="m-4 flex h-[calc(100vh-32px)] flex-col rounded-lg border">
+      <body className="m-4 flex h-[calc(100vh-32px)] flex-col rounded-lg">
         <TRPCProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ShortCutProvider />

@@ -21,7 +21,6 @@ import {
 import { AccessLevel, RouteGroup } from "#fe/types";
 import { ROUTES } from "#fe/constants";
 import useMe from "#fe/hooks/useMe";
-import { ThemeToggle } from "@xstory/ui/theme";
 
 /** 인증 경로 */
 const AUTH_ROUTES = ROUTES.filter((route) => route.group === RouteGroup.AUTH);
@@ -47,7 +46,9 @@ const AUTHENTICATED_CONTENT_ROUTES = CONTENT_ROUTES.filter((route) =>
   [AccessLevel.PUBLIC, AccessLevel.AUTHENTICATED].includes(route.accessLevel),
 );
 
-const Header = () => {
+interface IProps extends React.HTMLAttributes<HTMLElement> {}
+
+const Header: React.FC<IProps> = (props) => {
   const { me, logOutMutation } = useMe();
 
   const onLogOut = async () => {
@@ -67,7 +68,7 @@ const Header = () => {
     : UNAUTHENTICATED_CONTENT_ROUTES;
 
   return (
-    <header className="flex flex-1 flex-col divide-y-2">
+    <header {...props}>
       <section className="p-4">
         <Input placeholder="ex) ..." />
       </section>
@@ -130,9 +131,6 @@ const Header = () => {
             <span className="text-sm">{route.label}</span>
           </Link>
         ))}
-      </ul>
-      <ul className="flex flex-1 items-end p-1">
-        <ThemeToggle className="m-2 ml-auto" />
       </ul>
     </header>
   );

@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { EnvelopeClosedIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
-const Footer: React.FC = () => {
+interface IProps extends React.HTMLAttributes<HTMLElement> {}
+
+const Footer: React.FC<IProps> = (props) => {
   return (
-    <footer className="flex items-center justify-center gap-3 text-foreground/50">
+    <footer {...props}>
       <span>© 2024. 1-blue All rights reserved</span>
       <Link href="https://github.com/1-blue" target="_blank">
         <GitHubLogoIcon />

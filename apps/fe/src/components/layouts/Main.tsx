@@ -1,5 +1,10 @@
-const Main: React.FC<React.PropsWithChildren> = ({ children }) => {
-  return <main className="flex-1 overflow-y-auto p-4">{children}</main>;
+interface IProps extends React.HTMLAttributes<HTMLElement> {}
+
+const Main: React.FC<React.PropsWithChildren<IProps>> = ({
+  children,
+  ...props
+}) => {
+  return <main {...props}>{children}</main>;
 };
 
 export default Main;
