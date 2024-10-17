@@ -10,7 +10,7 @@ const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
     <>
       <section className="flex flex-col gap-3 pb-4">
         <article className="flex gap-3">
-          <Main className="flex-1 overflow-y-auto rounded-md border p-4">
+          <Main className="min-h-[calc(100vh-58px-48px)] flex-1 overflow-y-auto rounded-md border p-4">
             {children}
           </Main>
           <Header className="sticky right-0 top-4 hidden h-fit min-w-56 flex-col divide-y-2 rounded-md border lg:flex" />

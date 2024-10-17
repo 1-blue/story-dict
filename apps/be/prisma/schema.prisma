@@ -130,19 +130,24 @@ model User {
   imageId String?
 
   /// [1:N] 유저의 게시글
-  Post Post[]
+  posts Post[]
+
+  /// [1:N] 유저의 게시글
+  reactions Reaction[]
 }
 
 /// 게시글 카테고리
 enum PostCategory {
-  /// 상식 관련 게시글
+  /// 상식
   GENERAL_KNOWLEDGE
-  /// 어원 관련 게시글
+  /// 어원
   ETYMOLOGY
-  /// 순우리말 관련 게시글
+  /// 순우리말
   PURE_KOREAN
-  /// 명대사 관련 게시글
+  /// 명대사
   QUOTATION
+  /// 단순 정보
+  INFORMATION
 }
 
 model Post {
@@ -172,4 +177,54 @@ model Post {
   user   User   @relation(fields: [userId], references: [id])
   /// [1:N] 유저 식별자
   userId String
+
+  /// [1:N] 게시글의 반응
+  reactions Reaction[]
+}
+
+enum ReactionType {
+  /// 좋아요 👍
+  GOOD
+  /// 싫어요 👎
+  BAD
+  /// 불타오르다 🔥
+  FIRE
+  /// 보다 👀
+  SEE
+  /// 하트 ❤️
+  HEART
+  /// 웃다 😊
+  SMILE
+  /// 슬프다 😢
+  SAD
+  /// 화나다 😠
+  ANGRY
+  /// 놀랐다 🫢
+  WOW
+  /// 의문 🤔
+  QUESTION
+}
+
+model Reaction {
+  /// 반응 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 리액션 타입
+  type ReactionType
+
+  /// 반응 유저
+  user   User   @relation(fields: [userId], references: [id])
+  /// [1:N] 유저 식별자
+  userId String
+
+  /// [1:N] 반응 게시글
+  post   Post   @relation(fields: [postId], references: [id])
+  /// [1:N] 게시글 식별자
+  postId String
 }

@@ -41,11 +41,32 @@ export class PostsService {
       include: {
         thumbnail: {
           select: {
+            id: true,
             url: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            image: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
           },
         },
       },
     });
+
     if (!exPost) {
       throw new NotFoundException("찾는 게시글이 존재하지 않습니다.");
     }

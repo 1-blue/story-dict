@@ -12,7 +12,7 @@ export class CreatePostDto {
   @IsUUID(4, { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
   id?: string;
 
-  @IsNotEmpty({ message: "고양이 이름은 필수값입니다." })
+  @IsNotEmpty({ message: "게시글 이름은 필수값입니다." })
   @IsString({ message: "게시글 제목은 문자열 형태만 가능합니다." })
   title: string;
 

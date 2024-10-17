@@ -12,6 +12,8 @@ import { PostsService } from "#be/apis/v1/posts/posts.service";
 import { PostsRouter } from "#be/apis/v1/posts/posts.router";
 import { ImagesService } from "#be/apis/v1/images/images.service";
 import { ImagesRouter } from "#be/apis/v1/images/images.router";
+import { ReactionsService } from "#be/apis/v1/reactions/reactions.service";
+import { ReactionsRouter } from "#be/apis/v1/reactions/reactions.router";
 
 @Module({
   controllers: [TrpcController],
@@ -27,6 +29,8 @@ import { ImagesRouter } from "#be/apis/v1/images/images.router";
     PostsRouter,
     ImagesService,
     ImagesRouter,
+    ReactionsService,
+    ReactionsRouter,
   ],
 })
 export class TrpcModule {}

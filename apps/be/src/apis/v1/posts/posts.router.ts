@@ -51,8 +51,8 @@ export class PostsRouter {
         }),
       )
       .query(
-        async ({ input }) =>
-          await this.postsService.update({ id: input.id }, input),
+        async ({ input: { id, ...rest } }) =>
+          await this.postsService.update({ id }, rest),
       ),
     /** 단일 게시글 삭제하기 */
     deleteOne: this.trpc.procedure
