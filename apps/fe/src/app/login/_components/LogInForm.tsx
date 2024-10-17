@@ -4,10 +4,9 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockOpen1Icon } from "@radix-ui/react-icons";
-import { Button, Form, RFHInput } from "@xstory/ui";
+import { Button, Form, RFHInput, toast } from "@xstory/ui";
 import { schemas } from "@xstory/utils";
 import useMe from "#fe/hooks/useMe";
-import { useToast } from "@xstory/ui/hooks";
 import { handleError } from "#fe/libs/handleError";
 import { PATHS } from "#fe/constants";
 import { useRouter } from "next/navigation";
@@ -30,7 +29,6 @@ const formSchema = z.object({
 
 const LogInForm: React.FC = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const { me, logInMutation } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,12 +44,11 @@ const LogInForm: React.FC = () => {
 
         router.replace(PATHS.HOME);
 
-        toast({
-          title: "로그인 성공",
+        toast.success("로그인 성공", {
           description: "메인페이지로 이동합니다.",
         });
       } catch (error) {
-        handleError({ error, toast, title: "로그인 실패" });
+        handleError({ error, title: "로그인 실패" });
       }
     },
   );

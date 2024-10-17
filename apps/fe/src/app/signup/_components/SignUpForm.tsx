@@ -3,10 +3,9 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Form, RFHInput } from "@xstory/ui";
+import { Button, Form, RFHInput, toast } from "@xstory/ui";
 import { schemas } from "@xstory/utils";
 import { trpc } from "#fe/libs/trpc";
-import { useToast } from "@xstory/ui/hooks";
 import { useRouter } from "next/navigation";
 import { handleError } from "#fe/libs/handleError";
 import { PATHS } from "#fe/constants";
@@ -36,7 +35,6 @@ const formSchema = z.object({
 
 const SignUpForm: React.FC = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const { logInMutation } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,12 +53,11 @@ const SignUpForm: React.FC = () => {
 
         router.replace(PATHS.HOME);
 
-        toast({
-          title: "회원가입 성공",
+        toast.success("회원가입 성공", {
           description: `가입을 축하드립니다.\n로그인 후 메인 페이지로 이동됩니다!`,
         });
       } catch (error) {
-        handleError({ error, toast, title: "회원가입 실패" });
+        handleError({ error, title: "회원가입 실패" });
       }
     },
   );

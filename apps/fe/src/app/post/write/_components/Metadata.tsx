@@ -21,7 +21,6 @@ import {
 import { useRef } from "react";
 import { trpc } from "#fe/libs/trpc";
 import { handleError } from "#fe/libs/handleError";
-import { useToast } from "@xstory/ui/hooks";
 import { postUploadImageByPresignedURL } from "#fe/apis";
 import { CameraIcon } from "@radix-ui/react-icons";
 
@@ -31,7 +30,6 @@ interface IProps {
 }
 
 const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
-  const { toast } = useToast();
   const { control } = useFormContext();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +54,7 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
 
       setImageData({ id: imageId, url: imageURL });
     } catch (error) {
-      handleError({ error, toast, title: "이미지 업로드 실패" });
+      handleError({ error, title: "이미지 업로드 실패" });
     }
   };
 

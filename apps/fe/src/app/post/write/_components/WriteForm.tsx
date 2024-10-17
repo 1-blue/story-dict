@@ -1,14 +1,20 @@
 "use client";
 
 import { z } from "zod";
-import { Form, Tabs, TabsContent, TabsList, TabsTrigger } from "@xstory/ui";
+import {
+  Form,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  toast,
+} from "@xstory/ui";
 import { schemas } from "@xstory/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "#fe/libs/trpc";
 import { useRouter } from "next/navigation";
 import useMe from "#fe/hooks/useMe";
-import { useToast } from "@xstory/ui/hooks";
 import { PATHS } from "#fe/constants";
 import { handleError } from "#fe/libs/handleError";
 
@@ -47,7 +53,6 @@ const DEV_DEFAULT_VALUES =
 const WriteForm: React.FC = () => {
   const router = useRouter();
   const { me } = useMe();
-  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEV_DEFAULT_VALUES,
@@ -80,12 +85,11 @@ const WriteForm: React.FC = () => {
 
       router.replace(PATHS.HOME);
 
-      toast({
-        title: "게시글 생성 성공",
+      toast.success("게시글 생성 성공", {
         description: `게시글이 성공적으로 생성되었습니다.\n메인 페이지로 이동됩니다!`,
       });
     } catch (error) {
-      handleError({ error, toast, title: "게시글 생성 실패" });
+      handleError({ error, title: "게시글 생성 실패" });
     }
   });
 

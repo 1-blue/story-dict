@@ -8,6 +8,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  toast,
 } from "@xstory/ui";
 
 import "#fe/css/github-markdown.css";
@@ -22,7 +23,6 @@ import {
 import { ReactionType } from "#be/types";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
-import { useToast } from "@xstory/ui/hooks";
 import { cn } from "@xstory/ui/libs";
 
 interface IProps {
@@ -31,7 +31,6 @@ interface IProps {
 
 const PostDetail: React.FC<IProps> = ({ id }) => {
   const { me } = useMe();
-  const { toast } = useToast();
   const { data: post, refetch: postRefetch } = trpc.posts.getOne.useQuery({
     id,
   });
@@ -60,8 +59,7 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
         });
 
         postRefetch();
-        return toast({
-          title: "리액션 생성",
+        return toast.success("리액션 생성", {
           description: `"${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
         });
       }
@@ -74,8 +72,7 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
         });
 
         postRefetch();
-        return toast({
-          title: "리액션 교체",
+        return toast("리액션 교체", {
           description: `"${reactionTypeToEmojiMap[exReaction.type]}"에서 "${reactionTypeToEmojiMap[type]}"으로 교체했습니다.`,
         });
       }
@@ -86,12 +83,11 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
       });
 
       postRefetch();
-      return toast({
-        title: "리액션 제거",
+      return toast("리액션 제거", {
         description: `"${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
       });
     } catch (error) {
-      handleError({ error, toast, title: "리액션 처리 실패" });
+      handleError({ error, title: "리액션 처리 실패" });
     }
   };
 
@@ -155,7 +151,7 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
                   data-type={reaction.type}
                   type="button"
                   className={cn(
-                    "flex cursor-pointer items-center gap-1 rounded-full border border-muted px-2 py-1 text-xs",
+                    "flex cursor-pointer items-center gap-1 rounded-full border border-muted px-2 pb-1 pt-1.5 text-xs",
                     myReactionType === reaction.type &&
                       "border-primary/60 bg-primary/20",
                   )}
@@ -217,15 +213,3 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
 };
 
 export default PostDetail;
-
-{
-  /* <div className="flex items-center gap-1">
-<Avatar>
-  <AvatarImage src={post.user.image?.url} />
-  <AvatarFallback>
-    {post.user.nickname.slice(0, 2).toUpperCase()}
-  </AvatarFallback>
-</Avatar>
-<span>{post.user.nickname}</span>
-</div> */
-}
