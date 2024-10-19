@@ -5,7 +5,7 @@ import { CreateReactionDto } from "#be/apis/v1/reactions/dtos/create-reaction.dt
 import { UpdateReactionDto } from "#be/apis/v1/reactions/dtos/update-reaction.dto";
 import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 
-@Controller("reactions")
+@Controller("apis/v1/reactions")
 export class ReactionsController {
   constructor(private readonly reactionsService: ReactionsService) {}
 

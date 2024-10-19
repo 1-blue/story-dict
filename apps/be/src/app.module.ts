@@ -8,6 +8,7 @@ import { ImagesModule } from "#be/apis/v1/images/images.module";
 import { UsersModule } from "#be/apis/v1/users/users.module";
 import { PostsModule } from "#be/apis/v1/posts/posts.module";
 import { ReactionsModule } from "#be/apis/v1/reactions/reactions.module";
+import { CommentsModule } from "#be/apis/v1/comments/comments.module";
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ReactionsModule } from "#be/apis/v1/reactions/reactions.module";
     UsersModule,
     PostsModule,
     ReactionsModule,
+    CommentsModule,
   ],
   controllers: [],
   providers: [PrismaService],

@@ -16,7 +16,15 @@ export class CreateReactionDto {
   @IsUUID(4, { message: "유저 식별자는 UUID 형태만 입력이 가능합니다." })
   userId: string;
 
-  @IsNotEmpty({ message: "게시글 식별자는 필수값입니다." })
+  @IsOptional()
   @IsUUID(4, { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
-  postId: string;
+  postId?: string;
+
+  @IsOptional()
+  @IsUUID(4, { message: "댓글 식별자는 UUID 형태만 입력이 가능합니다." })
+  commentId?: string;
+
+  @IsOptional()
+  @IsUUID(4, { message: "답글 식별자는 UUID 형태만 입력이 가능합니다." })
+  replyId?: string;
 }

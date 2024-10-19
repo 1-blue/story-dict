@@ -19,7 +19,7 @@ interface IProps {
   mdText: string;
 }
 
-const Markdown: React.FC<IProps> = ({ mdText }) => {
+const MarkdownViewer: React.FC<IProps> = ({ mdText }) => {
   return (
     <section
       className="markdown-body rounded-md border p-4"
@@ -30,4 +30,4 @@ const Markdown: React.FC<IProps> = ({ mdText }) => {
   );
 };
 
-export default Markdown;
+export default MarkdownViewer;

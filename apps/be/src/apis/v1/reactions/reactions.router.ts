@@ -19,7 +19,9 @@ export class ReactionsRouter {
           id: z.string().optional(),
           type: z.nativeEnum(ReactionType),
           userId: z.string(),
-          postId: z.string(),
+          postId: z.string().optional(),
+          commentId: z.string().optional(),
+          replyId: z.string().optional(),
         }),
       )
       .mutation(async ({ input }) => await this.reactionsService.create(input)),

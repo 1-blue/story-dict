@@ -66,7 +66,7 @@ const SignUpForm: React.FC = () => {
     <Form {...form}>
       <form
         onSubmit={onSubmit}
-        className="mx-auto flex w-1/2 min-w-80 max-w-lg flex-col gap-3"
+        className="mx-auto mt-12 flex w-1/2 min-w-80 max-w-lg flex-col gap-3"
       >
         <RFHInput
           name="email"

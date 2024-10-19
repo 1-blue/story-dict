@@ -134,6 +134,12 @@ model User {
 
   /// [1:N] 유저의 게시글
   reactions Reaction[]
+
+  /// [1:N] 유저의 댓글
+  comments Comment[]
+
+  /// [1:N] 유저의 대댓글
+  replies Reply[]
 }
 
 /// 게시글 카테고리
@@ -180,6 +186,12 @@ model Post {
 
   /// [1:N] 게시글의 반응
   reactions Reaction[]
+
+  /// [1:N] 게시글의 댓글
+  comments Comment[]
+
+  /// [1:N] 게시글의 대댓글
+  replies Reply[]
 }
 
 enum ReactionType {
@@ -224,7 +236,79 @@ model Reaction {
   userId String
 
   /// [1:N] 반응 게시글
+  post   Post?   @relation(fields: [postId], references: [id])
+  /// [1:N] 게시글 식별자
+  postId String?
+
+  /// [1:N] 반응 댓글
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  /// [1:N] 댓글 식별자
+  commentId String?
+
+  /// [1:N] 반응 대댓글
+  reply   Reply?  @relation(fields: [replyId], references: [id])
+  /// [1:N] 대댓글 식별자
+  replyId String?
+}
+
+model Comment {
+  /// 댓글 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 댓글 내용
+  content String
+
+  /// [1:N] 댓글의 유저
+  user   User   @relation(fields: [userId], references: [id])
+  /// [1:N] 유저 식별자
+  userId String
+
+  /// [1:N] 댓글의 게시글
   post   Post   @relation(fields: [postId], references: [id])
   /// [1:N] 게시글 식별자
   postId String
+
+  /// [1:N] 댓글의 대댓글
+  replies Reply[]
+
+  /// [1:N] 댓글의 반응
+  reactions Reaction[]
+}
+
+model Reply {
+  /// 대댓글 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 대댓글 내용 
+  content String
+
+  /// [1:N] 대댓글의 유저
+  user   User   @relation(fields: [userId], references: [id])
+  /// [1:N] 유저 식별자
+  userId String
+
+  /// [1:N] 대댓글의 게시글
+  post   Post   @relation(fields: [postId], references: [id])
+  /// [1:N] 게시글 식별자
+  postId String
+
+  /// [1:N] 대댓글의 댓글
+  comment   Comment @relation(fields: [commentId], references: [id])
+  /// [1:N] 댓글 식별자
+  commentId String
+
+  /// [1:N] 대댓글의 반응
+  reactions Reaction[]
 }

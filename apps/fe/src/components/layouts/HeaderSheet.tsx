@@ -6,15 +6,21 @@ import {
   SheetTrigger,
 } from "@xstory/ui";
 import Header from "#fe/components/layouts/Header";
+import { DashboardIcon } from "@radix-ui/react-icons";
 
-interface IProps extends React.ComponentProps<typeof Button> {}
-
-const SheetButton: React.FC<IProps> = ({ children, ...props }) => {
+const HeaderSheet: React.FC = () => {
   return (
     <>
       <Sheet>
         <SheetTrigger asChild>
-          <Button {...props}>{children}</Button>
+          <Button
+            type="button"
+            size="icon"
+            variant="default"
+            className="fixed bottom-4 right-4 rounded-full lg:hidden"
+          >
+            <DashboardIcon className="h-4 w-4" />
+          </Button>
         </SheetTrigger>
         <SheetContent className="!max-w-64 p-0" hideClose>
           <SheetHeader>
@@ -26,4 +32,4 @@ const SheetButton: React.FC<IProps> = ({ children, ...props }) => {
   );
 };
 
-export default SheetButton;
+export default HeaderSheet;

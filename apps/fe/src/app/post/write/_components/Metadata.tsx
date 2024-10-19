@@ -112,7 +112,7 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
           />
           <FormLabel>썸네일</FormLabel>
           <div
-            className="flex h-5/6 w-full flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-muted"
+            className="flex min-h-72 w-full flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-muted md:h-5/6"
             onClick={() => fileInputRef.current?.click()}
           >
             {imageData ? (
