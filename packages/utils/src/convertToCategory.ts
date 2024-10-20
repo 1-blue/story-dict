@@ -1,4 +1,9 @@
-type Category = "GENERAL_KNOWLEDGE" | "ETYMOLOGY" | "PURE_KOREAN" | "QUOTATION";
+type Category =
+  | "GENERAL_KNOWLEDGE"
+  | "ETYMOLOGY"
+  | "PURE_KOREAN"
+  | "QUOTATION"
+  | "INFORMATION";
 
 /** 카테고리 한글로 변환 */
 export const convertToCategory = (category: Category) => {
@@ -11,5 +16,7 @@ export const convertToCategory = (category: Category) => {
       return "순우리말";
     case "QUOTATION":
       return "명대사";
+    case "INFORMATION":
+      return "정보";
   }
 };

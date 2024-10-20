@@ -14,8 +14,8 @@ import { useRouter } from "next/navigation";
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
     ? {
-        email: "akaps@gmail.com",
-        password: "123456aA!",
+        email: "developer@xstory.com",
+        password: "123456789aA!",
       }
     : {
         email: "",

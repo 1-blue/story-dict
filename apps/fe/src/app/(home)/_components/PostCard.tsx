@@ -39,7 +39,7 @@ const PostCard: React.FC<IProps> = ({ post }) => {
         </CardContent>
       </Link>
       <CardFooter className="flex items-end justify-between">
-        <Badge variant="secondary">{convertToCategory(post.category)}</Badge>
+        <Badge>{convertToCategory(post.category)}</Badge>
         {post.thumbnail?.url && (
           <Popover>
             <PopoverTrigger asChild className="cursor-pointer">

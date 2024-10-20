@@ -14,9 +14,9 @@ import useMe from "#fe/hooks/useMe";
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
     ? {
-        email: "akaps@gmail.com",
-        password: "123456aA!",
-        nickname: "Akaps",
+        email: "developer11@xstory.com",
+        password: "123456789aA!",
+        nickname: "로컬개발자",
         phone: "010-1234-5678",
       }
     : {

@@ -16,6 +16,7 @@ import { PostsService } from "#be/apis/v1/posts/posts.service";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
 import { IsLoggedIn } from "#be/guards";
+import { FindRandomPostDto } from "./dtos/find-random-post.dto";
 
 @Controller("apis/v1/posts")
 export class PostsController {
@@ -36,6 +37,11 @@ export class PostsController {
   @Get(":id")
   findOne(@Param() findByIdDto: FindByIdDto) {
     return this.postsService.findOne(findByIdDto);
+  }
+
+  @Get("/random")
+  findRandom(@Param() findRandomPostDto: FindRandomPostDto) {
+    return this.postsService.findRandom(findRandomPostDto);
   }
 
   @UseGuards(IsLoggedIn)

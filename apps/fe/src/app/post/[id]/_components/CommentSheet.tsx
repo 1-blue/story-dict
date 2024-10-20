@@ -74,7 +74,7 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
           <ChatBubbleIcon className="h-4 w-4 text-muted-foreground" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="!max-w-sm" hideClose>
+      <SheetContent className="!max-w-sm overflow-auto" hideClose>
         <SheetHeader className="mb-1 line-clamp-1">{title}</SheetHeader>
         <SheetDescription className="mb-4">
           댓글({comments?.length || 0}개)
@@ -114,7 +114,7 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
                   </time>
                 </div>
               </div>
-              <p className="whitespace-pre-wrap break-words">
+              <p className="whitespace-pre-wrap break-words text-sm">
                 {comment.content}
               </p>
               <div className="flex gap-2">

@@ -1,7 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
 import { seedCats } from "./cats";
-import { seedImages } from "./images";
+import { seedUsers } from "./users";
+import { seedPosts } from "./posts";
+import { seedComments } from "./comments";
+import { postReactions } from "./postReactions";
+import { commentReactions } from "./commentReactions";
 
 const prisma = new PrismaClient();
 
@@ -15,9 +19,33 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log(`✅ seeding to images ...`);
-  await prisma.image.createMany({
-    data: seedImages,
+  console.log(`✅ seeding to users ...`);
+  await prisma.user.createMany({
+    data: seedUsers,
+    skipDuplicates: true,
+  });
+
+  console.log(`✅ seeding to posts ...`);
+  await prisma.post.createMany({
+    data: seedPosts,
+    skipDuplicates: true,
+  });
+
+  console.log(`✅ seeding to comments ...`);
+  await prisma.comment.createMany({
+    data: seedComments,
+    skipDuplicates: true,
+  });
+
+  console.log(`✅ seeding to postReactions ...`);
+  await prisma.reaction.createMany({
+    data: postReactions,
+    skipDuplicates: true,
+  });
+
+  console.log(`✅ seeding to commentReactions ...`);
+  await prisma.reaction.createMany({
+    data: commentReactions,
     skipDuplicates: true,
   });
 

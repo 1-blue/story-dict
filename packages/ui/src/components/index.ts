@@ -20,3 +20,4 @@ export * from "./Popover";
 export * from "./Alert";
 export * from "./Sheet";
 export * from "./Sonner";
+export * from "./Carousel";

@@ -4,10 +4,16 @@ import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
 import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
+import { FindRandomPostDto } from "./dtos/find-random-post.dto";
 
 @Injectable()
 export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  /** 랜덤 선택 함수 */
+  private randomPick<T>(array: T[]): T {
+    return array[Math.floor(Math.random() * array.length)]!;
+  }
 
   /** 게시글 생성 */
   async create({ ...post }: CreatePostDto) {
@@ -72,6 +78,39 @@ export class PostsService {
     }
 
     return exPost;
+  }
+
+  /** 랜덤 게시글 찾기 */
+  async findRandom({ existingIds }: FindRandomPostDto) {
+    const existingIdsArray = existingIds.split(",").map((id) => id.trim());
+
+    const productsCount = await this.prismaService.post.count();
+    const skip = Math.floor(Math.random() * productsCount);
+    const orderBy = this.randomPick(["id", "title", "content", "createdAt"]);
+    const orderDir = this.randomPick(["asc", "desc"]);
+    const randomPost = await this.prismaService.post.findMany({
+      where: {
+        id: {
+          notIn: existingIdsArray,
+        },
+      },
+      orderBy: {
+        [orderBy]: orderDir,
+      },
+      skip,
+      take: 4,
+      include: {
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
+    });
+
+    return randomPost;
   }
 
   /** 특정 게시글 수정 */

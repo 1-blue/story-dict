@@ -8,11 +8,7 @@ import MarkdownViewer from "./MarkdownViewer";
 import Image from "next/image";
 import { CalendarIcon, PersonIcon } from "@radix-ui/react-icons";
 
-import {
-  postCategoryToKoreanMap,
-  reactionTypeToEmojiMap,
-} from "#fe/libs/mappings";
-import { cn } from "@xstory/ui/libs";
+import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import CommentSheet from "./CommentSheet";
 import ReactionPopover from "./ReactionPopover";
 import Reactions from "./Reactions";
@@ -60,23 +56,20 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
-              <Reactions
-                reactions={post.reactions}
-                postId={id}
-                refetch={postRefetch}
-              />
+          <CommentSheet title={post.title} postId={id} />
+        </div>
+        <div className="flex gap-2 self-start">
+          <ReactionPopover
+            reactions={post.reactions}
+            postId={id}
+            refetch={postRefetch}
+          />
 
-              <ReactionPopover
-                reactions={post.reactions}
-                postId={id}
-                refetch={postRefetch}
-              />
-            </div>
-
-            <CommentSheet title={post.title} postId={id} />
-          </div>
+          <Reactions
+            reactions={post.reactions}
+            postId={id}
+            refetch={postRefetch}
+          />
         </div>
       </section>
 

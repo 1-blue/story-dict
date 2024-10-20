@@ -39,6 +39,15 @@ export const ROUTES: IRoute[] = [
 
   // ============================ CONTENT ============================
   {
+    path: PATHS.HOME,
+    Icon: CrumpledPaperIcon,
+    label: "홈",
+    hidden: false,
+    accessLevel: AccessLevel.PUBLIC,
+    sitemap: DEFAULT_SITEMAP,
+    group: RouteGroup.CONTENT,
+  },
+  {
     path: PATHS.RANDOM,
     Icon: CrumpledPaperIcon,
     label: "랜덤",
@@ -60,15 +69,6 @@ export const ROUTES: IRoute[] = [
     path: PATHS.POST.WRITE,
     Icon: CrumpledPaperIcon,
     label: "글쓰기",
-    hidden: false,
-    accessLevel: AccessLevel.AUTHENTICATED,
-    sitemap: DEFAULT_SITEMAP,
-    group: RouteGroup.CONTENT,
-  },
-  {
-    path: PATHS.ME.BOOKMARK,
-    Icon: CrumpledPaperIcon,
-    label: "북마크",
     hidden: false,
     accessLevel: AccessLevel.AUTHENTICATED,
     sitemap: DEFAULT_SITEMAP,

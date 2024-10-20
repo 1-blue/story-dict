@@ -35,6 +35,14 @@ export class PostsRouter {
         }),
       )
       .query(async ({ input }) => await this.postsService.findOne(input)),
+    /** 랜덤 게시글들 가져오기 */
+    getRandom: this.trpc.procedure
+      .input(
+        z.object({
+          existingIds: z.string(),
+        }),
+      )
+      .query(async ({ input }) => await this.postsService.findRandom(input)),
     /** 모든 게시글 가져오기 */
     getMany: this.trpc.procedure.query(
       async () => await this.postsService.findMany(),
