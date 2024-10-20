@@ -15,7 +15,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "#fe/libs/trpc";
 import { useRouter } from "next/navigation";
 import useMe from "#fe/hooks/useMe";
-import { PATHS } from "#fe/constants";
 import { handleError } from "#fe/libs/handleError";
 
 import Metadata from "#fe/app/post/write/_components/Metadata";
@@ -83,7 +82,7 @@ const WriteForm: React.FC = () => {
         thumbnailId: imageData?.id,
       });
 
-      router.replace(PATHS.HOME);
+      router.replace("/");
 
       toast.success("게시글 생성 성공", {
         description: `게시글이 성공적으로 생성되었습니다.\n메인 페이지로 이동됩니다!`,

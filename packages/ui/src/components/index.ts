@@ -21,3 +21,7 @@ export * from "./Alert";
 export * from "./Sheet";
 export * from "./Sonner";
 export * from "./Carousel";
+export * from "./Skeleton";
+export * from "./Sidebar";
+export * from "./Breadcrumb";
+export * from "./Collapsible";

@@ -8,7 +8,6 @@ import { Button, Form, RFHInput, toast } from "@xstory/ui";
 import { schemas } from "@xstory/utils";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
-import { PATHS } from "#fe/constants";
 import { useRouter } from "next/navigation";
 
 const DEV_DEFAULT_VALUES =
@@ -42,7 +41,7 @@ const LogInForm: React.FC = () => {
       try {
         await logInMutation.mutateAsync(body);
 
-        router.replace(PATHS.HOME);
+        router.replace("/");
 
         toast.success("로그인 성공", {
           description: "메인페이지로 이동합니다.",

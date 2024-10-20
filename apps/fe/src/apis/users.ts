@@ -5,7 +5,7 @@ import type { Image, User } from "#be/types";
 export interface GetMeAPIRequest {}
 /** 로그인된 유저 정보 응답 타입 */
 export interface GetMeAPIResponse
-  extends Pick<User, "id" | "nickname" | "role"> {
+  extends Pick<User, "id" | "nickname" | "role" | "email"> {
   image?: Pick<Image, "id" | "url">;
 }
 /** 로그인된 유저 정보 가져오기 함수 */

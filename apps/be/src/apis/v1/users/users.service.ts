@@ -87,6 +87,7 @@ export class UsersService {
         id: true,
         nickname: true,
         role: true,
+        email: true,
         image: {
           select: {
             id: true,

@@ -8,7 +8,6 @@ import { schemas } from "@xstory/utils";
 import { trpc } from "#fe/libs/trpc";
 import { useRouter } from "next/navigation";
 import { handleError } from "#fe/libs/handleError";
-import { PATHS } from "#fe/constants";
 import useMe from "#fe/hooks/useMe";
 
 const DEV_DEFAULT_VALUES =
@@ -51,7 +50,7 @@ const SignUpForm: React.FC = () => {
           password: body.password,
         });
 
-        router.replace(PATHS.HOME);
+        router.replace("/");
 
         toast.success("회원가입 성공", {
           description: `가입을 축하드립니다.\n로그인 후 메인 페이지로 이동됩니다!`,
