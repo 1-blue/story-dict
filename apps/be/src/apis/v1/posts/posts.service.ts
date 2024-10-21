@@ -5,6 +5,7 @@ import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
 import { FindRandomPostDto } from "./dtos/find-random-post.dto";
+import { FindKeywordPostDto } from "./dtos/find-keyword-post.dto";
 
 @Injectable()
 export class PostsService {
@@ -111,6 +112,36 @@ export class PostsService {
     });
 
     return randomPost;
+  }
+
+  /** 키워드 기반 게시글 찾기 */
+  async findKeyword({ keyword }: FindKeywordPostDto) {
+    const decodedKeyword = decodeURIComponent(keyword);
+
+    const posts = await this.prismaService.post.findMany({
+      where: {
+        OR: [
+          { title: { contains: decodedKeyword } },
+          { content: { contains: decodedKeyword } },
+        ],
+      },
+      include: {
+        thumbnail: {
+          select: {
+            url: true,
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
+    });
+
+    return posts;
   }
 
   /** 특정 게시글 수정 */

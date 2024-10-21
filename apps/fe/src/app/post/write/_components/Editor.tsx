@@ -22,7 +22,7 @@ const Editor: React.FC<IProps> = ({ content, onChange }) => {
 
   return (
     <MarkdownEditor
-      height="calc(100vh - 273px)"
+      height="calc(100vh - 281px)"
       value={content}
       onChange={onChange}
       enableScroll

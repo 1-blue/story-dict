@@ -16,6 +16,7 @@ import {
   ChevronRightIcon,
   ChevronUpDownIcon,
   ArrowRightStartOnRectangleIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/solid";
 
 import {
@@ -57,11 +58,13 @@ import {
   SidebarGroupContent,
   Button,
   toast,
+  SidebarInput,
+  Label,
 } from "@xstory/ui";
 import useMe from "#fe/hooks/useMe";
 import Link from "next/link";
 import { handleError } from "#fe/libs/handleError";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { cn } from "@xstory/ui/libs";
 
@@ -77,6 +80,10 @@ const nav = {
         {
           title: "글쓰기",
           url: "/post/write",
+        },
+        {
+          title: "랜덤",
+          url: "/post/random",
         },
       ],
     },
@@ -140,11 +147,12 @@ const nav = {
 };
 
 const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const router = useRouter();
   const pathname = usePathname();
   const [breadcrumbs, setBreadcrumbs] = useState<string[]>([]);
 
   useEffect(() => {
-    setBreadcrumbs(pathname.split("/").slice(1));
+    setBreadcrumbs(pathname.split("/").slice(1).map(decodeURIComponent));
   }, [pathname]);
 
   const { me, logOutMutation } = useMe();
@@ -159,10 +167,22 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
       handleError({ error, title: "로그아웃 실패" });
     }
   };
+  const onSearch: React.FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+
+    if (!(e.target instanceof HTMLFormElement)) return;
+
+    const formData = new FormData(e.target);
+    const keyword = formData.get("keyword")?.toString().trim();
+
+    if (!keyword) return;
+
+    router.push(`/post/search/${keyword}`);
+  };
 
   return (
     <SidebarProvider>
-      <Sidebar variant="inset" className="px-2 py-4">
+      <Sidebar variant="inset" className="py-4 pl-2">
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -171,7 +191,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                   href="/"
                   className="transition-colors hover:bg-muted-foreground/20"
                 >
-                  <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
                     {pathname === "/" ? (
                       <SCommandLineIcon className="h-8 w-8" />
                     ) : (
@@ -192,6 +212,23 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
           </SidebarMenu>
         </SidebarHeader>
         <SidebarContent>
+          <form onSubmit={onSearch}>
+            <SidebarGroup className="py-1">
+              <SidebarGroupContent className="relative">
+                <Label htmlFor="search" className="sr-only">
+                  Search
+                </Label>
+                <SidebarInput
+                  type="search"
+                  id="keyword"
+                  name="keyword"
+                  placeholder="ex) 윤슬"
+                  className="pl-8"
+                />
+                <MagnifyingGlassIcon className="pointer-events-none absolute left-2 top-1/2 size-4 -translate-y-1/2 select-none opacity-50" />
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </form>
           <SidebarGroup>
             <SidebarGroupLabel>게시글</SidebarGroupLabel>
             <SidebarMenu>
@@ -202,22 +239,23 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                   defaultOpen={item.isActive}
                 >
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <Link
-                        href={item.url}
-                        className={cn(
-                          "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(item.url) && "text-primary",
-                        )}
-                      >
-                        {pathname.includes(item.url) ? (
-                          <item.sIcon />
-                        ) : (
-                          <item.oIcon />
-                        )}
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton asChild tooltip={item.title}>
+                        <div
+                          className={cn(
+                            "cursor-pointer transition-colors hover:bg-muted-foreground/20",
+                            pathname.includes(item.url) && "!text-primary",
+                          )}
+                        >
+                          {pathname.includes(item.url) ? (
+                            <item.sIcon />
+                          ) : (
+                            <item.oIcon />
+                          )}
+                          <span>{item.title}</span>
+                        </div>
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
                     {item.items?.length && (
                       <>
                         <CollapsibleTrigger asChild>
@@ -236,7 +274,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                                     className={cn(
                                       "transition-colors hover:bg-muted-foreground/20",
                                       subItem.url === pathname &&
-                                        "bg-primary/10 text-primary",
+                                        "bg-primary/10 !text-primary",
                                     )}
                                   >
                                     <span>{subItem.title}</span>
@@ -264,7 +302,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                         href={item.url}
                         className={cn(
                           "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(item.url) && "text-primary",
+                          pathname.includes(item.url) && "!text-primary",
                         )}
                       >
                         {pathname.includes(item.url) ? (
@@ -290,7 +328,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                         href={item.url}
                         className={cn(
                           "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(item.url) && "text-primary",
+                          pathname.includes(item.url) && "!text-primary",
                         )}
                       >
                         {pathname.includes(item.url) ? (
@@ -373,8 +411,8 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
           </SidebarFooter>
         )}
       </Sidebar>
-      <SidebarInset className="p-4">
-        <header className="flex shrink-0 items-center gap-2 rounded-md border p-4">
+      <div className="flex flex-1 flex-col gap-2 p-4">
+        <header className="sticky top-4 z-10 flex shrink-0 items-center gap-2 rounded-md border bg-sidebar-background p-4">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mx-1 h-4" />
@@ -402,8 +440,8 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
             </Breadcrumb>
           </div>
         </header>
-        {children}
-      </SidebarInset>
+        <SidebarInset className="rounded-lg p-4">{children}</SidebarInset>
+      </div>
     </SidebarProvider>
   );
 };

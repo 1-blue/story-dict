@@ -3,8 +3,12 @@
 import { trpc } from "#fe/libs/trpc";
 import PostCard from "#fe/components/PostCard";
 
-const LatestPosts: React.FC = () => {
-  const { data: posts } = trpc.posts.getMany.useQuery();
+interface SearchedPostsProps {
+  keyword: string;
+}
+
+const SearchedPosts: React.FC<SearchedPostsProps> = ({ keyword }) => {
+  const { data: posts } = trpc.posts.getKeyword.useQuery({ keyword });
 
   return (
     <article>
@@ -15,4 +19,4 @@ const LatestPosts: React.FC = () => {
   );
 };
 
-export default LatestPosts;
+export default SearchedPosts;

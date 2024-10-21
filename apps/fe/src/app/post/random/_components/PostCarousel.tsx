@@ -35,7 +35,7 @@ const PostCarousel: React.FC<IProps> = ({
   }, [posts, setExistingIds]);
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-58px-32px-32px-32px)] max-w-xs items-center">
+    <div className="mx-auto flex h-[calc(100vh-208px)] max-w-xs items-center">
       <Carousel
         opts={{
           align: "start",
