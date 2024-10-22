@@ -85,33 +85,9 @@ const nav = {
           title: "랜덤",
           url: "/post/random",
         },
-      ],
-    },
-    {
-      title: "카테고리",
-      url: "/category",
-      oIcon: ONewspaperIcon,
-      sIcon: SNewspaperIcon,
-      items: [
         {
-          title: "상식",
-          url: "/category/general-knowledge",
-        },
-        {
-          title: "어원",
-          url: "/category/etymology",
-        },
-        {
-          title: "순우리말",
-          url: "/category/pure-korean",
-        },
-        {
-          title: "명대사",
-          url: "/category/quotation",
-        },
-        {
-          title: "단순 정보",
-          url: "/category/information",
+          title: "카테고리",
+          url: "/post/category",
         },
       ],
     },

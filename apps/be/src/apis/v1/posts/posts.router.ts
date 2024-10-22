@@ -51,6 +51,14 @@ export class PostsRouter {
         }),
       )
       .query(async ({ input }) => await this.postsService.findKeyword(input)),
+    /** 카테고리 기반 게시글들 가져오기 */
+    getCategory: this.trpc.procedure
+      .input(
+        z.object({
+          category: z.nativeEnum(PostCategory),
+        }),
+      )
+      .query(async ({ input }) => await this.postsService.findCategory(input)),
     /** 모든 게시글 가져오기 */
     getMany: this.trpc.procedure.query(
       async () => await this.postsService.findMany(),

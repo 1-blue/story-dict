@@ -47,6 +47,15 @@ const summary = z
 /** 내용 유효성 검사 스키마 */
 const content = z.string().min(1, { message: "내용을 입력해주세요!" });
 
+/** 카테고리 유효성 검사 스키마 */
+const category = z.enum([
+  "GENERAL_KNOWLEDGE",
+  "ETYMOLOGY",
+  "PURE_KOREAN",
+  "QUOTATION",
+  "INFORMATION",
+]);
+
 export const schemas = {
   email,
   password,
@@ -55,4 +64,5 @@ export const schemas = {
   title,
   summary,
   content,
+  category,
 };

@@ -18,6 +18,7 @@ import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
 import { IsLoggedIn } from "#be/guards";
 import { FindRandomPostDto } from "#be/apis/v1/posts/dtos/find-random-post.dto";
 import { FindKeywordPostDto } from "#be/apis/v1/posts/dtos/find-keyword-post.dto";
+import { FindCategoryPostDto } from "#be/apis/v1/posts/dtos/find-category-post.dto";
 
 @Controller("apis/v1/posts")
 export class PostsController {
@@ -48,6 +49,11 @@ export class PostsController {
   @Get("/search/:keyword")
   findKeyword(@Param() findSearchPostDto: FindKeywordPostDto) {
     return this.postsService.findKeyword(findSearchPostDto);
+  }
+
+  @Get("/category/:category")
+  findCategory(@Param() findCategoryPostDto: FindCategoryPostDto) {
+    return this.postsService.findCategory(findCategoryPostDto);
   }
 
   @UseGuards(IsLoggedIn)

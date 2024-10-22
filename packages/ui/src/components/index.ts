@@ -25,3 +25,5 @@ export * from "./Skeleton";
 export * from "./Sidebar";
 export * from "./Breadcrumb";
 export * from "./Collapsible";
+export * from "./Command";
+export * from "./Dialog";
