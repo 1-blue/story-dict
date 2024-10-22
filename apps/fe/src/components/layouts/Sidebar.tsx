@@ -65,8 +65,9 @@ import useMe from "#fe/hooks/useMe";
 import Link from "next/link";
 import { handleError } from "#fe/libs/handleError";
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { cn } from "@xstory/ui/libs";
+import { breadcrumbToKoreanMap } from "#fe/libs/mappings";
 
 const nav = {
   main: [
@@ -249,7 +250,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                                     href={subItem.url}
                                     className={cn(
                                       "transition-colors hover:bg-muted-foreground/20",
-                                      subItem.url === pathname &&
+                                      pathname.includes(subItem.url) &&
                                         "bg-primary/10 !text-primary",
                                     )}
                                   >
@@ -395,22 +396,24 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
             <Breadcrumb>
               <BreadcrumbList>
                 {breadcrumbs.map((breadcrumb, index) => (
-                  <BreadcrumbItem key={breadcrumb} className="flex gap-2">
-                    {index < breadcrumbs.length - 1 ? (
-                      <>
+                  <React.Fragment key={breadcrumb}>
+                    <BreadcrumbItem className="flex gap-2">
+                      {index < breadcrumbs.length - 1 ? (
                         <BreadcrumbLink asChild>
                           <Link
                             href={`/${breadcrumbs.slice(0, index + 1).join("/")}`}
                           >
-                            {breadcrumb}
+                            {breadcrumbToKoreanMap[breadcrumb] || breadcrumb}
                           </Link>
                         </BreadcrumbLink>
-                        <BreadcrumbSeparator />
-                      </>
-                    ) : (
-                      <BreadcrumbPage>{breadcrumb}</BreadcrumbPage>
-                    )}
-                  </BreadcrumbItem>
+                      ) : (
+                        <BreadcrumbPage>
+                          {breadcrumbToKoreanMap[breadcrumb] || breadcrumb}
+                        </BreadcrumbPage>
+                      )}
+                    </BreadcrumbItem>
+                    {index < breadcrumbs.length - 1 && <BreadcrumbSeparator />}
+                  </React.Fragment>
                 ))}
               </BreadcrumbList>
             </Breadcrumb>
