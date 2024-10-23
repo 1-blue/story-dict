@@ -12,7 +12,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@xstory/ui";
+} from "@sd/ui";
 import { inferRouterOutputs } from "@trpc/server";
 import { AppRouter } from "#be/apis/v0/trpc/trpc.router";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";

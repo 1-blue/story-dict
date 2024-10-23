@@ -17,7 +17,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@xstory/ui";
+} from "@sd/ui";
 import { useRef } from "react";
 import { trpc } from "#fe/libs/trpc";
 import { handleError } from "#fe/libs/handleError";

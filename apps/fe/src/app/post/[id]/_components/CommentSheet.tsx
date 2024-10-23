@@ -16,8 +16,8 @@ import {
   SheetHeader,
   SheetTrigger,
   toast,
-} from "@xstory/ui";
-import { schemas } from "@xstory/utils";
+} from "@sd/ui";
+import { schemas } from "@sd/utils";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

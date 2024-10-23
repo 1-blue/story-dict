@@ -1,5 +1,5 @@
 {
-  "extends": "@xstory/typescript-config/react-library.json",
+  "extends": "@sd/typescript-config/react-library.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

@@ -60,13 +60,13 @@ import {
   toast,
   SidebarInput,
   Label,
-} from "@xstory/ui";
+} from "@sd/ui";
 import useMe from "#fe/hooks/useMe";
 import Link from "next/link";
 import { handleError } from "#fe/libs/handleError";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { cn } from "@xstory/ui/libs";
+import { cn } from "@sd/ui/libs";
 import { breadcrumbToKoreanMap } from "#fe/libs/mappings";
 
 const nav = {
@@ -176,9 +176,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                     )}
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate text-lg font-semibold">
-                      xstory
-                    </span>
+                    <span className="truncate text-lg font-semibold">sd</span>
                     <span className="truncate text-xs text-muted-foreground">
                       당신의 이야기를 공유해요
                     </span>

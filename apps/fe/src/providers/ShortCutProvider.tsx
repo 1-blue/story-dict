@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import useMe from "#fe/hooks/useMe";
-import { toast } from "@xstory/ui";
+import { toast } from "@sd/ui";
 import { handleError } from "#fe/libs/handleError";
 
 const ShortCutProvider: React.FC = () => {

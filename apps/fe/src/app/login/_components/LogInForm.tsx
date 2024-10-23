@@ -4,8 +4,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockOpen1Icon } from "@radix-ui/react-icons";
-import { Button, Form, RFHInput, toast } from "@xstory/ui";
-import { schemas } from "@xstory/utils";
+import { Button, Form, RFHInput, toast } from "@sd/ui";
+import { schemas } from "@sd/utils";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
     ? {
-        email: "developer@xstory.com",
+        email: "developer@sd.com",
         password: "123456789aA!",
       }
     : {

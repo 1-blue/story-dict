@@ -4,13 +4,7 @@ import { handleError } from "#fe/libs/handleError";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
 import { trpc } from "#fe/libs/trpc";
 import { FaceIcon } from "@radix-ui/react-icons";
-import {
-  Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-  toast,
-} from "@xstory/ui";
+import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
 interface IProps {
   reactions: Pick<Reaction, "id" | "type" | "userId">[];

@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@storybook/addon-themes": "^8.3.5",
-    "@xstory/ui": "workspace:*",
+    "@sd/ui": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18"
   },
@@ -23,8 +23,8 @@
     "@storybook/react-vite": "^8.3.5",
     "@storybook/test": "^8.3.5",
     "@vitejs/plugin-react": "^4.3.2",
-    "@xstory/tailwind-config": "workspace:*",
-    "@xstory/typescript-config": "workspace:*",
+    "@sd/tailwind-config": "workspace:*",
+    "@sd/typescript-config": "workspace:*",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "storybook": "^8.3.5",

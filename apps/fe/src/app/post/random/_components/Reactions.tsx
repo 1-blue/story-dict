@@ -3,7 +3,7 @@
 import { Reaction, ReactionType } from "#be/types";
 import useMe from "#fe/hooks/useMe";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
-import { cn } from "@xstory/ui/libs";
+import { cn } from "@sd/ui/libs";
 
 interface IProps {
   reactions: Pick<Reaction, "id" | "type" | "userId">[];

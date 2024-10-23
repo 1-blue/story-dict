@@ -1,7 +1,7 @@
 "use client";
 
 import { trpc } from "#fe/libs/trpc";
-import { AspectRatio, Badge } from "@xstory/ui";
+import { AspectRatio, Badge } from "@sd/ui";
 
 import "#fe/css/github-markdown.css";
 import MarkdownViewer from "./MarkdownViewer";

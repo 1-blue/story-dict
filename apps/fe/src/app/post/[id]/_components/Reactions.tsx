@@ -5,8 +5,8 @@ import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
 import { trpc } from "#fe/libs/trpc";
-import { toast } from "@xstory/ui";
-import { cn } from "@xstory/ui/libs";
+import { toast } from "@sd/ui";
+import { cn } from "@sd/ui/libs";
 
 interface IProps {
   reactions: Pick<Reaction, "id" | "type" | "userId">[];

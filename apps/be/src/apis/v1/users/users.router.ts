@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { z } from "zod";
-import { schemas } from "@xstory/utils";
+import { schemas } from "@sd/utils";
 import { TrpcService } from "#be/apis/v0/trpc/trpc.service";
 import { UsersService } from "#be/apis/v1/users/users.service";
 

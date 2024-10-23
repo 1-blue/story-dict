@@ -1,1 +1,1 @@
-module.exports = require("@xstory/tailwind-config/tailwind.config");
+module.exports = require("@sd/tailwind-config/tailwind.config");

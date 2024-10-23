@@ -4,7 +4,7 @@ import { PostCategory } from "@prisma/client";
 
 import { TrpcService } from "#be/apis/v0/trpc/trpc.service";
 import { PostsService } from "#be/apis/v1/posts/posts.service";
-import { schemas } from "@xstory/utils";
+import { schemas } from "@sd/utils";
 
 @Injectable()
 export class PostsRouter {

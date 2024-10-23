@@ -1,5 +1,5 @@
 {
-  "name": "@xstory/ui",
+  "name": "@sd/ui",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -16,9 +16,9 @@
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",
-    "@xstory/eslint-config": "workspace:*",
-    "@xstory/tailwind-config": "workspace:*",
-    "@xstory/typescript-config": "workspace:*",
+    "@sd/eslint-config": "workspace:*",
+    "@sd/tailwind-config": "workspace:*",
+    "@sd/typescript-config": "workspace:*",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "postcss": "^8.4.47",

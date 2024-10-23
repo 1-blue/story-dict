@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["x-story.s3.ap-northeast-2.amazonaws.com"],
+    domains: ["story-dict.s3.ap-northeast-2.amazonaws.com"],
   },
 };
 

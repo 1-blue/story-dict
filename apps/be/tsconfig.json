@@ -1,5 +1,5 @@
 {
-  "extends": "@xstory/typescript-config/base.json",
+  "extends": "@sd/typescript-config/base.json",
   "compilerOptions": {
     "declaration": true,
     "removeComments": true,

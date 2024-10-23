@@ -13,8 +13,8 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@xstory/ui";
-import { cn } from "@xstory/ui/libs";
+} from "@sd/ui";
+import { cn } from "@sd/ui/libs";
 
 import { CATEGORIES } from "#fe/constants";
 import { useFormContext } from "react-hook-form";

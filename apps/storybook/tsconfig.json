@@ -1,5 +1,5 @@
 {
-  "extends": "@xstory/typescript-config/storybook.json",
+  "extends": "@sd/typescript-config/storybook.json",
   "include": [
     "**/*.ts",
     "**/*.tsx",

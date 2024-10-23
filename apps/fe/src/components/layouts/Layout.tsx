@@ -1,6 +1,6 @@
 import Main from "#fe/components/layouts/Main";
 import Footer from "#fe/components/layouts/Footer";
-import { ThemeToggle } from "@xstory/ui/theme";
+import { ThemeToggle } from "@sd/ui/theme";
 import MySidebar from "./Sidebar";
 
 const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {

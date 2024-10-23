@@ -1,15 +1,8 @@
 "use client";
 
 import { z } from "zod";
-import {
-  Form,
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  toast,
-} from "@xstory/ui";
-import { schemas } from "@xstory/utils";
+import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
+import { schemas } from "@sd/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "#fe/libs/trpc";

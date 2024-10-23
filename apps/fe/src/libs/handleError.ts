@@ -1,5 +1,5 @@
 import { TRPCClientError } from "@trpc/client";
-import { toast } from "@xstory/ui";
+import { toast } from "@sd/ui";
 
 import { CustomError } from "#fe/libs/error";
 

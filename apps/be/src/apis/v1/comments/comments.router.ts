@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { TrpcService } from "#be/apis/v0/trpc/trpc.service";
 import { CommentsService } from "#be/apis/v1/comments/comments.service";
-import { schemas } from "@xstory/utils";
+import { schemas } from "@sd/utils";
 
 @Injectable()
 export class CommentsRouter {

@@ -12,10 +12,10 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@xstory/ui";
+} from "@sd/ui";
 import type { inferRouterOutputs } from "@trpc/server";
 import type { AppRouter } from "#be/apis/v0/trpc/trpc.router";
-import { convertToCategory } from "@xstory/utils";
+import { convertToCategory } from "@sd/utils";
 import Image from "next/image";
 import Link from "next/link";
 

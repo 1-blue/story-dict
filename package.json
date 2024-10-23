@@ -1,5 +1,5 @@
 {
-  "name": "xstory",
+  "name": "sd",
   "private": true,
   "scripts": {
     "build": "turbo build",

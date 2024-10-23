@@ -1,8 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@xstory/ui";
-import { schemas } from "@xstory/utils";
+import { Form } from "@sd/ui";
+import { schemas } from "@sd/utils";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";

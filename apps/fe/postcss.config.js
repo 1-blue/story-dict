@@ -1,1 +1,1 @@
-module.exports = require("@xstory/tailwind-config/postcss.config");
+module.exports = require("@sd/tailwind-config/postcss.config");

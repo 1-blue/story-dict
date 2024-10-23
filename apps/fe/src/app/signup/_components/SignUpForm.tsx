@@ -3,8 +3,8 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Form, RFHInput, toast } from "@xstory/ui";
-import { schemas } from "@xstory/utils";
+import { Button, Form, RFHInput, toast } from "@sd/ui";
+import { schemas } from "@sd/utils";
 import { trpc } from "#fe/libs/trpc";
 import { useRouter } from "next/navigation";
 import { handleError } from "#fe/libs/handleError";
@@ -13,7 +13,7 @@ import useMe from "#fe/hooks/useMe";
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
     ? {
-        email: "developer11@xstory.com",
+        email: "developer11@sd.com",
         password: "123456789aA!",
         nickname: "로컬개발자",
         phone: "010-1234-5678",

@@ -1,5 +1,5 @@
 {
-  "extends": "@xstory/typescript-config/nextjs.json",
+  "extends": "@sd/typescript-config/nextjs.json",
   "compilerOptions": {
     "plugins": [
       {

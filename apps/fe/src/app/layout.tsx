@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
-import "@xstory/tailwind-config/globals.css";
+import "@sd/tailwind-config/globals.css";
 
-import { ThemeProvider } from "@xstory/ui/theme";
+import { ThemeProvider } from "@sd/ui/theme";
 import TRPCProvider from "#fe/providers/TRPCProvider";
 import ShortCutProvider from "#fe/providers/ShortCutProvider";
-import { Toaster } from "@xstory/ui";
+import { Toaster } from "@sd/ui";
 import Layout from "#fe/components/layouts/Layout";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 

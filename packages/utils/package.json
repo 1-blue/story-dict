@@ -1,5 +1,5 @@
 {
-  "name": "@xstory/utils",
+  "name": "@sd/utils",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -12,8 +12,8 @@
     "build": "tsup src/index.ts --format cjs,esm --dts"
   },
   "dependencies": {
-    "@xstory/eslint-config": "workspace:*",
-    "@xstory/typescript-config": "workspace:*",
+    "@sd/eslint-config": "workspace:*",
+    "@sd/typescript-config": "workspace:*",
     "zod": "^3.23.8"
   },
   "devDependencies": {

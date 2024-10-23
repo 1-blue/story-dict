@@ -27,7 +27,7 @@ export class AuthController {
   @Post("login")
   @HttpCode(200)
   async logIn(@Req() req: Request, @Res() res: Response) {
-    res.cookie("xstory_logged_in", "로그인");
+    res.cookie("sd_logged_in", "로그인");
 
     return res.json(req.user);
   }
@@ -53,7 +53,7 @@ export class AuthController {
     res.cookie("refreshToken", req.user.refreshToken);
 
     // 자체적으로 로그인 확인을 위한 쿠키
-    res.cookie("xstory_logged_in", "로그인");
+    res.cookie("sd_logged_in", "로그인");
 
     return res.redirect(process.env.CLIENT_URL + "/oauth/redirect");
   }
@@ -79,7 +79,7 @@ export class AuthController {
     res.cookie("refreshToken", req.user.refreshToken);
 
     // 자체적으로 로그인 확인을 위한 쿠키
-    res.cookie("xstory_logged_in", "로그인");
+    res.cookie("sd_logged_in", "로그인");
 
     return res.redirect(process.env.CLIENT_URL + "/oauth/redirect");
   }
@@ -114,7 +114,7 @@ export class AuthController {
       res.clearCookie("connect.sid");
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
-      res.clearCookie("xstory_logged_in");
+      res.clearCookie("sd_logged_in");
       req.session.destroy((error) => {
         console.error("[Error] req.session.destroy() >> ", error);
       });

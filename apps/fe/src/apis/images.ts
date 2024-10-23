@@ -19,7 +19,7 @@ export const postUploadImageByPresignedURL = async ({
   formData.append("Content-Type", imageFile.type);
   formData.append("file", imageFile, imageFile.name);
 
-  return await fetch("https://s3.ap-northeast-2.amazonaws.com/x-story", {
+  return await fetch("https://s3.ap-northeast-2.amazonaws.com/story-dict", {
     method: "POST",
     body: formData,
   }).then(async (res) => {
