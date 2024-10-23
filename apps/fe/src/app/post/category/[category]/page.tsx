@@ -1,14 +1,29 @@
-import type { NextPage } from "next";
+import type { Metadata, NextPage } from "next";
 import { PostCategory } from "#be/types";
 import CategoryPosts from "./_components/CategoryPosts";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import { redirect } from "next/navigation";
+import { getSharedMetadata } from "#fe/libs/sharedMetadata";
+import { getCategoryPostAPI } from "#fe/apis";
 
 interface IProps {
   params: {
     category: PostCategory;
   };
 }
+
+export const generateMetadata = async ({
+  params: { category },
+}: IProps): Promise<Metadata> => {
+  const posts = await getCategoryPostAPI({ category });
+  const post = posts[0];
+
+  return getSharedMetadata({
+    title: `${postCategoryToKoreanMap[category]} 게시글`,
+    description: post?.summary.replace(/\n/g, " ") ?? "",
+    ...(post?.thumbnail && { images: [post.thumbnail.url] }),
+  });
+};
 
 const Page: NextPage<IProps> = ({ params: { category } }) => {
   if (!Object.keys(postCategoryToKoreanMap).includes(category)) {

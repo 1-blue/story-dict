@@ -15,6 +15,7 @@ import {
   RectangleStackIcon as SRectangleStackIcon,
 } from "@heroicons/react/24/solid";
 import { IRoute } from "#fe/types";
+import { DEFAULT_SITEMAP } from "./sitemap";
 
 export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
   post: [
@@ -24,6 +25,7 @@ export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
       accessLevel: "public",
       OIcon: OHomeIcon,
       SIcon: SHomeIcon,
+      sitemap: DEFAULT_SITEMAP,
       subRoutes: [
         {
           label: "글쓰기",
@@ -31,6 +33,7 @@ export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
           accessLevel: "authenticated",
           OIcon: OPencilSquareIcon,
           SIcon: SPencilSquareIcon,
+          sitemap: DEFAULT_SITEMAP,
         },
         {
           label: "랜덤",
@@ -38,6 +41,7 @@ export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
           accessLevel: "public",
           OIcon: OCubeIcon,
           SIcon: SCubeIcon,
+          sitemap: DEFAULT_SITEMAP,
         },
         {
           label: "카테고리",
@@ -45,6 +49,7 @@ export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
           accessLevel: "public",
           OIcon: ORectangleStackIcon,
           SIcon: SRectangleStackIcon,
+          sitemap: DEFAULT_SITEMAP,
         },
       ],
     },
@@ -56,6 +61,10 @@ export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
       OIcon: OLockOpenIcon,
       SIcon: SLockOpenIcon,
       accessLevel: "unauthenticated",
+      sitemap: {
+        ...DEFAULT_SITEMAP,
+        priority: 0.7,
+      },
     },
     {
       label: "회원가입",
@@ -63,6 +72,10 @@ export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
       OIcon: OKeyIcon,
       SIcon: SKeyIcon,
       accessLevel: "unauthenticated",
+      sitemap: {
+        ...DEFAULT_SITEMAP,
+        priority: 0.7,
+      },
     },
   ],
   information: [

@@ -31,6 +31,11 @@ export class PostsController {
     return this.postsService.create(createPostDto);
   }
 
+  @Get("/seo")
+  findAllSEO() {
+    return this.postsService.findAllSEO();
+  }
+
   @Get()
   findMany() {
     return this.postsService.findMany();

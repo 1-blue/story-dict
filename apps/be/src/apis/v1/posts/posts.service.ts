@@ -27,6 +27,19 @@ export class PostsService {
   }
 
   /** 특정 게시글들 찾기 */
+  async findAllSEO() {
+    return await this.prismaService.post.findMany({
+      select: {
+        id: true,
+        title: true,
+        summary: true,
+        category: true,
+        updatedAt: true,
+      },
+    });
+  }
+
+  /** 특정 게시글들 찾기 */
   async findMany() {
     return await this.prismaService.post.findMany({
       orderBy: {
