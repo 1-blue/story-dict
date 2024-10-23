@@ -139,8 +139,10 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                       <OCommandLineIcon className="h-8 w-8" />
                     )}
                   </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate text-lg font-semibold">sd</span>
+                  <div className="grid flex-1 gap-0.5 text-left text-sm leading-tight">
+                    <span className="truncate text-base font-semibold">
+                      이야기 일지
+                    </span>
                     <span className="truncate text-xs text-muted-foreground">
                       당신의 이야기를 공유해요
                     </span>
@@ -263,26 +265,29 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
           <SidebarGroup className="mt-auto">
             <SidebarGroupContent>
               <SidebarMenu>
-                {ROUTES.information.map((route) => (
-                  <SidebarMenuItem key={route.label}>
-                    <SidebarMenuButton asChild size="sm">
-                      <Link
-                        href={route.path}
-                        className={cn(
-                          "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(route.path) && "!text-primary",
-                        )}
-                      >
-                        {pathname.includes(route.path) ? (
-                          <route.SIcon />
-                        ) : (
-                          <route.OIcon />
-                        )}
-                        <span>{route.label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {ROUTES.information
+                  .filter((route) => !route.hidden)
+                  .map((route) => (
+                    <SidebarMenuItem key={route.label}>
+                      <SidebarMenuButton asChild size="sm">
+                        <Link
+                          target="_blank"
+                          href={route.path}
+                          className={cn(
+                            "transition-colors hover:bg-muted-foreground/20",
+                            pathname.includes(route.path) && "!text-primary",
+                          )}
+                        >
+                          {pathname.includes(route.path) ? (
+                            <route.SIcon />
+                          ) : (
+                            <route.OIcon />
+                          )}
+                          <span>{route.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
