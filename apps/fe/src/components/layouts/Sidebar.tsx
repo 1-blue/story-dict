@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  CommandLineIcon as OCommandLineIcon,
-  LockOpenIcon as OLockOpenIcon,
-  KeyIcon as OKeyIcon,
-  NewspaperIcon as ONewspaperIcon,
-  HomeIcon as OHomeIcon,
-} from "@heroicons/react/24/outline";
+import { CommandLineIcon as OCommandLineIcon } from "@heroicons/react/24/outline";
 import {
   CommandLineIcon as SCommandLineIcon,
-  LockOpenIcon as SLockOpenIcon,
-  KeyIcon as SKeyIcon,
-  NewspaperIcon as SNewspaperIcon,
-  HomeIcon as SHomeIcon,
   ChevronRightIcon,
   ChevronUpDownIcon,
   ArrowRightStartOnRectangleIcon,
@@ -65,63 +55,10 @@ import useMe from "#fe/hooks/useMe";
 import Link from "next/link";
 import { handleError } from "#fe/libs/handleError";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { cn } from "@sd/ui/libs";
 import { breadcrumbToKoreanMap } from "#fe/libs/mappings";
-
-const nav = {
-  main: [
-    {
-      title: "게시글",
-      url: "/post",
-      oIcon: OHomeIcon,
-      sIcon: SHomeIcon,
-      isActive: true,
-      items: [
-        {
-          title: "글쓰기",
-          url: "/post/write",
-        },
-        {
-          title: "랜덤",
-          url: "/post/random",
-        },
-        {
-          title: "카테고리",
-          url: "/post/category",
-        },
-      ],
-    },
-  ],
-  auth: [
-    {
-      title: "로그인",
-      url: "/login",
-      oIcon: OLockOpenIcon,
-      sIcon: SLockOpenIcon,
-    },
-    {
-      title: "회원가입",
-      url: "/signup",
-      oIcon: OKeyIcon,
-      sIcon: SKeyIcon,
-    },
-  ],
-  information: [
-    {
-      title: "오픈 카톡방",
-      url: "/FIXME:카톡방만들기",
-      oIcon: OHomeIcon,
-      sIcon: SHomeIcon,
-    },
-    {
-      title: "피드백",
-      url: "/FIXME:구글설문조사+구글시트",
-      oIcon: OHomeIcon,
-      sIcon: SHomeIcon,
-    },
-  ],
-};
+import { ROUTES } from "#fe/constants/routes";
 
 const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
   const router = useRouter();
@@ -132,7 +69,7 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
     setBreadcrumbs(pathname.split("/").slice(1).map(decodeURIComponent));
   }, [pathname]);
 
-  const { me, logOutMutation } = useMe();
+  const { me, logOutMutation, isLoggedIn, isLoggedOut } = useMe();
 
   const onLogOut = async () => {
     try {
@@ -156,6 +93,33 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
 
     router.push(`/post/search/${keyword}`);
   };
+
+  const filteredPostRoutes = useMemo(() => {
+    return ROUTES.post
+      .map((route) => ({
+        ...route,
+        subRoutes: route.subRoutes?.filter(
+          (subRoute) =>
+            subRoute.accessLevel === "public" ||
+            (isLoggedIn && subRoute.accessLevel === "authenticated") ||
+            (isLoggedOut && subRoute.accessLevel === "unauthenticated"),
+        ),
+      }))
+      .filter(
+        (route) =>
+          route.accessLevel === "public" ||
+          (isLoggedIn && route.accessLevel === "authenticated") ||
+          (isLoggedOut && route.accessLevel === "unauthenticated") ||
+          (route.subRoutes && route.subRoutes.length > 0),
+      );
+  }, [isLoggedIn, isLoggedOut]);
+  const filteredAuthRoutes = useMemo(() => {
+    return ROUTES.auth.filter(
+      (route) =>
+        (isLoggedIn && route.accessLevel === "authenticated") ||
+        (isLoggedOut && route.accessLevel === "unauthenticated"),
+    );
+  }, [isLoggedIn, isLoggedOut]);
 
   return (
     <SidebarProvider>
@@ -207,31 +171,27 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
           <SidebarGroup>
             <SidebarGroupLabel>게시글</SidebarGroupLabel>
             <SidebarMenu>
-              {nav.main.map((item) => (
-                <Collapsible
-                  key={item.title}
-                  asChild
-                  defaultOpen={item.isActive}
-                >
+              {filteredPostRoutes.map((route) => (
+                <Collapsible key={route.label} asChild defaultOpen>
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton asChild tooltip={item.title}>
+                      <SidebarMenuButton asChild tooltip={route.label}>
                         <div
                           className={cn(
                             "cursor-pointer transition-colors hover:bg-muted-foreground/20",
-                            pathname.includes(item.url) && "!text-primary",
+                            pathname.includes(route.path) && "!text-primary",
                           )}
                         >
-                          {pathname.includes(item.url) ? (
-                            <item.sIcon />
+                          {pathname.includes(route.path) ? (
+                            <route.SIcon />
                           ) : (
-                            <item.oIcon />
+                            <route.OIcon />
                           )}
-                          <span>{item.title}</span>
+                          <span>{route.label}</span>
                         </div>
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
-                    {item.items?.length && (
+                    {route.subRoutes?.length && (
                       <>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuAction className="data-[state=open]:rotate-90">
@@ -241,18 +201,23 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
                         </CollapsibleTrigger>
                         <CollapsibleContent>
                           <SidebarMenuSub>
-                            {item.items?.map((subItem) => (
-                              <SidebarMenuSubItem key={subItem.title}>
+                            {route.subRoutes?.map((subRoute) => (
+                              <SidebarMenuSubItem key={subRoute.label}>
                                 <SidebarMenuSubButton asChild>
                                   <Link
-                                    href={subItem.url}
+                                    href={subRoute.path}
                                     className={cn(
                                       "transition-colors hover:bg-muted-foreground/20",
-                                      pathname.includes(subItem.url) &&
-                                        "bg-primary/10 !text-primary",
+                                      pathname.includes(subRoute.path) &&
+                                        "bg-primary/10 *:!text-primary",
                                     )}
                                   >
-                                    <span>{subItem.title}</span>
+                                    {pathname.includes(subRoute.path) ? (
+                                      <subRoute.SIcon />
+                                    ) : (
+                                      <subRoute.OIcon />
+                                    )}
+                                    <span>{subRoute.label}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
@@ -266,52 +231,54 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
               ))}
             </SidebarMenu>
           </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>인증</SidebarGroupLabel>
-            <SidebarMenu>
-              {nav.auth.map((item) => (
-                <Collapsible key={item.title} asChild>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip={item.title}>
-                      <Link
-                        href={item.url}
-                        className={cn(
-                          "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(item.url) && "!text-primary",
-                        )}
-                      >
-                        {pathname.includes(item.url) ? (
-                          <item.sIcon />
-                        ) : (
-                          <item.oIcon />
-                        )}
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </Collapsible>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
+          {filteredAuthRoutes.length > 0 && (
+            <SidebarGroup>
+              <SidebarGroupLabel>인증</SidebarGroupLabel>
+              <SidebarMenu>
+                {filteredAuthRoutes.map((route) => (
+                  <Collapsible key={route.label} asChild>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton asChild tooltip={route.label}>
+                        <Link
+                          href={route.path}
+                          className={cn(
+                            "transition-colors hover:bg-muted-foreground/20",
+                            pathname.includes(route.path) && "!text-primary",
+                          )}
+                        >
+                          {pathname.includes(route.path) ? (
+                            <route.SIcon />
+                          ) : (
+                            <route.OIcon />
+                          )}
+                          <span>{route.label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
           <SidebarGroup className="mt-auto">
             <SidebarGroupContent>
               <SidebarMenu>
-                {nav.information.map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                {ROUTES.information.map((route) => (
+                  <SidebarMenuItem key={route.label}>
                     <SidebarMenuButton asChild size="sm">
                       <Link
-                        href={item.url}
+                        href={route.path}
                         className={cn(
                           "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(item.url) && "!text-primary",
+                          pathname.includes(route.path) && "!text-primary",
                         )}
                       >
-                        {pathname.includes(item.url) ? (
-                          <item.sIcon />
+                        {pathname.includes(route.path) ? (
+                          <route.SIcon />
                         ) : (
-                          <item.oIcon />
+                          <route.OIcon />
                         )}
-                        <span>{item.title}</span>
+                        <span>{route.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

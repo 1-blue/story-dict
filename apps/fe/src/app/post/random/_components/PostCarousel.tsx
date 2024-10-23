@@ -43,7 +43,7 @@ const PostCarousel: React.FC<IProps> = ({
         orientation="vertical"
         className="w-full max-w-xs"
       >
-        <CarouselContent className="-mt-1 h-[50vh] gap-2 md:h-[70vh]">
+        <CarouselContent className="-mt-1 h-[50vh] gap-2 md:h-[66vh]">
           {posts?.map((post) => (
             <CarouselItem key={post.id} className="relative basis-1/5 pt-1">
               <Link href={`/post/${post.id}`}>

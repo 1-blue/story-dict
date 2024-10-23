@@ -43,6 +43,8 @@ const useMe = () => {
     meMutation: mutation,
     logInMutation,
     logOutMutation,
+    isLoggedIn: !!data,
+    isLoggedOut: !data,
   };
 };
 
