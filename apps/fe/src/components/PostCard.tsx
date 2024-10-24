@@ -1,5 +1,6 @@
 "use client";
 
+import { GetAllPostAPIResponse } from "#fe/apis";
 import {
   AspectRatio,
   Badge,
@@ -13,14 +14,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@sd/ui";
-import type { inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "#be/apis/v0/trpc/trpc.router";
 import { convertToCategory } from "@sd/utils";
 import Image from "next/image";
 import Link from "next/link";
 
 interface IProps {
-  post: inferRouterOutputs<AppRouter>["posts"]["getMany"][number];
+  post: GetAllPostAPIResponse[number];
 }
 
 const PostCard: React.FC<IProps> = ({ post }) => {

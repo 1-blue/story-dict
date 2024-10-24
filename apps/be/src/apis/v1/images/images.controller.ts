@@ -25,8 +25,8 @@ export class ImagesController {
   }
 
   @Get(":id")
-  findOne(@Param() fineByIdDto: FindByIdDto) {
-    return this.imagesService.findOne(fineByIdDto);
+  getOne(@Param() fineByIdDto: FindByIdDto) {
+    return this.imagesService.getOne(fineByIdDto);
   }
 
   @Patch(":id")

@@ -14,9 +14,9 @@ interface IProps {
 export const generateMetadata = async ({
   params,
 }: IProps): Promise<Metadata> => {
-  const id = decodeURIComponent(params.id);
+  const postId = decodeURIComponent(params.id);
 
-  const post = await getOnePostAPI({ id });
+  const post = await getOnePostAPI({ params: { postId } });
 
   return getSharedMetadata({
     title: post.title,
@@ -26,7 +26,7 @@ export const generateMetadata = async ({
 };
 
 const Page: NextPage<IProps> = ({ params }) => {
-  return <PostDetail id={params.id} />;
+  return <PostDetail postId={params.id} />;
 };
 
 export default Page;

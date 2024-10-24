@@ -1,17 +1,17 @@
 import type { User } from "#be/types";
 import { CustomError } from "#fe/libs/error";
+import { APIRuquestType } from "#fe/types";
 
+// ============================== 로그인 ==============================
 /** 로그인 요청 타입 */
-export interface PostLogInAPIRequest {
-  email: string;
-  password: string;
-}
+export interface PostLogInAPIRequest
+  extends APIRuquestType<Pick<User, "email" | "password">> {}
 /** 로그인 응답 타입 */
 export interface PostLogInAPIResponse extends Omit<User, "password"> {}
 /** 로그인 함수 */
-export const postLogInAPI = async (
-  body: PostLogInAPIRequest,
-): Promise<PostLogInAPIResponse> => {
+const postLogInAPI = async ({
+  body,
+}: PostLogInAPIRequest): Promise<PostLogInAPIResponse> => {
   return fetch(process.env.NEXT_PUBLIC_SERVER_URL + "/apis/v1/auth/login", {
     method: "POST",
     body: JSON.stringify(body),
@@ -29,12 +29,13 @@ export const postLogInAPI = async (
   });
 };
 
+// ============================== 로그아웃 ==============================
 /** 로그아웃 요청 타입 */
 export interface PostLogOutAPIRequest {}
 /** 로그아웃 응답 타입 */
 export interface PostLogOutAPIResponse {}
 /** 로그아웃 함수 */
-export const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
+const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
   return fetch(process.env.NEXT_PUBLIC_SERVER_URL + "/apis/v1/auth/logout", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -49,4 +50,15 @@ export const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
     // 실패한 경우
     throw new CustomError(JSON.parse(parsedText));
   });
+};
+
+export const authApis = {
+  login: {
+    key: () => ["post", "login", "auth"],
+    fn: postLogInAPI,
+  },
+  logout: {
+    key: () => ["post", "logout", "auth"],
+    fn: postLogOutAPI,
+  },
 };

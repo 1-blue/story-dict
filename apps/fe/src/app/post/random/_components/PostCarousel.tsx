@@ -13,14 +13,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@sd/ui";
-import { inferRouterOutputs } from "@trpc/server";
-import { AppRouter } from "#be/apis/v0/trpc/trpc.router";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import Reactions from "./Reactions";
 import Link from "next/link";
+import { GetManyRandomPostAPIResponse } from "#fe/apis";
 
 interface IProps {
-  posts: inferRouterOutputs<AppRouter>["posts"]["getRandom"];
+  posts: GetManyRandomPostAPIResponse;
   randomPostRefatch: () => void;
   setExistingIds: (ids: string[]) => void;
 }

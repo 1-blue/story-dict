@@ -10,9 +10,10 @@ export class ReactionsService {
   constructor(private readonly prisma: PrismaService) {}
 
   /** 리액션 생성 */
-  async create(createReactionDto: CreateReactionDto) {
+  async create(userId: string, createReactionDto: CreateReactionDto) {
     return await this.prisma.reaction.create({
       data: {
+        userId,
         ...createReactionDto,
       },
     });

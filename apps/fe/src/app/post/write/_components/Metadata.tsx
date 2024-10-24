@@ -19,10 +19,10 @@ import {
   SelectValue,
 } from "@sd/ui";
 import { useRef } from "react";
-import { trpc } from "#fe/libs/trpc";
 import { handleError } from "#fe/libs/handleError";
 import { postUploadImageByPresignedURL } from "#fe/apis";
 import { CameraIcon } from "@radix-ui/react-icons";
+import useImageMutations from "#fe/hooks/useImageMutations";
 
 interface IProps {
   imageData: { id: string; url: string } | null;
@@ -34,9 +34,8 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutateAsync: createPresignedURL } =
-    trpc.images.createPresignedURL.useMutation();
-  const { mutateAsync: createImage } = trpc.images.create.useMutation();
+  const { createPresignedURLMutate, createImageMutate } = useImageMutations();
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
 
@@ -44,12 +43,16 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
     if (!file) return;
 
     try {
-      const { url, fields } = await createPresignedURL({ filename: file.name });
+      const { url, fields } = await createPresignedURLMutate({
+        body: { filename: file.name },
+      });
       await postUploadImageByPresignedURL({ fields, imageFile: file });
-      const { id: imageId, url: imageURL } = await createImage({
-        name: file.name,
-        url: url + fields.key,
-        purpose: "POST_THUMBNAIL",
+      const { id: imageId, url: imageURL } = await createImageMutate({
+        body: {
+          name: file.name,
+          url: url + fields.key,
+          purpose: "POST_THUMBNAIL",
+        },
       });
 
       setImageData({ id: imageId, url: imageURL });

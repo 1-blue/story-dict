@@ -51,7 +51,7 @@ describe("ImagesController", () => {
   describe("🚀 이미지 찾기", () => {
     // 찾기
     it("(GET) [/api/v1/images] - 이미지가 패칭되는지?", async () => {
-      const exImage = await controller.findOne({ id: mockImage.id });
+      const exImage = await controller.getOne({ id: mockImage.id });
 
       const { createdAt, updatedAt, deletedAt, ...restExImage } = exImage;
 
@@ -60,7 +60,7 @@ describe("ImagesController", () => {
     // 부분 찾기 실패 ( 404 )
     it("(GET) [/api/v1/cats/:catId] - 찾으려는 이미지가 존재하지 않는지?", async () => {
       try {
-        await controller.findOne({ id: NOT_EXIEST_ID });
+        await controller.getOne({ id: NOT_EXIEST_ID });
         expect("").toThrow();
       } catch (error: any) {
         expect(error.response.statusCode).toBe(404);

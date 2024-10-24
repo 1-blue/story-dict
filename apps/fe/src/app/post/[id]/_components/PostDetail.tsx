@@ -1,6 +1,5 @@
 "use client";
 
-import { trpc } from "#fe/libs/trpc";
 import { AspectRatio, Badge } from "@sd/ui";
 
 import "#fe/css/github-markdown.css";
@@ -12,14 +11,17 @@ import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import CommentSheet from "./CommentSheet";
 import ReactionPopover from "./ReactionPopover";
 import Reactions from "./Reactions";
+import { useQuery } from "@tanstack/react-query";
+import { apis } from "#fe/apis";
 
 interface IProps {
-  id: string;
+  postId: string;
 }
 
-const PostDetail: React.FC<IProps> = ({ id }) => {
-  const { data: post, refetch: postRefetch } = trpc.posts.getOne.useQuery({
-    id,
+const PostDetail: React.FC<IProps> = ({ postId }) => {
+  const { data: post, refetch: postRefetch } = useQuery({
+    queryKey: apis.posts.getOne.key({ params: { postId } }),
+    queryFn: () => apis.posts.getOne.fn({ params: { postId } }),
   });
 
   if (!post) return null;
@@ -41,7 +43,7 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
             <div className="flex items-center gap-1">
               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
               <time
-                dateTime={post.createdAt}
+                dateTime={new Date(post.createdAt).toISOString()}
                 className="text-xs text-muted-foreground"
               >
                 {new Date(post.createdAt).toLocaleDateString("ko-KR")}
@@ -56,18 +58,18 @@ const PostDetail: React.FC<IProps> = ({ id }) => {
             </div>
           </div>
 
-          <CommentSheet title={post.title} postId={id} />
+          <CommentSheet title={post.title} postId={postId} />
         </div>
         <div className="flex gap-2 self-start">
           <ReactionPopover
             reactions={post.reactions}
-            postId={id}
+            postId={postId}
             refetch={postRefetch}
           />
 
           <Reactions
             reactions={post.reactions}
-            postId={id}
+            postId={postId}
             refetch={postRefetch}
           />
         </div>

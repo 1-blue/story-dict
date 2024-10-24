@@ -2,16 +2,18 @@
 
 import { PostCategory } from "#be/types";
 import PostCard from "#fe/components/PostCard";
-import { trpc } from "#fe/libs/trpc";
+import { useQuery } from "@tanstack/react-query";
 import CategoryForm from "../../_components/CategoryForm";
+import { apis } from "#fe/apis";
 
 interface IProps {
   category: PostCategory;
 }
 
 const CategoryPosts: React.FC<IProps> = ({ category }) => {
-  const { data: posts } = trpc.posts.getCategory.useQuery({
-    category,
+  const { data: posts } = useQuery({
+    queryKey: apis.posts.getAllCategory.key({ params: { category } }),
+    queryFn: () => apis.posts.getAllCategory.fn({ params: { category } }),
   });
 
   return (

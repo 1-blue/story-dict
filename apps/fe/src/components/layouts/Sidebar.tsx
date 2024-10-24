@@ -69,11 +69,11 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
     setBreadcrumbs(pathname.split("/").slice(1).map(decodeURIComponent));
   }, [pathname]);
 
-  const { me, logOutMutation, isLoggedIn, isLoggedOut } = useMe();
+  const { me, logOutMutate, isLoggedIn, isLoggedOut } = useMe();
 
   const onLogOut = async () => {
     try {
-      await logOutMutation.mutateAsync();
+      await logOutMutate({});
       toast.success("로그아웃 되었습니다..🥲", {
         description: "다음에 또 이용해주세요!",
       });

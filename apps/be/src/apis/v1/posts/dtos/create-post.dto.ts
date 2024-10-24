@@ -33,8 +33,4 @@ export class CreatePostDto {
   @IsOptional()
   @IsUUID(4, { message: "썸네일 이미지는 UUID 형태만 입력이 가능합니다." })
   thumbnailId?: string;
-
-  @IsNotEmpty({ message: "유저 식별자는 필수값입니다." })
-  @IsUUID(4, { message: "유저 식별자는 UUID 형태만 입력이 가능합니다." })
-  userId: string;
 }

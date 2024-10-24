@@ -9,9 +9,33 @@ import type { UpdateCommentDto } from "#be/apis/v1/comments/dtos/update-comment.
 export class CommentsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(createCommentDto: CreateCommentDto) {
+  async create(userId: string, createCommentDto: CreateCommentDto) {
     return this.prismaService.comment.create({
-      data: createCommentDto,
+      data: {
+        ...createCommentDto,
+        userId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            image: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
     });
   }
 
@@ -48,6 +72,27 @@ export class CommentsService {
     return this.prismaService.comment.update({
       where: { id },
       data: updateCommentDto,
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            image: {
+              select: {
+                id: true,
+                url: true,
+              },
+            },
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
     });
   }
 

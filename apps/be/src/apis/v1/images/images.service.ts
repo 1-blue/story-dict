@@ -51,7 +51,7 @@ export class ImagesService {
     });
   }
 
-  async findOne({ id }: FindByIdDto) {
+  async getOne({ id }: FindByIdDto) {
     /** DB에 저장된 이미지인지 확인 */
     const exImageToDB = await this.prismaService.image.findUnique({
       where: { id },
@@ -87,7 +87,7 @@ export class ImagesService {
    * });
    **/
   async move({ id }: FindByIdDto, { beforeStatus, afterStatus }: MoveImageDto) {
-    const exImage = await this.findOne({ id });
+    const exImage = await this.getOne({ id });
 
     // 1. https://no-service.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
     const { url } = exImage;
@@ -142,7 +142,7 @@ export class ImagesService {
    * });
    **/
   async delete({ id }: FindByIdDto, { beforeStatus }: DeleteImageDto) {
-    const exImage = await this.findOne({ id });
+    const exImage = await this.getOne({ id });
 
     // 1. https://no-service.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
     const { url } = exImage;

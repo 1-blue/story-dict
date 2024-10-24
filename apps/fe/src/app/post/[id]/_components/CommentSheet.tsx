@@ -1,6 +1,5 @@
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
-import { trpc } from "#fe/libs/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import {
@@ -23,6 +22,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ReactionPopover from "./ReactionPopover";
 import Reactions from "./Reactions";
+import { useQuery } from "@tanstack/react-query";
+import { apis } from "#fe/apis";
+import useCommentMutations from "#fe/hooks/useCommentMutations";
 
 const formSchema = z.object({
   content: schemas.content,
@@ -43,21 +45,21 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
     },
   });
 
-  const { data: comments, refetch: commentRefetch } =
-    trpc.comments.getMany.useQuery({
-      postId,
-    });
-
-  const { mutateAsync: createComment } = trpc.comments.create.useMutation();
+  const { createCommentMutate } = useCommentMutations();
+  const { data: comments, refetch: commentRefetch } = useQuery({
+    queryKey: apis.comments.getAll.key({ params: { postId } }),
+    queryFn: () => apis.comments.getAll.fn({ params: { postId } }),
+  });
 
   const onSubmit = form.handleSubmit(async (body) => {
-    if (!me) return;
+    if (!me) return toast.warning("로그인 후 이용해주세요.");
 
     try {
-      await createComment({
-        postId,
-        userId: me.id,
-        content: body.content,
+      await createCommentMutate({
+        body: {
+          postId,
+          content: body.content,
+        },
       });
 
       toast.success("댓글 작성 완료");

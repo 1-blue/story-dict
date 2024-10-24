@@ -31,7 +31,12 @@ export class UsersService {
     role: true,
     provider: true,
     providerId: true,
-    image: true,
+    image: {
+      select: {
+        id: true,
+        url: true,
+      },
+    },
   };
 
   constructor(private readonly prismaService: PrismaService) {}
@@ -88,6 +93,7 @@ export class UsersService {
         nickname: true,
         role: true,
         email: true,
+        provider: true,
         image: {
           select: {
             id: true,

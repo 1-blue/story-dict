@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, RFHInput, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
-import { trpc } from "#fe/libs/trpc";
 import { useRouter } from "next/navigation";
 import { handleError } from "#fe/libs/handleError";
 import useMe from "#fe/hooks/useMe";
+import useUserMutations from "#fe/hooks/useUserMutations";
 
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
@@ -34,20 +34,22 @@ const formSchema = z.object({
 
 const SignUpForm: React.FC = () => {
   const router = useRouter();
-  const { logInMutation } = useMe();
+  const { logInMutate } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEV_DEFAULT_VALUES,
   });
 
-  const { mutateAsync: createUser } = trpc.users.create.useMutation();
+  const { createUserMutate } = useUserMutations();
   const onSubmit = form.handleSubmit(
     async (body: z.infer<typeof formSchema>) => {
       try {
-        await createUser(body);
-        await logInMutation.mutateAsync({
-          email: body.email,
-          password: body.password,
+        await createUserMutate({ body });
+        await logInMutate({
+          body: {
+            email: body.email,
+            password: body.password,
+          },
         });
 
         router.replace("/");

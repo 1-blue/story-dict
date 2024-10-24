@@ -1,6 +1,8 @@
 "use client";
 
-import { trpc } from "#fe/libs/trpc";
+import { useQuery } from "@tanstack/react-query";
+
+import { apis } from "#fe/apis";
 import PostCard from "#fe/components/PostCard";
 
 interface SearchedPostsProps {
@@ -8,7 +10,10 @@ interface SearchedPostsProps {
 }
 
 const SearchedPosts: React.FC<SearchedPostsProps> = ({ keyword }) => {
-  const { data: posts } = trpc.posts.getKeyword.useQuery({ keyword });
+  const { data: posts } = useQuery({
+    queryKey: apis.posts.getManyKeyword.key({ params: { keyword } }),
+    queryFn: () => apis.posts.getManyKeyword.fn({ params: { keyword } }),
+  });
 
   return (
     <article>

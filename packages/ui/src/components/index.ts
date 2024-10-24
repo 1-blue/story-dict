@@ -27,3 +27,4 @@ export * from "./Breadcrumb";
 export * from "./Collapsible";
 export * from "./Command";
 export * from "./Dialog";
+export * from "./Calendar";

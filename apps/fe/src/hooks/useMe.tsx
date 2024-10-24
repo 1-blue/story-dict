@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  apis,
   getMeAPI,
-  postLogInAPI,
   PostLogInAPIRequest,
   PostLogInAPIResponse,
-  postLogOutAPI,
+  PostLogOutAPIRequest,
+  PostLogOutAPIResponse,
 } from "#fe/apis";
 
 const useMe = () => {
@@ -18,21 +19,23 @@ const useMe = () => {
   const mutation = useMutation({
     mutationFn: getMeAPI,
   });
-  const logInMutation = useMutation<
+  const { mutateAsync: logInMutate } = useMutation<
     PostLogInAPIResponse,
     Error,
     PostLogInAPIRequest
   >({
-    mutationFn: postLogInAPI,
+    mutationFn: ({ body }) => apis.auth.login.fn({ body }),
     onSuccess(user) {
-      // 로그인된 유저 정보 등록
       queryClient.setQueryData(["users", "me"], user);
     },
   });
-  const logOutMutation = useMutation({
-    mutationFn: postLogOutAPI,
+  const { mutateAsync: logOutMutate } = useMutation<
+    PostLogOutAPIResponse,
+    Error,
+    PostLogOutAPIRequest
+  >({
+    mutationFn: () => apis.auth.logout.fn(),
     onSuccess() {
-      // 로그인된 유저 정보 초기화
       queryClient.setQueryData(["users", "me"], null);
     },
   });
@@ -41,8 +44,8 @@ const useMe = () => {
     me: data,
     meIsLoading: isLoading,
     meMutation: mutation,
-    logInMutation,
-    logOutMutation,
+    logInMutate,
+    logOutMutate,
     isLoggedIn: !!data,
     isLoggedOut: !data,
   };

@@ -2,9 +2,9 @@
 
 import { Reaction, ReactionType } from "#be/types";
 import useMe from "#fe/hooks/useMe";
+import useReactionMutations from "#fe/hooks/useReactionMutations";
 import { handleError } from "#fe/libs/handleError";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
-import { trpc } from "#fe/libs/trpc";
 import { toast } from "@sd/ui";
 import { cn } from "@sd/ui/libs";
 
@@ -36,24 +36,25 @@ const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
     (reaction) => reaction.userId === me?.id,
   )?.type;
 
-  const { mutateAsync: createReaction } = trpc.reactions.create.useMutation();
-  const { mutateAsync: updateReaction } = trpc.reactions.update.useMutation();
-  const { mutateAsync: deleteReaction } = trpc.reactions.delete.useMutation();
+  const { createReactionMutate, patchReactionMutate, deleteReactionMutate } =
+    useReactionMutations();
   const onClickReaction: React.MouseEventHandler<HTMLElement> = async (e) => {
-    if (!me) return;
     if (!(e.target instanceof HTMLButtonElement)) return;
     const type = e.target.dataset.type as ReactionType;
     if (!type) return;
+
+    if (!me) return toast.warning("로그인 후 이용해주세요.");
 
     const exReaction = reactions.find((reaction) => reaction.userId === me.id);
 
     try {
       // 리액션 생성
       if (!exReaction) {
-        await createReaction({
-          type,
-          userId: me.id,
-          ...ids,
+        await createReactionMutate({
+          body: {
+            type,
+            ...ids,
+          },
         });
 
         refetch();
@@ -64,9 +65,9 @@ const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
 
       // 리액션 교체
       if (exReaction.type !== type) {
-        await updateReaction({
-          id: exReaction.id,
-          type,
+        await patchReactionMutate({
+          body: { type },
+          params: { reactionId: exReaction.id },
         });
 
         refetch();
@@ -76,8 +77,8 @@ const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
       }
 
       // 리액션 제거
-      await deleteReaction({
-        id: exReaction.id,
+      await deleteReactionMutate({
+        params: { reactionId: exReaction.id },
       });
 
       refetch();

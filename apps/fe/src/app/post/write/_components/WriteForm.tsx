@@ -5,7 +5,6 @@ import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { trpc } from "#fe/libs/trpc";
 import { useRouter } from "next/navigation";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
@@ -13,6 +12,8 @@ import { handleError } from "#fe/libs/handleError";
 import Metadata from "#fe/app/post/write/_components/Metadata";
 import Editor from "#fe/app/post/write/_components/Editor";
 import { useState } from "react";
+import useImageMutations from "#fe/hooks/useImageMutations";
+import usePostMutations from "#fe/hooks/usePostMutations";
 
 const formSchema = z.object({
   title: schemas.title,
@@ -24,6 +25,7 @@ const formSchema = z.object({
     "ETYMOLOGY",
     "PURE_KOREAN",
     "QUOTATION",
+    "INFORMATION",
   ]),
 });
 
@@ -55,24 +57,27 @@ const WriteForm: React.FC = () => {
     url: string;
   } | null>(null);
 
-  const { mutateAsync: createPost } = trpc.posts.create.useMutation();
-  const { mutateAsync: moveImage } = trpc.images.move.useMutation();
+  const { patchImageMutate } = useImageMutations();
+  const { createPostMutate } = usePostMutations();
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me?.id) return;
 
     try {
       if (imageData) {
-        await moveImage({
-          id: imageData.id,
-          beforeStatus: "TEMP",
-          afterStatus: "USE",
+        await patchImageMutate({
+          params: { imageId: imageData.id },
+          body: {
+            beforeStatus: "TEMP",
+            afterStatus: "USE",
+          },
         });
       }
 
-      await createPost({
-        ...body,
-        userId: me.id,
-        thumbnailId: imageData?.id,
+      await createPostMutate({
+        body: {
+          ...body,
+          thumbnailId: imageData?.id,
+        },
       });
 
       router.replace("/");

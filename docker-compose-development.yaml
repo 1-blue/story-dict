@@ -1,4 +1,14 @@
 services:
+  db:
+    image: postgres:13
+    container_name: db
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./envs/db.env
+    volumes:
+      - data:/var/lib/postgresql/data
+
   monorepo:
     build: 
       context: .
@@ -9,11 +19,13 @@ services:
       - "9000:9000"
       - "9050:9050"
     env_file:
-      - ./envs/be.env.production
-      - ./envs/fe.env.production
+      - ./envs/be.env
+      - ./envs/fe.env
     volumes:
       - ./apps/be/src:/app/apps/be/src
       - ./apps/fe/src:/app/apps/fe/src
+    depends_on:
+      - db
       
 volumes:
   data:

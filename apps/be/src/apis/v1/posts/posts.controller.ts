@@ -8,6 +8,8 @@ import {
   Param,
   Patch,
   Post,
+  Query,
+  Req,
   UseGuards,
 } from "@nestjs/common";
 
@@ -16,9 +18,10 @@ import { PostsService } from "#be/apis/v1/posts/posts.service";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
 import { IsLoggedIn } from "#be/guards";
-import { FindRandomPostDto } from "#be/apis/v1/posts/dtos/find-random-post.dto";
+import { GetManyRandomPostDto } from "#be/apis/v1/posts/dtos/get-many-random-post.dto";
 import { FindKeywordPostDto } from "#be/apis/v1/posts/dtos/find-keyword-post.dto";
-import { FindCategoryPostDto } from "#be/apis/v1/posts/dtos/find-category-post.dto";
+import { GetAllCategoryPostDto } from "#be/apis/v1/posts/dtos/get-all-category-post.dto";
+import type { Request } from "express";
 
 @Controller("apis/v1/posts")
 export class PostsController {
@@ -27,38 +30,33 @@ export class PostsController {
   @UseGuards(IsLoggedIn)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(createPostDto);
-  }
-
-  @Get("/seo")
-  findAllSEO() {
-    return this.postsService.findAllSEO();
+  create(@Req() req: Request, @Body() createPostDto: CreatePostDto) {
+    return this.postsService.create(req.user!.id, createPostDto);
   }
 
   @Get()
-  findMany() {
-    return this.postsService.findMany();
-  }
-
-  @Get(":id")
-  findOne(@Param() findByIdDto: FindByIdDto) {
-    return this.postsService.findOne(findByIdDto);
+  getAll() {
+    return this.postsService.getAll();
   }
 
   @Get("/random")
-  findRandom(@Param() findRandomPostDto: FindRandomPostDto) {
-    return this.postsService.findRandom(findRandomPostDto);
+  getManyRandom(@Query() getManyRandomPostDto: GetManyRandomPostDto) {
+    return this.postsService.getManyRandom(getManyRandomPostDto);
+  }
+
+  @Get(":id")
+  getOne(@Param() findByIdDto: FindByIdDto) {
+    return this.postsService.getOne(findByIdDto);
   }
 
   @Get("/search/:keyword")
-  findKeyword(@Param() findSearchPostDto: FindKeywordPostDto) {
-    return this.postsService.findKeyword(findSearchPostDto);
+  getManyKeyword(@Param() findSearchPostDto: FindKeywordPostDto) {
+    return this.postsService.getManyKeyword(findSearchPostDto);
   }
 
   @Get("/category/:category")
-  findCategory(@Param() findCategoryPostDto: FindCategoryPostDto) {
-    return this.postsService.findCategory(findCategoryPostDto);
+  getAllCategory(@Param() getAllCategoryPostDto: GetAllCategoryPostDto) {
+    return this.postsService.getAllCategory(getAllCategoryPostDto);
   }
 
   @UseGuards(IsLoggedIn)

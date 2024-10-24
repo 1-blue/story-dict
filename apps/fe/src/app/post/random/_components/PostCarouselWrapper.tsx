@@ -1,26 +1,25 @@
 "use client";
 
-import { trpc } from "#fe/libs/trpc";
 import { useEffect, useState } from "react";
 import PostCarousel from "./PostCarousel";
-import { inferRouterOutputs } from "@trpc/server";
-import { AppRouter } from "#be/apis/v0/trpc/trpc.router";
+import { apis, GetManyRandomPostAPIResponse } from "#fe/apis";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const PostCarouselWrapper: React.FC = () => {
   const [existingIds, setExistingIds] = useState<string[]>([]);
-  const { data, refetch } = trpc.posts.getRandom.useQuery({
-    existingIds: existingIds.join(","),
+  const { data, refetch } = useSuspenseQuery({
+    queryKey: apis.posts.getManyRandom.key({
+      queries: { existingIds: existingIds.join(",") },
+    }),
+    queryFn: () =>
+      apis.posts.getManyRandom.fn({
+        queries: { existingIds: existingIds.join(",") },
+      }),
   });
 
-  const [posts, setPosts] = useState<
-    inferRouterOutputs<AppRouter>["posts"]["getRandom"]
-  >([]);
+  const [posts, setPosts] = useState<GetManyRandomPostAPIResponse>([]);
 
-  useEffect(() => {
-    if (!data) return;
-
-    setPosts((prev) => [...prev, ...data]);
-  }, [data]);
+  useEffect(() => setPosts((prev) => [...prev, ...data]), [data]);
 
   return (
     <PostCarousel

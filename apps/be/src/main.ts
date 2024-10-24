@@ -5,7 +5,6 @@ import session from "express-session";
 import passport from "passport";
 
 import { AppModule } from "#be/app.module";
-import { TrpcRouter } from "#be/apis/v0/trpc/trpc.router";
 
 const bootstrap = async () => {
   try {
@@ -46,9 +45,6 @@ const bootstrap = async () => {
         },
       }),
     );
-
-    const trpc = app.get(TrpcRouter);
-    trpc.applyMiddleware(app);
 
     await app.listen(process.env.PORT);
 

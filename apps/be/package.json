@@ -30,7 +30,6 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@prisma/client": "^5.20.0",
-    "@trpc/server": "11.0.0-rc.553",
     "@types/express-session": "^1.18.0",
     "aws-sdk": "^2.1691.0",
     "bcrypt": "^5.1.1",

@@ -1,5 +1,8 @@
+import { Image, ImageStatus } from "#be/types";
 import { CustomError } from "#fe/libs/error";
+import { APIRuquestType } from "#fe/types";
 
+// ============================== 이미지 업로드 ==============================
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 요청 타입 */
 export interface PostUploadPresignedURLByPresignedURLAPIRequest {
   imageFile: File;
@@ -19,7 +22,7 @@ export const postUploadImageByPresignedURL = async ({
   formData.append("Content-Type", imageFile.type);
   formData.append("file", imageFile, imageFile.name);
 
-  return await fetch("https://s3.ap-northeast-2.amazonaws.com/story-dict", {
+  return fetch("https://s3.ap-northeast-2.amazonaws.com/story-dict", {
     method: "POST",
     body: formData,
   }).then(async (res) => {
@@ -32,4 +35,150 @@ export const postUploadImageByPresignedURL = async ({
     // 실패한 경우
     throw new CustomError(JSON.parse(parsedText));
   });
+};
+
+// ============================== 이미지 생성 ==============================
+/** 이미지 생성 요청 타입 */
+export interface CreateImageAPIRequest
+  extends APIRuquestType<
+    Partial<Pick<Image, "id" | "status" | "purpose">> &
+      Pick<Image, "name" | "url">
+  > {}
+/** 이미지 생성 응답 타입 */
+export interface CreateImageAPIResponse extends Image {}
+/** 이미지 생성 함수 */
+export const createImageAPI = async ({
+  body,
+}: CreateImageAPIRequest): Promise<CreateImageAPIResponse> => {
+  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/images`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+    .then(async (res) => {
+      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
+      const parsedText = await res.text();
+
+      // 성공한 경우
+      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
+
+      // 실패한 경우
+      throw new CustomError(JSON.parse(parsedText));
+    })
+    .catch((err) => {
+      throw new CustomError(err);
+    });
+};
+
+// ============================== 이미지 이동 ==============================
+/** 이미지 이동 요청 타입 */
+export interface PatchImageAPIRequest
+  extends APIRuquestType<
+    {
+      beforeStatus: Exclude<ImageStatus, "default">;
+      afterStatus: Exclude<ImageStatus, "default">;
+    },
+    { imageId: Image["id"] }
+  > {}
+/** 이미지 이동 응답 타입 */
+export interface PatchImageAPIResponse extends Image {}
+/** 이미지 이동 함수 */
+export const patchImageAPI = async ({
+  body,
+  params,
+}: PatchImageAPIRequest): Promise<PatchImageAPIResponse> => {
+  return fetch(
+    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/images/${params?.imageId}`,
+    {
+      method: "PATCH",
+      credentials: "include",
+      body: JSON.stringify(body),
+    },
+  )
+    .then(async (res) => {
+      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
+      const parsedText = await res.text();
+
+      // 성공한 경우
+      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
+
+      // 실패한 경우
+      throw new CustomError(JSON.parse(parsedText));
+    })
+    .catch((err) => {
+      throw new CustomError(err);
+    });
+};
+
+// ============================== presignedURL 생성 ==============================
+/** presignedURL 생성 요청 타입 */
+export interface CreatePresignedURLAPIRequest
+  extends APIRuquestType<
+    Partial<Pick<Image, "status">> & { filename: string }
+  > {}
+/** presignedURL 생성 응답 타입 */
+export interface CreatePresignedURLAPIResponse {
+  url: string;
+  fields: {
+    bucket: string;
+    "X-Amz-Algorithm": string;
+    "X-Amz-Credential": string;
+    "X-Amz-Date": string;
+    key: string;
+    Policy: string;
+    "X-Amz-Signature": string;
+  };
+}
+/** presignedURL 생성 함수 */
+export const createPresignedURLAPI = async ({
+  body,
+}: CreatePresignedURLAPIRequest): Promise<CreatePresignedURLAPIResponse> => {
+  return fetch(
+    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/images/presigned-url`,
+    {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(body),
+    },
+  )
+    .then(async (res) => {
+      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
+      const parsedText = await res.text();
+
+      // 성공한 경우
+      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
+
+      // 실패한 경우
+      throw new CustomError(JSON.parse(parsedText));
+    })
+    .catch((err) => {
+      throw new CustomError(err);
+    });
+};
+
+export const imageApis = {
+  upload: {
+    key: () => ["post", "images", "upload"],
+    fn: postUploadImageByPresignedURL,
+  },
+  create: {
+    key: ({ body }: CreateImageAPIRequest) => ["create", "images", body?.name],
+    fn: createImageAPI,
+  },
+  patch: {
+    key: ({ params }: PatchImageAPIRequest) => [
+      "patch",
+      "images",
+      params?.imageId,
+    ],
+    fn: patchImageAPI,
+  },
+  createPresignedURL: {
+    key: ({ body }: CreatePresignedURLAPIRequest) => [
+      "post",
+      "createPresignedURL",
+      body?.filename,
+    ],
+    fn: createPresignedURLAPI,
+  },
 };

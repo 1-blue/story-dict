@@ -1,10 +1,14 @@
 "use client";
 
-import { trpc } from "#fe/libs/trpc";
 import PostCard from "#fe/components/PostCard";
+import { useQuery } from "@tanstack/react-query";
+import { apis } from "#fe/apis";
 
 const LatestPosts: React.FC = () => {
-  const { data: posts } = trpc.posts.getMany.useQuery();
+  const { data: posts } = useQuery({
+    queryKey: apis.posts.getAll.key(),
+    queryFn: apis.posts.getAll.fn,
+  });
 
   return (
     <article>
