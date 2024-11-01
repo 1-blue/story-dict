@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+import { MetadataRoute } from "next";
 
 import { ROUTES } from "#fe/constants";
 import type { IRoute } from "#fe/types";
@@ -17,21 +17,30 @@ const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
   ]);
 };
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllPostAPI();
+// 동적 사이트맵 생성을 위해 revalidate 옵션 추가
+export const revalidate = 3600; // 1시간마다 재생성 (필요에 따라 조정 가능)
 
-  return [
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // 정적 라우트는 항상 포함
+  const routes = [
     ...generateSitemap(
       ROUTES.post.filter((route): route is Required<IRoute> => !!route.sitemap),
     ),
     ...generateSitemap(
       ROUTES.auth.filter((route): route is Required<IRoute> => !!route.sitemap),
     ),
-    ...posts.map((post) => ({
-      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/post/${post.id}`,
-      priority: 0.8,
-      lastModified: new Date(post.updatedAt).toISOString(),
-      changeFrequency: "daily" as const,
-    })),
   ];
+
+  try {
+    const posts = await getAllPostAPI();
+    const postRoutes = posts.map((post) => ({
+      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/posts/${post.id}`,
+      lastModified: new Date(post.updatedAt),
+    }));
+
+    return [...routes, ...postRoutes];
+  } catch (error) {
+    console.error("Failed to fetch posts for sitemap:", error);
+    return routes; // API 호출 실패시 정적 라우트만 반환
+  }
 }

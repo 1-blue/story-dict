@@ -2,14 +2,14 @@ services:
   monorepo:
     build: 
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.production
     container_name: monorepo
     ports:
       - "9000:9000"
       - "9050:9050"
     env_file:
-      - ./envs/be.env.production
-      - ./envs/fe.env.production
+      - ./envs/be/.env.production
+      - ./envs/fe/.env.production
     volumes:
       - ./apps/be/src:/app/apps/be/src
       - ./apps/fe/src:/app/apps/fe/src

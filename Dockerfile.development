@@ -14,18 +14,19 @@ COPY . .
 RUN pnpm install
 
 # Prisma 설정
-COPY ./envs/be.env.production ./apps/be/.env
-COPY apps/be/prisma ./apps/be/prisma/
+COPY ./envs/be/.env.development ./apps/be/.env
+COPY ./apps/be/prisma ./apps/be/prisma/
 
 # prisma 기본 세팅
 WORKDIR /app/apps/be
-RUN pnpm prisma generate
-RUN pnpm prisma migrate dev
+RUN pnpm dlx prisma generate
+RUN pnpm dlx prisma migrate dev
+RUN pnpm dlx prisma db seed
 
 WORKDIR /app
 
 # 포트 노출
-EXPOSE 9000 9050
+EXPOSE 9000 9050 5555
 
 # 실행 명령어
-CMD ["pnpm run build", "pnpm run start"]
+CMD ["sh", "-c", "pnpm dlx prisma studio && pnpm run dev"]
