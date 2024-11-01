@@ -12,8 +12,8 @@ interface IProps {
 
 const CategoryPosts: React.FC<IProps> = ({ category }) => {
   const { data: posts } = useQuery({
-    queryKey: apis.posts.getAllCategory.key({ params: { category } }),
-    queryFn: () => apis.posts.getAllCategory.fn({ params: { category } }),
+    queryKey: apis.posts.getManyCategory.key({ params: { category } }),
+    queryFn: () => apis.posts.getManyCategory.fn({ params: { category } }),
   });
 
   return (

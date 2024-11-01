@@ -1,6 +1,5 @@
 import { Image, ImageStatus } from "#be/types";
 import { CustomError } from "#fe/libs/error";
-import { APIRuquestType } from "#fe/types";
 
 // ============================== 이미지 업로드 ==============================
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 요청 타입 */
@@ -22,7 +21,7 @@ export const postUploadImageByPresignedURL = async ({
   formData.append("Content-Type", imageFile.type);
   formData.append("file", imageFile, imageFile.name);
 
-  return fetch("https://s3.ap-northeast-2.amazonaws.com/story-dict", {
+  return fetch(imageApis.upload.endPoint(), {
     method: "POST",
     body: formData,
   }).then(async (res) => {
@@ -39,18 +38,17 @@ export const postUploadImageByPresignedURL = async ({
 
 // ============================== 이미지 생성 ==============================
 /** 이미지 생성 요청 타입 */
-export interface CreateImageAPIRequest
-  extends APIRuquestType<
-    Partial<Pick<Image, "id" | "status" | "purpose">> &
-      Pick<Image, "name" | "url">
-  > {}
+export interface CreateImageAPIRequest {
+  body: Partial<Pick<Image, "id" | "status" | "purpose">> &
+    Pick<Image, "name" | "url">;
+}
 /** 이미지 생성 응답 타입 */
 export interface CreateImageAPIResponse extends Image {}
 /** 이미지 생성 함수 */
 export const createImageAPI = async ({
   body,
 }: CreateImageAPIRequest): Promise<CreateImageAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/images`, {
+  return fetch(imageApis.create.endPoint(), {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(body),
@@ -72,29 +70,25 @@ export const createImageAPI = async ({
 
 // ============================== 이미지 이동 ==============================
 /** 이미지 이동 요청 타입 */
-export interface PatchImageAPIRequest
-  extends APIRuquestType<
-    {
-      beforeStatus: Exclude<ImageStatus, "default">;
-      afterStatus: Exclude<ImageStatus, "default">;
-    },
-    { imageId: Image["id"] }
-  > {}
+export interface PatchImageAPIRequest {
+  params: { imageId: Image["id"] };
+  body: {
+    beforeStatus: Exclude<ImageStatus, "default">;
+    afterStatus: Exclude<ImageStatus, "default">;
+  };
+}
 /** 이미지 이동 응답 타입 */
 export interface PatchImageAPIResponse extends Image {}
 /** 이미지 이동 함수 */
 export const patchImageAPI = async ({
-  body,
   params,
+  body,
 }: PatchImageAPIRequest): Promise<PatchImageAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/images/${params?.imageId}`,
-    {
-      method: "PATCH",
-      credentials: "include",
-      body: JSON.stringify(body),
-    },
-  )
+  return fetch(imageApis.patch.endPoint({ params }), {
+    method: "PATCH",
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -112,10 +106,9 @@ export const patchImageAPI = async ({
 
 // ============================== presignedURL 생성 ==============================
 /** presignedURL 생성 요청 타입 */
-export interface CreatePresignedURLAPIRequest
-  extends APIRuquestType<
-    Partial<Pick<Image, "status">> & { filename: string }
-  > {}
+export interface CreatePresignedURLAPIRequest {
+  body: Partial<Pick<Image, "status">> & { filename: string };
+}
 /** presignedURL 생성 응답 타입 */
 export interface CreatePresignedURLAPIResponse {
   url: string;
@@ -133,14 +126,11 @@ export interface CreatePresignedURLAPIResponse {
 export const createPresignedURLAPI = async ({
   body,
 }: CreatePresignedURLAPIRequest): Promise<CreatePresignedURLAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/images/presigned-url`,
-    {
-      method: "POST",
-      credentials: "include",
-      body: JSON.stringify(body),
-    },
-  )
+  return fetch(imageApis.createPresignedURL.endPoint(), {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -156,29 +146,32 @@ export const createPresignedURLAPI = async ({
     });
 };
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
 export const imageApis = {
   upload: {
-    key: () => ["post", "images", "upload"],
+    endPoint: () => "https://s3.ap-northeast-2.amazonaws.com/story-dict",
+    key: () => ["upload", "images"],
     fn: postUploadImageByPresignedURL,
   },
   create: {
-    key: ({ body }: CreateImageAPIRequest) => ["create", "images", body?.name],
+    endPoint: () => SERVER_URL + "/apis/v1/images",
+    key: () => ["create", "images"],
     fn: createImageAPI,
   },
   patch: {
+    endPoint: ({ params }: Pick<PatchImageAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/images/${params.imageId}`,
     key: ({ params }: PatchImageAPIRequest) => [
       "patch",
       "images",
-      params?.imageId,
+      params.imageId,
     ],
     fn: patchImageAPI,
   },
   createPresignedURL: {
-    key: ({ body }: CreatePresignedURLAPIRequest) => [
-      "post",
-      "createPresignedURL",
-      body?.filename,
-    ],
+    endPoint: () => SERVER_URL + "/apis/v1/images/presigned-url",
+    key: () => ["create", "presigned-url"],
     fn: createPresignedURLAPI,
   },
 };

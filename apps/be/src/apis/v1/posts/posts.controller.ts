@@ -13,7 +13,6 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { PostsService } from "#be/apis/v1/posts/posts.service";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
@@ -22,6 +21,7 @@ import { GetManyRandomPostDto } from "#be/apis/v1/posts/dtos/get-many-random-pos
 import { FindKeywordPostDto } from "#be/apis/v1/posts/dtos/find-keyword-post.dto";
 import { GetAllCategoryPostDto } from "#be/apis/v1/posts/dtos/get-all-category-post.dto";
 import type { Request } from "express";
+import { FindByPostIdDto } from "./dtos/find-by-id.dto";
 
 @Controller("apis/v1/posts")
 export class PostsController {
@@ -44,8 +44,8 @@ export class PostsController {
     return this.postsService.getManyRandom(getManyRandomPostDto);
   }
 
-  @Get(":id")
-  getOne(@Param() findByIdDto: FindByIdDto) {
+  @Get(":postId")
+  getOne(@Param() findByIdDto: FindByPostIdDto) {
     return this.postsService.getOne(findByIdDto);
   }
 
@@ -60,18 +60,18 @@ export class PostsController {
   }
 
   @UseGuards(IsLoggedIn)
-  @Patch(":id")
+  @Patch(":postId")
   update(
-    @Param() findByIdDto: FindByIdDto,
+    @Param() findByIdDto: FindByPostIdDto,
     @Body() updatePostDto: UpdatePostDto,
   ) {
     return this.postsService.update(findByIdDto, updatePostDto);
   }
 
   @UseGuards(IsLoggedIn)
-  @Delete(":id")
+  @Delete(":postId")
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param() findByIdDto: FindByIdDto) {
+  delete(@Param() findByIdDto: FindByPostIdDto) {
     return this.postsService.delete(findByIdDto);
   }
 }

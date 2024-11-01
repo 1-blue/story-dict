@@ -5,7 +5,6 @@ services:
       dockerfile: Dockerfile
     container_name: monorepo
     ports:
-      - "5555:5555"
       - "9000:9000"
       - "9050:9050"
     env_file:

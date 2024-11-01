@@ -28,3 +28,4 @@ export * from "./Collapsible";
 export * from "./Command";
 export * from "./Dialog";
 export * from "./Calendar";
+export * from "./AlertDialog";

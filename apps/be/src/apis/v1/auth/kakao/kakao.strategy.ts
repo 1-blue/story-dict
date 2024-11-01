@@ -29,6 +29,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
       ...(profile._json.properties.profile_image && {
         externalImageURL: profile._json.properties.profile_image,
       }),
+      role: "USER",
     };
 
     return oauthUser;

@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { ROUTES } from "#fe/constants";
 import type { IRoute } from "#fe/types";
-import { getAllPostSEOAPI } from "#fe/apis";
+import { getAllPostAPI } from "#fe/apis";
 
 /** 재귀적으로 돌아서 `sitemap` 생성 */
 const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
@@ -18,7 +18,7 @@ const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllPostSEOAPI();
+  const posts = await getAllPostAPI();
 
   return [
     ...generateSitemap(

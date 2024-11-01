@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
+import { FindByReactionIdDto } from "#be/apis/v1/reactions/dtos/find-by-reaction-id.dto";
 import { CreateReactionDto } from "#be/apis/v1/reactions/dtos/create-reaction.dto";
 import { UpdateReactionDto } from "#be/apis/v1/reactions/dtos/update-reaction.dto";
 
@@ -20,9 +20,12 @@ export class ReactionsService {
   }
 
   /** 리액션 수정 */
-  async update({ id }: FindByIdDto, updateReactionDto: UpdateReactionDto) {
+  async update(
+    { reactionId }: FindByReactionIdDto,
+    updateReactionDto: UpdateReactionDto,
+  ) {
     return await this.prisma.reaction.update({
-      where: { id },
+      where: { id: reactionId },
       data: {
         ...updateReactionDto,
       },
@@ -30,9 +33,9 @@ export class ReactionsService {
   }
 
   /** 리액션 삭제 */
-  async delete({ id }: FindByIdDto) {
+  async delete({ reactionId }: FindByReactionIdDto) {
     return await this.prisma.reaction.delete({
-      where: { id },
+      where: { id: reactionId },
     });
   }
 }

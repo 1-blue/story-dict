@@ -8,12 +8,12 @@ import {
   Post,
 } from "@nestjs/common";
 
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { ImagesService } from "#be/apis/v1/images/images.service";
 import { CreateImageDto } from "#be/apis/v1/images/dto/create-image.dto";
 import { MoveImageDto } from "#be/apis/v1/images/dto/move-image.dto";
 import { DeleteImageDto } from "#be/apis/v1/images/dto/delete-image.dto";
 import { CreatePresignedURLDto } from "#be/apis/v1/images/dto/create-presinged-url.dto";
+import { FindByImageIdDto } from "#be/apis/v1/images/dto/find-by-id.dto";
 
 @Controller("apis/v1/images")
 export class ImagesController {
@@ -24,19 +24,19 @@ export class ImagesController {
     return this.imagesService.create(createDto);
   }
 
-  @Get(":id")
-  getOne(@Param() fineByIdDto: FindByIdDto) {
+  @Get(":imageId")
+  getOne(@Param() fineByIdDto: FindByImageIdDto) {
     return this.imagesService.getOne(fineByIdDto);
   }
 
-  @Patch(":id")
-  move(@Param() findByIdDto: FindByIdDto, @Body() moveDto: MoveImageDto) {
+  @Patch(":imageId")
+  move(@Param() findByIdDto: FindByImageIdDto, @Body() moveDto: MoveImageDto) {
     return this.imagesService.move(findByIdDto, moveDto);
   }
 
-  @Delete(":id")
+  @Delete(":imageId")
   delete(
-    @Param() findByIdDto: FindByIdDto,
+    @Param() findByIdDto: FindByImageIdDto,
     @Body() deleteS3Dto: DeleteImageDto,
   ) {
     return this.imagesService.delete(findByIdDto, deleteS3Dto);

@@ -24,16 +24,16 @@ export class MyPassportSerializer extends PassportSerializer {
     // 로컬 로그인이라면
     if (user.provider === "LOCAL") {
       this.usersService
-        .findOne({ id: user.id })
+        .findOne({ userId: user.id })
         .then((exUser) => done(null, exUser.id))
         .catch((error) => done(error));
     }
   }
 
   /** [로그인 세션 쿠키가 들어온 경우 실행] `serializeUser()`에서 저장한 값을 받아서 전체 정보 탐색 ( `req.user`로 들어감 ) */
-  deserializeUser(id: string, done: CallableFunction) {
+  deserializeUser(userId: string, done: CallableFunction) {
     this.usersService
-      .findUserBasicInfo({ id })
+      .findUserBasicInfo({ userId })
       .then((exUser) => done(null, exUser))
       .catch((error) => done(error));
   }

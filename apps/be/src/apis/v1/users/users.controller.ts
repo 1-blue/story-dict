@@ -13,7 +13,6 @@ import {
 } from "@nestjs/common";
 import type { Request } from "express";
 
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { UsersService } from "#be/apis/v1/users/users.service";
 import { CreateUserDto } from "#be/apis/v1/users/dto/create-user.dto";
 import { UpdateUserDto } from "#be/apis/v1/users/dto/update-user.dto";
@@ -22,6 +21,7 @@ import { CheckNicknameDto } from "#be/apis/v1/users/dto/check-nickname.dto";
 import { CheckPhoneDto } from "#be/apis/v1/users/dto/check-phone.dto";
 import { ValidateUserDto } from "#be/apis/v1/users/dto/validate-user.dto";
 import { IsLoggedIn, IsLoggedOut } from "#be/guards";
+import { FindByUserIdDto } from "./dto/find-by-user-id.dto";
 
 @Controller("apis/v1/users")
 export class UsersController {
@@ -46,24 +46,24 @@ export class UsersController {
   }
 
   /** FIXME: 미사용 */
-  @Get(":id")
-  findOne(@Param() findByIdDto: FindByIdDto) {
+  @Get(":userId")
+  findOne(@Param() findByIdDto: FindByUserIdDto) {
     return this.usersService.findOne(findByIdDto);
   }
 
   /** FIXME: 미사용 */
   @UseGuards(IsLoggedIn)
-  @Patch(":id")
+  @Patch(":userId")
   update(
-    @Param() findByIdDto: FindByIdDto,
+    @Param() findByIdDto: FindByUserIdDto,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.update(findByIdDto, updateUserDto);
   }
 
   /** FIXME: 미사용 */
-  @Delete(":id")
-  delete(@Param() findByIdDto: FindByIdDto) {
+  @Delete(":userId")
+  delete(@Param() findByIdDto: FindByUserIdDto) {
     return this.usersService.delete(findByIdDto);
   }
 

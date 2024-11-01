@@ -5,19 +5,20 @@ import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 
-import { useIsMobile } from "#/src/hooks/useIsMobile";
-import { cn } from "#/src/libs";
-import { Button } from "#/src/components";
-import { Input } from "#/src/components";
-import { Separator } from "#/src/components";
-import { Sheet, SheetContent } from "#/src/components";
-import { Skeleton } from "#/src/components";
+import { useIsMobile } from "#ui/hooks/useIsMobile";
+import { cn } from "#ui/libs";
 import {
+  Button,
+  Input,
+  Separator,
+  Sheet,
+  SheetContent,
+  Skeleton,
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "#/src/components";
+} from "#ui/components";
 
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

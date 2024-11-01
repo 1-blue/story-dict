@@ -10,7 +10,7 @@ import {
 } from "#fe/apis";
 
 const useImageMutations = () => {
-  const { mutateAsync: postImageMutate } = useMutation<
+  const { mutateAsync: createImageMutate } = useMutation<
     CreateImageAPIResponse,
     Error,
     CreateImageAPIRequest
@@ -32,7 +32,7 @@ const useImageMutations = () => {
     mutationFn: ({ body }) => apis.images.createPresignedURL.fn({ body }),
   });
 
-  return { postImageMutate, patchImageMutate, createPresignedURLMutate };
+  return { createImageMutate, patchImageMutate, createPresignedURLMutate };
 };
 
 export default useImageMutations;

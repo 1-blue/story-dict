@@ -11,7 +11,7 @@ const useCommentMutations = () => {
     Error,
     CreateCommentAPIRequest
   >({
-    mutationFn: ({ body }) => apis.comments.create.fn({ body }),
+    mutationFn: ({ params, body }) => apis.comments.create.fn({ params, body }),
   });
 
   return { createCommentMutate };

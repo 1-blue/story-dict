@@ -15,7 +15,7 @@ import {
 import { ReactionsService } from "#be/apis/v1/reactions/reactions.service";
 import { CreateReactionDto } from "#be/apis/v1/reactions/dtos/create-reaction.dto";
 import { UpdateReactionDto } from "#be/apis/v1/reactions/dtos/update-reaction.dto";
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
+import { FindByReactionIdDto } from "#be/apis/v1/reactions/dtos/find-by-reaction-id.dto";
 import { IsLoggedIn } from "#be/guards";
 
 @Controller("apis/v1/reactions")
@@ -30,18 +30,18 @@ export class ReactionsController {
   }
 
   @UseGuards(IsLoggedIn)
-  @Patch(":id")
+  @Patch(":reactionId")
   update(
-    @Param() findByIdDto: FindByIdDto,
+    @Param() findByIdDto: FindByReactionIdDto,
     @Body() updateReactionDto: UpdateReactionDto,
   ) {
     return this.reactionsService.update(findByIdDto, updateReactionDto);
   }
 
   @UseGuards(IsLoggedIn)
-  @Delete(":id")
+  @Delete(":reactionId")
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param() findByIdDto: FindByIdDto) {
+  delete(@Param() findByIdDto: FindByReactionIdDto) {
     return this.reactionsService.delete(findByIdDto);
   }
 }

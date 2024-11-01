@@ -3,7 +3,7 @@
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
 
-import { Button } from "#/src/components/Button";
+import { Button } from "#ui/components";
 
 interface IProps
   extends Omit<React.HTMLAttributes<HTMLButtonElement>, "onClick"> {}

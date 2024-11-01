@@ -56,10 +56,8 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
 
     try {
       await createCommentMutate({
-        body: {
-          postId,
-          content: body.content,
-        },
+        params: { postId },
+        body: { content: body.content },
       });
 
       toast.success("댓글 작성 완료");

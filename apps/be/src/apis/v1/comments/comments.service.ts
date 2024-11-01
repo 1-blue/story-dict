@@ -1,9 +1,12 @@
 import { Injectable } from "@nestjs/common";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
-import type { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import type { CreateCommentDto } from "#be/apis/v1/comments/dtos/create-comment.dto";
 import type { UpdateCommentDto } from "#be/apis/v1/comments/dtos/update-comment.dto";
+import {
+  FindByPostIdAndCommentIdDto,
+  FindByPostIdDto,
+} from "#be/apis/v1/comments/dtos/find-by-id.dto";
 
 @Injectable()
 export class CommentsService {
@@ -39,10 +42,10 @@ export class CommentsService {
     });
   }
 
-  async findMany({ id }: FindByIdDto) {
+  async findMany({ postId }: FindByPostIdDto) {
     return this.prismaService.comment.findMany({
       where: {
-        postId: id,
+        postId,
       },
       include: {
         user: {
@@ -68,9 +71,12 @@ export class CommentsService {
     });
   }
 
-  async update({ id }: FindByIdDto, updateCommentDto: UpdateCommentDto) {
+  async update(
+    { postId, commentId }: FindByPostIdAndCommentIdDto,
+    updateCommentDto: UpdateCommentDto,
+  ) {
     return this.prismaService.comment.update({
-      where: { id },
+      where: { postId, id: commentId },
       data: updateCommentDto,
       include: {
         user: {
@@ -96,9 +102,9 @@ export class CommentsService {
     });
   }
 
-  async delete({ id }: FindByIdDto) {
+  async delete({ postId, commentId }: FindByPostIdAndCommentIdDto) {
     return this.prismaService.comment.delete({
-      where: { id },
+      where: { postId, id: commentId },
     });
   }
 }

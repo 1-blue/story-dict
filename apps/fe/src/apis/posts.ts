@@ -1,21 +1,19 @@
 import { CustomError } from "#fe/libs/error";
-import type { APIRuquestType } from "#fe/types";
 import type { Image, Post, PostCategory, Reaction, User } from "#be/types";
 
 // ============================== 게시글 생성 ==============================
 /** 게시글 생성 요청 타입 */
-export interface CreatePostAPIRequest
-  extends APIRuquestType<
-    Partial<Pick<Post, "id" | "category" | "thumbnailId">> &
-      Pick<Post, "title" | "summary" | "content">
-  > {}
+export interface CreatePostAPIRequest {
+  body: Partial<Pick<Post, "id" | "category" | "thumbnailId">> &
+    Pick<Post, "title" | "summary" | "content">;
+}
 /** 게시글 생성 응답 타입 */
 export interface CreatePostAPIResponse extends Post {}
 /** 게시글 생성 함수 */
 export const createPostAPI = async (
   body: CreatePostAPIRequest,
 ): Promise<CreatePostAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts`, {
+  return fetch(postApis.create.endPoint(), {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(body),
@@ -65,8 +63,9 @@ export const getAllPostAPI = async (): Promise<GetAllPostAPIResponse> => {
 
 // ============================== 특정 게시글 가져오기 ==============================
 /** 특정 게시글 가져오기 요청 타입 */
-export interface GetOnePostAPIRequest
-  extends APIRuquestType<{}, { postId: Post["id"] }> {}
+export interface GetOnePostAPIRequest {
+  params: { postId: Post["id"] };
+}
 /** 특정 게시글 가져오기 응답 타입 */
 export interface GetOnePostAPIResponse extends Post {
   user: Pick<User, "id" | "nickname"> & {
@@ -79,13 +78,10 @@ export interface GetOnePostAPIResponse extends Post {
 export const getOnePostAPI = async ({
   params,
 }: GetOnePostAPIRequest): Promise<GetOnePostAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts/${params?.postId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  )
+  return fetch(postApis.getOne.endPoint({ params }), {
+    method: "GET",
+    credentials: "include",
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -103,8 +99,9 @@ export const getOnePostAPI = async ({
 
 // ============================== 랜덤 게시글들 가져오기 ==============================
 /** 랜덤 게시글들 요청 타입 */
-export interface GetManyRandomPostAPIRequest
-  extends APIRuquestType<{}, {}, { existingIds: string }> {}
+export interface GetManyRandomPostAPIRequest {
+  queries: { existingIds?: string };
+}
 /** 랜덤 게시글들 응답 타입 */
 export type GetManyRandomPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
@@ -114,15 +111,10 @@ export type GetManyRandomPostAPIResponse = (Post & {
 export const getManyRandomPostAPI = async ({
   queries,
 }: GetManyRandomPostAPIRequest): Promise<GetManyRandomPostAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL +
-      `/apis/v1/posts/random` +
-      `${queries?.existingIds ? `?existingIds=${queries?.existingIds}` : `?existingIds=""`}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  )
+  return fetch(postApis.getManyRandom.endPoint({ queries }), {
+    method: "GET",
+    credentials: "include",
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -140,25 +132,22 @@ export const getManyRandomPostAPI = async ({
 
 // ============================== 검색된 게시글들 가져오기 ==============================
 /** 검색된 게시글들 가져오기 요청 타입 */
-export interface GetAllCategoryPostAPIRequest
-  extends APIRuquestType<{}, { category: PostCategory }> {}
+export interface GetManyCategoryPostAPIRequest {
+  params: { category: PostCategory };
+}
 /** 검색된 게시글들 가져오기 응답 타입 */
-export type GetAllCategoryPostAPIResponse = (Post & {
+export type GetManyCategoryPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
   reactions: Pick<Reaction, "id" | "type" | "userId">[];
 })[];
 /** 검색된 게시글들 가져오기  함수 */
-export const getAllCategoryPostAPI = async ({
+export const getManyCategoryPostAPI = async ({
   params,
-}: GetAllCategoryPostAPIRequest): Promise<GetAllCategoryPostAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL +
-      `/apis/v1/posts/category/${params?.category}`,
-    {
-      method: "GET",
-      credentials: "include",
-    },
-  )
+}: GetManyCategoryPostAPIRequest): Promise<GetManyCategoryPostAPIResponse> => {
+  return fetch(postApis.getManyCategory.endPoint({ params }), {
+    method: "GET",
+    credentials: "include",
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -176,8 +165,9 @@ export const getAllCategoryPostAPI = async ({
 
 // ============================== 카테고리 게시글들 가져오기 ==============================
 /** 카테고리 게시글들 가져오기 요청 타입 */
-export interface GetManyKeywordPostAPIRequest
-  extends APIRuquestType<{}, { keyword: string }> {}
+export interface GetManyKeywordPostAPIRequest {
+  params: { keyword: string };
+}
 /** 카테고리 게시글들 가져오기 응답 타입 */
 export type GetManyKeywordPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
@@ -212,11 +202,10 @@ export const getManyKeywordPostAPI = async ({
 
 // ============================== 게시글 수정 ==============================
 /** 게시글 수정 요청 타입 */
-export interface PatchPostAPIRequest
-  extends APIRuquestType<
-    Partial<CreatePostAPIRequest["body"]>,
-    { postId: Post["id"] }
-  > {}
+export interface PatchPostAPIRequest {
+  params: { postId: Post["id"] };
+  body: Partial<CreatePostAPIRequest["body"]>;
+}
 /** 게시글 수정 응답 타입 */
 export interface PatchPostAPIResponse extends Post {}
 /** 게시글 수정 함수 */
@@ -224,14 +213,11 @@ export const patchPostAPI = async ({
   body,
   params,
 }: PatchPostAPIRequest): Promise<PatchPostAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts/${params?.postId}`,
-    {
-      method: "PATCH",
-      credentials: "include",
-      body: JSON.stringify(body),
-    },
-  )
+  return fetch(postApis.patch.endPoint({ params }), {
+    method: "PATCH",
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -249,21 +235,19 @@ export const patchPostAPI = async ({
 
 // ============================== 게시글 삭제 ==============================
 /** 게시글 삭제 요청 타입 */
-export interface DeletePostAPIRequest
-  extends APIRuquestType<{}, { postId: Post["id"] }> {}
+export interface DeletePostAPIRequest {
+  params: { postId: Post["id"] };
+}
 /** 게시글 삭제 응답 타입 */
 export interface DeletePostAPIResponse extends Post {}
 /** 게시글 삭제 함수 */
 export const deletePostAPI = async ({
   params,
 }: DeletePostAPIRequest): Promise<DeletePostAPIResponse> => {
-  return fetch(
-    process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts/${params?.postId}`,
-    {
-      method: "DELETE",
-      credentials: "include",
-    },
-  )
+  return fetch(postApis.delete.endPoint({ params }), {
+    method: "DELETE",
+    credentials: "include",
+  })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
       const parsedText = await res.text();
@@ -279,67 +263,81 @@ export const deletePostAPI = async ({
     });
 };
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
 export const postApis = {
   create: {
+    endPoint: () => SERVER_URL + "/apis/v1/posts",
     key: () => ["create", "posts"],
     fn: createPostAPI,
   },
   getAll: {
-    key: () => ["get", "all", "posts"],
+    endPoint: () => SERVER_URL + "/apis/v1/posts",
+    key: () => ["get", "posts"],
     fn: getAllPostAPI,
   },
   getOne: {
-    key: ({ params }: GetOnePostAPIRequest) => [
+    endPoint: ({ params }: Pick<GetOnePostAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/posts/${params.postId}`,
+    key: ({ params }: Pick<GetOnePostAPIRequest, "params">) => [
       "get",
       "posts",
-      "one",
-      params?.postId,
+      params.postId,
     ],
     fn: getOnePostAPI,
   },
   getManyRandom: {
-    key: ({ queries }: GetManyRandomPostAPIRequest) => [
+    endPoint: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) =>
+      SERVER_URL +
+      `/apis/v1/posts/random` +
+      `${queries.existingIds ? `?existingIds=${queries.existingIds}` : ``}`,
+    key: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) => [
       "get",
-      "many",
-      "random",
       "posts",
-      queries?.existingIds,
+      "random",
+      queries.existingIds,
     ],
     fn: getManyRandomPostAPI,
   },
-  getManyKeyword: {
-    key: ({ params }: GetManyKeywordPostAPIRequest) => [
+  getManyCategory: {
+    endPoint: ({ params }: Pick<GetManyCategoryPostAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/posts/category/${params.category}`,
+    key: ({ params }: Pick<GetManyCategoryPostAPIRequest, "params">) => [
       "get",
-      "many",
-      "keyword",
       "posts",
-      params?.keyword,
+      "category",
+      params.category,
+    ],
+    fn: getManyCategoryPostAPI,
+  },
+  getManyKeyword: {
+    endPoint: ({ params }: Pick<GetManyKeywordPostAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/posts/search/${params.keyword}`,
+    key: ({ params }: Pick<GetManyKeywordPostAPIRequest, "params">) => [
+      "get",
+      "posts",
+      "keyword",
+      params.keyword,
     ],
     fn: getManyKeywordPostAPI,
   },
-  getAllCategory: {
-    key: ({ params }: GetAllCategoryPostAPIRequest) => [
-      "get",
-      "all",
-      "category",
-      "posts",
-      params?.category,
-    ],
-    fn: getAllCategoryPostAPI,
-  },
   patch: {
-    key: ({ params }: PatchPostAPIRequest) => [
+    endPoint: ({ params }: Pick<PatchPostAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/posts/${params.postId}`,
+    key: ({ params }: Pick<PatchPostAPIRequest, "params">) => [
       "patch",
       "posts",
-      params?.postId,
+      params.postId,
     ],
     fn: patchPostAPI,
   },
   delete: {
-    key: ({ params }: DeletePostAPIRequest) => [
+    endPoint: ({ params }: Pick<DeletePostAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/posts/${params.postId}`,
+    key: ({ params }: Pick<DeletePostAPIRequest, "params">) => [
       "delete",
       "posts",
-      params?.postId,
+      params.postId,
     ],
     fn: deletePostAPI,
   },

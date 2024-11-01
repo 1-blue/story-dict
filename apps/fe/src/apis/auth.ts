@@ -1,18 +1,18 @@
 import type { User } from "#be/types";
 import { CustomError } from "#fe/libs/error";
-import { APIRuquestType } from "#fe/types";
 
 // ============================== 로그인 ==============================
 /** 로그인 요청 타입 */
-export interface PostLogInAPIRequest
-  extends APIRuquestType<Pick<User, "email" | "password">> {}
+export interface PostLogInAPIRequest {
+  body: Pick<User, "email" | "password">;
+}
 /** 로그인 응답 타입 */
 export interface PostLogInAPIResponse extends Omit<User, "password"> {}
 /** 로그인 함수 */
 const postLogInAPI = async ({
   body,
 }: PostLogInAPIRequest): Promise<PostLogInAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + "/apis/v1/auth/login", {
+  return fetch(authApis.login.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
@@ -36,7 +36,7 @@ export interface PostLogOutAPIRequest {}
 export interface PostLogOutAPIResponse {}
 /** 로그아웃 함수 */
 const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + "/apis/v1/auth/logout", {
+  return fetch(authApis.logout.endPoint(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
@@ -52,13 +52,17 @@ const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
   });
 };
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
 export const authApis = {
   login: {
-    key: () => ["post", "login", "auth"],
+    endPoint: () => SERVER_URL + "/apis/v1/auth/login",
+    key: () => ["post", "auth", "login"],
     fn: postLogInAPI,
   },
   logout: {
-    key: () => ["post", "logout", "auth"],
+    endPoint: () => SERVER_URL + "/apis/v1/auth/logout",
+    key: () => ["post", "auth", "logout"],
     fn: postLogOutAPI,
   },
 };

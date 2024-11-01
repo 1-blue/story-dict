@@ -8,8 +8,8 @@ import { Prisma } from "@prisma/client";
 
 import { compareValue, encryptionValue } from "#be/utils";
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
+import { FindByUserIdDto } from "#be/apis/v1/users/dto/find-by-user-id.dto";
 import { CreateUserDto } from "#be/apis/v1/users/dto/create-user.dto";
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { UpdateUserDto } from "#be/apis/v1/users/dto/update-user.dto";
 import { CheckEmailDto } from "#be/apis/v1/users/dto/check-email.dto";
 import { CheckNicknameDto } from "#be/apis/v1/users/dto/check-nickname.dto";
@@ -73,10 +73,10 @@ export class UsersService {
     });
   }
 
-  async findOne({ id }: FindByIdDto) {
+  async findOne({ userId }: FindByUserIdDto) {
     // 유저 존재 여부 확인
     const exUser = await this.prismaService.user.findUnique({
-      where: { id },
+      where: { id: userId },
       select: this.userSelectWithoutPassword,
     });
     if (!exUser) throw new NotFoundException("찾는 유저가 존재하지 않습니다.");
@@ -85,9 +85,9 @@ export class UsersService {
   }
 
   /** passport의 `deserializeUser`에서 사용 */
-  async findUserBasicInfo({ id }: FindByIdDto) {
+  async findUserBasicInfo({ userId }: FindByUserIdDto) {
     const exUser = await this.prismaService.user.findUnique({
-      where: { id },
+      where: { id: userId },
       select: {
         id: true,
         nickname: true,
@@ -107,9 +107,9 @@ export class UsersService {
     return exUser;
   }
 
-  async update({ id }: FindByIdDto, user: UpdateUserDto) {
+  async update({ userId }: FindByUserIdDto, user: UpdateUserDto) {
     // 유저 존재 여부 확인
-    await this.findOne({ id });
+    await this.findOne({ userId });
 
     // 기존 데이터와 수정할 데이터 중복 여부 확인
     if (user.email) {
@@ -123,18 +123,18 @@ export class UsersService {
     }
 
     return await this.prismaService.user.update({
-      where: { id },
+      where: { id: userId },
       data: user,
       select: this.userSelectWithoutPassword,
     });
   }
 
-  async delete({ id }: FindByIdDto) {
+  async delete({ userId }: FindByUserIdDto) {
     // 유저 존재 여부 확인
-    await this.findOne({ id });
+    await this.findOne({ userId });
 
     return await this.prismaService.user.delete({
-      where: { id },
+      where: { id: userId },
       select: this.userSelectWithoutPassword,
     });
   }

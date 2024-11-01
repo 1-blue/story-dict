@@ -3,13 +3,13 @@ import { S3 } from "aws-sdk";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
 import { CreateImageDto } from "#be/apis/v1/images/dto/create-image.dto";
 import { MoveImageDto } from "#be/apis/v1/images/dto/move-image.dto";
 import { DeleteImageDto } from "#be/apis/v1/images/dto/delete-image.dto";
 import { CreatePresignedURLDto } from "#be/apis/v1/images/dto/create-presinged-url.dto";
 import { ImageStatus } from "@prisma/client";
+import { FindByImageIdDto } from "./dto/find-by-id.dto";
 
 @Injectable()
 export class ImagesService {
@@ -51,10 +51,10 @@ export class ImagesService {
     });
   }
 
-  async getOne({ id }: FindByIdDto) {
+  async getOne({ imageId }: FindByImageIdDto) {
     /** DB에 저장된 이미지인지 확인 */
     const exImageToDB = await this.prismaService.image.findUnique({
-      where: { id },
+      where: { id: imageId },
     });
     if (!exImageToDB) {
       throw new NotFoundException("DB에 존재하지 않는 이미지입니다.");
@@ -86,8 +86,11 @@ export class ImagesService {
    *   afterStatus: "use"
    * });
    **/
-  async move({ id }: FindByIdDto, { beforeStatus, afterStatus }: MoveImageDto) {
-    const exImage = await this.getOne({ id });
+  async move(
+    { imageId }: FindByImageIdDto,
+    { beforeStatus, afterStatus }: MoveImageDto,
+  ) {
+    const exImage = await this.getOne({ imageId });
 
     // 1. https://no-service.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
     const { url } = exImage;
@@ -121,7 +124,7 @@ export class ImagesService {
 
       // DB 변경
       return await this.prismaService.image.update({
-        where: { id },
+        where: { id: imageId },
         data: {
           url: baseURL + destinationKey,
           status: afterStatus.toUpperCase() as ImageStatus,
@@ -141,8 +144,11 @@ export class ImagesService {
    *   beforeStatus: "use",
    * });
    **/
-  async delete({ id }: FindByIdDto, { beforeStatus }: DeleteImageDto) {
-    const exImage = await this.getOne({ id });
+  async delete(
+    { imageId }: FindByImageIdDto,
+    { beforeStatus }: DeleteImageDto,
+  ) {
+    const exImage = await this.getOne({ imageId });
 
     // 1. https://no-service.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
     const { url } = exImage;
@@ -176,7 +182,7 @@ export class ImagesService {
 
       // DB 변경
       return await this.prismaService.image.update({
-        where: { id },
+        where: { id: imageId },
         data: {
           url: baseURL + destinationKey,
           status: "DELETED",

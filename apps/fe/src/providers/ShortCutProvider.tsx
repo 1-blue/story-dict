@@ -9,13 +9,13 @@ import { handleError } from "#fe/libs/handleError";
 
 const ShortCutProvider: React.FC = () => {
   const router = useRouter();
-  const { me, logOutMutation } = useMe();
+  const { me, logOutMutate } = useMe();
 
   useHotkeys("shift+mod+0", async () => {
     if (!me) return;
 
     try {
-      await logOutMutation.mutateAsync();
+      await logOutMutate({});
 
       toast.success("로그아웃 되었습니다.", {
         description: "다음에 또 만나요!",

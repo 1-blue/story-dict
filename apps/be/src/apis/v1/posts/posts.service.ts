@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
-import { GetManyRandomPostDto } from "./dtos/get-many-random-post.dto";
-import { FindKeywordPostDto } from "./dtos/find-keyword-post.dto";
-import { GetAllCategoryPostDto } from "./dtos/get-all-category-post.dto";
+import { FindByPostIdDto } from "#be/apis/v1/posts/dtos/find-by-id.dto";
+import { GetManyRandomPostDto } from "#be/apis/v1/posts/dtos/get-many-random-post.dto";
+import { FindKeywordPostDto } from "#be/apis/v1/posts/dtos/find-keyword-post.dto";
+import { GetAllCategoryPostDto } from "#be/apis/v1/posts/dtos/get-all-category-post.dto";
 
 @Injectable()
 export class PostsService {
@@ -44,9 +44,9 @@ export class PostsService {
   }
 
   /** 특정 게시글 찾기 */
-  async getOne({ id }: FindByIdDto) {
+  async getOne({ postId }: FindByPostIdDto) {
     const exPost = await this.prismaService.post.findUnique({
-      where: { id },
+      where: { id: postId },
       include: {
         thumbnail: {
           select: {
@@ -172,11 +172,11 @@ export class PostsService {
   }
 
   /** 특정 게시글 수정 */
-  async update({ id }: FindByIdDto, { ...post }: UpdatePostDto) {
-    await this.getOne({ id });
+  async update({ postId }: FindByPostIdDto, { ...post }: UpdatePostDto) {
+    await this.getOne({ postId });
 
     return await this.prismaService.post.update({
-      where: { id },
+      where: { id: postId },
       data: {
         ...post,
       },
@@ -184,11 +184,11 @@ export class PostsService {
   }
 
   /** 특정 게시글 삭제 */
-  async delete({ id }: FindByIdDto) {
-    await this.getOne({ id });
+  async delete({ postId }: FindByPostIdDto) {
+    await this.getOne({ postId });
 
     return await this.prismaService.post.delete({
-      where: { id },
+      where: { id: postId },
     });
   }
 }

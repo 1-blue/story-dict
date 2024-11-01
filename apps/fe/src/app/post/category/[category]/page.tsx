@@ -4,7 +4,7 @@ import CategoryPosts from "./_components/CategoryPosts";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import { redirect } from "next/navigation";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
-import { getAllCategoryPostAPI } from "#fe/apis";
+import { getManyCategoryPostAPI } from "#fe/apis";
 
 interface IProps {
   params: {
@@ -15,7 +15,7 @@ interface IProps {
 export const generateMetadata = async ({
   params: { category },
 }: IProps): Promise<Metadata> => {
-  const posts = await getAllCategoryPostAPI({ params: { category } });
+  const posts = await getManyCategoryPostAPI({ params: { category } });
   const post = posts[0];
 
   return getSharedMetadata({

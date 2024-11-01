@@ -18,7 +18,8 @@
     "target": "ES2022",
     "paths": {
       "#be/*": ["../../apps/be/src/*"],
-      "#fe/*": ["../../apps/fe/src/*"]
+      "#fe/*": ["../../apps/fe/src/*"],
+      "#ui/*": ["../../packages/ui/src/*"]
     }
   }
 }

@@ -1,6 +1,5 @@
 import { CustomError } from "#fe/libs/error";
 import type { Image, User } from "#be/types";
-import { APIRuquestType } from "#fe/types";
 
 // ============================== 로그인된 유저 정보 ==============================
 /** 로그인된 유저 정보 요청 타입 */
@@ -12,7 +11,7 @@ export interface GetMeAPIResponse
 }
 /** 로그인된 유저 정보 가져오기 함수 */
 export const getMeAPI = async (): Promise<GetMeAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + "/apis/v1/users/me", {
+  return fetch(userApis.getMe.endPoint(), {
     method: "GET",
     credentials: "include",
   }).then(async (res) => {
@@ -28,23 +27,21 @@ export const getMeAPI = async (): Promise<GetMeAPIResponse> => {
 
 // ============================== 유저 생성 ==============================
 /** 유저 생성 요청 타입 */
-export interface CreateUserAPIRequest
-  extends APIRuquestType<
-    Pick<User, "email" | "password" | "nickname"> &
-      Partial<
-        Pick<
-          User,
-          | "id"
-          | "phone"
-          | "money"
-          | "role"
-          | "provider"
-          | "providerId"
-          | "imageId"
-        >
-      >,
-    {}
-  > {}
+export interface CreateUserAPIRequest {
+  body: Pick<User, "email" | "password" | "nickname"> &
+    Partial<
+      Pick<
+        User,
+        | "id"
+        | "phone"
+        | "money"
+        | "role"
+        | "provider"
+        | "providerId"
+        | "imageId"
+      >
+    >;
+}
 /** 유저 생성 응답 타입 */
 export interface CreateUserAPIResponse extends Omit<User, "password"> {
   image?: Pick<Image, "id" | "url">;
@@ -53,7 +50,7 @@ export interface CreateUserAPIResponse extends Omit<User, "password"> {
 export const createUserAPI = async ({
   body,
 }: CreateUserAPIRequest): Promise<CreateUserAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + "/apis/v1/users", {
+  return fetch(userApis.create.endPoint(), {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(body),
@@ -68,12 +65,16 @@ export const createUserAPI = async ({
   });
 };
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
 export const userApis = {
   getMe: {
-    key: () => ["get", "me", "users"],
+    endPoint: () => SERVER_URL + "/apis/v1/users/me",
+    key: () => ["get", "users", "me"],
     fn: getMeAPI,
   },
   create: {
+    endPoint: () => SERVER_URL + "/apis/v1/users",
     key: () => ["create", "users"],
     fn: createUserAPI,
   },

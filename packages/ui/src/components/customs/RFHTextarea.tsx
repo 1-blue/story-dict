@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
   Textarea,
-} from "#/src/components";
+} from "#ui/components";
 
 interface IProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   name: string;
