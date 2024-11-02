@@ -1,5 +1,6 @@
 import type { User } from "#be/types";
 import { CustomError } from "#fe/libs/error";
+import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 로그인 ==============================
 /** 로그인 요청 타입 */
@@ -12,11 +13,9 @@ export interface PostLogInAPIResponse extends Omit<User, "password"> {}
 const postLogInAPI = async ({
   body,
 }: PostLogInAPIRequest): Promise<PostLogInAPIResponse> => {
-  return fetch(authApis.login.endPoint(), {
+  return fetchInstance(authApis.login.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
   }).then(async (res) => {
     // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
     const parsedText = await res.text();
@@ -36,10 +35,8 @@ export interface PostLogOutAPIRequest {}
 export interface PostLogOutAPIResponse {}
 /** 로그아웃 함수 */
 const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
-  return fetch(authApis.logout.endPoint(), {
+  return fetchInstance(authApis.logout.endPoint(), {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    credentials: "include",
   }).then(async (res) => {
     // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
     const parsedText = await res.text();

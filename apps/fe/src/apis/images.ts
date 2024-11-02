@@ -1,5 +1,6 @@
 import { Image, ImageStatus } from "#be/types";
 import { CustomError } from "#fe/libs/error";
+import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 이미지 업로드 ==============================
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 요청 타입 */
@@ -48,9 +49,8 @@ export interface CreateImageAPIResponse extends Image {}
 export const createImageAPI = async ({
   body,
 }: CreateImageAPIRequest): Promise<CreateImageAPIResponse> => {
-  return fetch(imageApis.create.endPoint(), {
+  return fetchInstance(imageApis.create.endPoint(), {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify(body),
   })
     .then(async (res) => {
@@ -84,9 +84,8 @@ export const patchImageAPI = async ({
   params,
   body,
 }: PatchImageAPIRequest): Promise<PatchImageAPIResponse> => {
-  return fetch(imageApis.patch.endPoint({ params }), {
+  return fetchInstance(imageApis.patch.endPoint({ params }), {
     method: "PATCH",
-    credentials: "include",
     body: JSON.stringify(body),
   })
     .then(async (res) => {
@@ -126,9 +125,8 @@ export interface CreatePresignedURLAPIResponse {
 export const createPresignedURLAPI = async ({
   body,
 }: CreatePresignedURLAPIRequest): Promise<CreatePresignedURLAPIResponse> => {
-  return fetch(imageApis.createPresignedURL.endPoint(), {
+  return fetchInstance(imageApis.createPresignedURL.endPoint(), {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify(body),
   })
     .then(async (res) => {

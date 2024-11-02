@@ -1,5 +1,6 @@
 import { CustomError } from "#fe/libs/error";
 import type { Comment, Image, Post, Reaction, User } from "#be/types";
+import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 댓글 생성 ==============================
 /** 댓글 생성 요청 타입 */
@@ -20,9 +21,8 @@ export const createCommentAPI = async ({
   params,
   body,
 }: CreateCommentAPIRequest): Promise<CreateCommentAPIResponse> => {
-  return fetch(commentApis.create.endPoint({ params }), {
+  return fetchInstance(commentApis.create.endPoint({ params }), {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify(body),
   }).then(async (res) => {
     const parsedText = await res.text();
@@ -51,9 +51,8 @@ export type GetAllCommentAPIResponse = (Comment & {
 export const getAllCommentAPI = async ({
   params,
 }: GetAllCommentAPIRequest): Promise<GetAllCommentAPIResponse> => {
-  return fetch(commentApis.getAll.endPoint({ params }), {
+  return fetchInstance(commentApis.getAll.endPoint({ params }), {
     method: "GET",
-    credentials: "include",
   }).then(async (res) => {
     const parsedText = await res.text();
 
@@ -83,9 +82,8 @@ export const patchCommentAPI = async ({
   body,
   params,
 }: PatchCommentAPIRequest): Promise<PatchCommentAPIResponse> => {
-  return fetch(commentApis.patch.endPoint({ params }), {
+  return fetchInstance(commentApis.patch.endPoint({ params }), {
     method: "PATCH",
-    credentials: "include",
     body: JSON.stringify(body),
   }).then(async (res) => {
     const parsedText = await res.text();
@@ -109,9 +107,8 @@ export interface DeleteCommentAPIResponse extends Comment {}
 export const deleteCommentAPI = async ({
   params,
 }: DeleteCommentAPIRequest): Promise<DeleteCommentAPIResponse> => {
-  return fetch(commentApis.delete.endPoint({ params }), {
+  return fetchInstance(commentApis.delete.endPoint({ params }), {
     method: "DELETE",
-    credentials: "include",
   }).then(async (res) => {
     const parsedText = await res.text();
 

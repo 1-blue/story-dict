@@ -1,5 +1,6 @@
 import { CustomError } from "#fe/libs/error";
 import type { Image, Post, PostCategory, Reaction, User } from "#be/types";
+import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 게시글 생성 ==============================
 /** 게시글 생성 요청 타입 */
@@ -10,12 +11,11 @@ export interface CreatePostAPIRequest {
 /** 게시글 생성 응답 타입 */
 export interface CreatePostAPIResponse extends Post {}
 /** 게시글 생성 함수 */
-export const createPostAPI = async (
-  body: CreatePostAPIRequest,
-): Promise<CreatePostAPIResponse> => {
-  return fetch(postApis.create.endPoint(), {
+export const createPostAPI = async ({
+  body,
+}: CreatePostAPIRequest): Promise<CreatePostAPIResponse> => {
+  return fetchInstance(postApis.create.endPoint(), {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify(body),
   })
     .then(async (res) => {
@@ -42,9 +42,8 @@ export type GetAllPostAPIResponse = (Post & {
 })[];
 /** 모든 게시글 가져오기 함수 */
 export const getAllPostAPI = async (): Promise<GetAllPostAPIResponse> => {
-  return fetch(process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts`, {
+  return fetchInstance(process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts`, {
     method: "GET",
-    credentials: "include",
   })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
@@ -78,9 +77,8 @@ export interface GetOnePostAPIResponse extends Post {
 export const getOnePostAPI = async ({
   params,
 }: GetOnePostAPIRequest): Promise<GetOnePostAPIResponse> => {
-  return fetch(postApis.getOne.endPoint({ params }), {
+  return fetchInstance(postApis.getOne.endPoint({ params }), {
     method: "GET",
-    credentials: "include",
   })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
@@ -111,9 +109,8 @@ export type GetManyRandomPostAPIResponse = (Post & {
 export const getManyRandomPostAPI = async ({
   queries,
 }: GetManyRandomPostAPIRequest): Promise<GetManyRandomPostAPIResponse> => {
-  return fetch(postApis.getManyRandom.endPoint({ queries }), {
+  return fetchInstance(postApis.getManyRandom.endPoint({ queries }), {
     method: "GET",
-    credentials: "include",
   })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
@@ -144,9 +141,8 @@ export type GetManyCategoryPostAPIResponse = (Post & {
 export const getManyCategoryPostAPI = async ({
   params,
 }: GetManyCategoryPostAPIRequest): Promise<GetManyCategoryPostAPIResponse> => {
-  return fetch(postApis.getManyCategory.endPoint({ params }), {
+  return fetchInstance(postApis.getManyCategory.endPoint({ params }), {
     method: "GET",
-    credentials: "include",
   })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
@@ -177,12 +173,11 @@ export type GetManyKeywordPostAPIResponse = (Post & {
 export const getManyKeywordPostAPI = async ({
   params,
 }: GetManyKeywordPostAPIRequest): Promise<GetManyKeywordPostAPIResponse> => {
-  return fetch(
+  return fetchInstance(
     process.env.NEXT_PUBLIC_SERVER_URL +
       `/apis/v1/posts/search/${params?.keyword}`,
     {
       method: "GET",
-      credentials: "include",
     },
   )
     .then(async (res) => {
@@ -213,9 +208,8 @@ export const patchPostAPI = async ({
   body,
   params,
 }: PatchPostAPIRequest): Promise<PatchPostAPIResponse> => {
-  return fetch(postApis.patch.endPoint({ params }), {
+  return fetchInstance(postApis.patch.endPoint({ params }), {
     method: "PATCH",
-    credentials: "include",
     body: JSON.stringify(body),
   })
     .then(async (res) => {
@@ -244,9 +238,8 @@ export interface DeletePostAPIResponse extends Post {}
 export const deletePostAPI = async ({
   params,
 }: DeletePostAPIRequest): Promise<DeletePostAPIResponse> => {
-  return fetch(postApis.delete.endPoint({ params }), {
+  return fetchInstance(postApis.delete.endPoint({ params }), {
     method: "DELETE",
-    credentials: "include",
   })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함

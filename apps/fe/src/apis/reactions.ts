@@ -1,5 +1,6 @@
 import { CustomError } from "#fe/libs/error";
 import type { Reaction } from "#be/types";
+import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 리액션 생성 ==============================
 /** 리액션 생성 요청 타입 */
@@ -13,9 +14,8 @@ export interface CreateReactionAPIResponse extends Reaction {}
 export const createReactionAPI = async ({
   body,
 }: CreateReactionAPIRequest): Promise<CreateReactionAPIResponse> => {
-  return fetch(reactionApis.create.endPoint(), {
+  return fetchInstance(reactionApis.create.endPoint(), {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify(body),
   }).then(async (res) => {
     const parsedText = await res.text();
@@ -41,9 +41,8 @@ export const patchReactionAPI = async ({
   body,
   params,
 }: PatchReactionAPIRequest): Promise<PatchReactionAPIResponse> => {
-  return fetch(reactionApis.patch.endPoint({ params }), {
+  return fetchInstance(reactionApis.patch.endPoint({ params }), {
     method: "PATCH",
-    credentials: "include",
     body: JSON.stringify(body),
   }).then(async (res) => {
     const parsedText = await res.text();
@@ -67,9 +66,8 @@ export interface DeleteReactionAPIResponse extends Reaction {}
 export const deleteReactionAPI = async ({
   params,
 }: DeleteReactionAPIRequest): Promise<DeleteReactionAPIResponse> => {
-  return fetch(reactionApis.delete.endPoint({ params }), {
+  return fetchInstance(reactionApis.delete.endPoint({ params }), {
     method: "DELETE",
-    credentials: "include",
   }).then(async (res) => {
     const parsedText = await res.text();
 

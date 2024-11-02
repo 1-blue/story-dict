@@ -1,5 +1,6 @@
 import { CustomError } from "#fe/libs/error";
 import type { Image, User } from "#be/types";
+import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 로그인된 유저 정보 ==============================
 /** 로그인된 유저 정보 요청 타입 */
@@ -11,9 +12,8 @@ export interface GetMeAPIResponse
 }
 /** 로그인된 유저 정보 가져오기 함수 */
 export const getMeAPI = async (): Promise<GetMeAPIResponse> => {
-  return fetch(userApis.getMe.endPoint(), {
+  return fetchInstance(userApis.getMe.endPoint(), {
     method: "GET",
-    credentials: "include",
   }).then(async (res) => {
     const parsedText = await res.text();
 
@@ -50,9 +50,8 @@ export interface CreateUserAPIResponse extends Omit<User, "password"> {
 export const createUserAPI = async ({
   body,
 }: CreateUserAPIRequest): Promise<CreateUserAPIResponse> => {
-  return fetch(userApis.create.endPoint(), {
+  return fetchInstance(userApis.create.endPoint(), {
     method: "POST",
-    credentials: "include",
     body: JSON.stringify(body),
   }).then(async (res) => {
     const parsedText = await res.text();
