@@ -20,7 +20,7 @@ COPY ./apps/be/prisma ./apps/be/prisma/
 # prisma 기본 세팅
 WORKDIR /app/apps/be
 RUN pnpm dlx prisma generate
-RUN pnpm dlx prisma migrate dev
+RUN pnpm dlx prisma migrate deploy
 RUN pnpm dlx prisma db seed
 
 WORKDIR /app
