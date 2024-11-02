@@ -13,7 +13,6 @@ import {
 } from "@nestjs/common";
 import type { Request } from "express";
 
-import { FindByIdDto } from "#be/dtos/find-by-id.dto";
 import { CommentsService } from "#be/apis/v1/comments/comments.service";
 import { CreateCommentDto } from "#be/apis/v1/comments/dtos/create-comment.dto";
 import { UpdateCommentDto } from "#be/apis/v1/comments/dtos/update-comment.dto";
@@ -30,8 +29,16 @@ export class CommentsController {
   @UseGuards(IsLoggedIn)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Req() req: Request, @Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(req.user!.id, createCommentDto);
+  create(
+    @Req() req: Request,
+    @Param() findByIdDto: FindByPostIdDto,
+    @Body() createCommentDto: CreateCommentDto,
+  ) {
+    return this.commentsService.create(
+      req.user!.id,
+      findByIdDto,
+      createCommentDto,
+    );
   }
 
   @Get()

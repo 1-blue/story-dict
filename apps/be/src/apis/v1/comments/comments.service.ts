@@ -12,10 +12,15 @@ import {
 export class CommentsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(userId: string, createCommentDto: CreateCommentDto) {
+  async create(
+    userId: string,
+    { postId }: FindByPostIdDto,
+    createCommentDto: CreateCommentDto,
+  ) {
     return this.prismaService.comment.create({
       data: {
         ...createCommentDto,
+        postId,
         userId,
       },
       include: {

@@ -148,7 +148,7 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const imageApis = {
   upload: {
-    endPoint: () => "https://s3.ap-northeast-2.amazonaws.com/story-dict",
+    endPoint: () => "https://s3.ap-northeast-2.amazonaws.com/storydict",
     key: () => ["upload", "images"],
     fn: postUploadImageByPresignedURL,
   },

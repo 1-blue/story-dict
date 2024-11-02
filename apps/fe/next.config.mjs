@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["story-dict.s3.ap-northeast-2.amazonaws.com"],
+    domains: ["storydict.s3.ap-northeast-2.amazonaws.com"],
   },
   webpack: (config) => {
     config.resolve.alias["#"] = path.resolve(__dirname, "../../packages/ui");
