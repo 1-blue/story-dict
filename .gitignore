@@ -14,9 +14,6 @@
 # 빌드 무시
 **/dist
 
-# prisma migration 무시
-**/migrations
-
 # turbo 무시
 .turbo
 
