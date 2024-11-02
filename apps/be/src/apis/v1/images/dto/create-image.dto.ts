@@ -10,7 +10,7 @@ import { ImagePurpose, ImageStatus } from "@prisma/client";
 
 export class CreateImageDto {
   @IsOptional()
-  @IsUUID("4", { message: "UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "UUID 형태만 입력이 가능합니다." })
   id?: string;
 
   @IsNotEmpty({ message: "이미지 원본 이름은 필수값입니다." })

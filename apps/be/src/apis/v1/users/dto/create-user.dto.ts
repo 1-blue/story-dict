@@ -15,7 +15,7 @@ import { USER_PROVIDERS, USER_ROLES } from "#be/apis/v1/users/constant";
 
 export class CreateUserDto {
   @IsOptional()
-  @IsUUID("4", { message: "유저 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "유저 식별자는 UUID 형태만 입력이 가능합니다." })
   id?: string;
 
   @IsNotEmpty({ message: "이메일은 필수값입니다." })
@@ -53,6 +53,6 @@ export class CreateUserDto {
   providerId?: string;
 
   @IsOptional()
-  @IsUUID("4", { message: "이미지 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "이미지 식별자는 UUID 형태만 입력이 가능합니다." })
   imageId?: string;
 }

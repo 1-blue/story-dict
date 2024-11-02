@@ -3,7 +3,7 @@ import { ReactionType } from "@prisma/client";
 
 export class CreateReactionDto {
   @IsOptional()
-  @IsUUID(4, { message: "리액션 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "리액션 식별자는 UUID 형태만 입력이 가능합니다." })
   id?: string;
 
   @IsNotEmpty({ message: "리액션 타입은 필수값입니다." })
@@ -13,14 +13,14 @@ export class CreateReactionDto {
   type: ReactionType;
 
   @IsOptional()
-  @IsUUID(4, { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
   postId?: string;
 
   @IsOptional()
-  @IsUUID(4, { message: "댓글 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "댓글 식별자는 UUID 형태만 입력이 가능합니다." })
   commentId?: string;
 
   @IsOptional()
-  @IsUUID(4, { message: "답글 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "답글 식별자는 UUID 형태만 입력이 가능합니다." })
   replyId?: string;
 }

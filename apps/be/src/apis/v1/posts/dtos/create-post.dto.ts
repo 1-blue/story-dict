@@ -9,7 +9,7 @@ import { PostCategory } from "@prisma/client";
 
 export class CreatePostDto {
   @IsOptional()
-  @IsUUID(4, { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
   id?: string;
 
   @IsNotEmpty({ message: "게시글 이름은 필수값입니다." })
@@ -31,6 +31,6 @@ export class CreatePostDto {
   category?: PostCategory = "GENERAL_KNOWLEDGE";
 
   @IsOptional()
-  @IsUUID(4, { message: "썸네일 이미지는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "썸네일 이미지는 UUID 형태만 입력이 가능합니다." })
   thumbnailId?: string;
 }
