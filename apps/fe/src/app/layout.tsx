@@ -23,7 +23,7 @@ export default function RootLayout({
         <TanstackQueryProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <ShortCutProvider />
-            <Toaster />
+            <Toaster closeButton />
 
             <Layout>{children}</Layout>
           </ThemeProvider>

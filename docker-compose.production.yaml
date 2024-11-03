@@ -1,12 +1,9 @@
 services:
   monorepo:
-    build: 
-      context: .
-      dockerfile: Dockerfile.production
+    image: 1blue/story-dict:latest
+    environment:
+      - NODE_OPTIONS="--max-old-space-size=4096"
     container_name: monorepo
     ports:
       - "9000:9000"
       - "9050:9050"
-    env_file:
-      - ./envs/be/.env.production
-      - ./envs/fe/.env.production

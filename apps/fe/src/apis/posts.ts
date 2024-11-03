@@ -123,6 +123,7 @@ export const getManyRandomPostAPI = async ({
       throw new CustomError(JSON.parse(parsedText));
     })
     .catch((err) => {
+      console.log("🚀 err >> ", err);
       throw new CustomError(err);
     });
 };
@@ -283,7 +284,7 @@ export const postApis = {
     endPoint: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) =>
       SERVER_URL +
       `/apis/v1/posts/random` +
-      `${queries.existingIds ? `?existingIds=${queries.existingIds}` : ``}`,
+      `${queries.existingIds ? `?existingIds=${queries.existingIds}` : `?existingIds=""`}`,
     key: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) => [
       "get",
       "posts",

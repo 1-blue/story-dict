@@ -1,5 +1,5 @@
-# Node.js v20 이미지 사용
-FROM node:20
+# 빌드 전용 실행 스테이지
+FROM node:20 AS builder
 
 # 컨테이너 내부의 작업 디렉토리 설정
 WORKDIR /app
@@ -13,15 +13,60 @@ COPY . .
 # 의존성 설치
 RUN pnpm install
 
-# Prisma 설정
+# 환경변수 설정
+COPY ./envs/fe/.env.production ./apps/fe/.env
 COPY ./envs/be/.env.production ./apps/be/.env
+
+# Prisma 설정
 COPY ./apps/be/prisma ./apps/be/prisma/
 
-# prisma 기본 세팅
+# Prisma 생성
 WORKDIR /app/apps/be
 RUN pnpm dlx prisma generate
-RUN pnpm dlx prisma migrate deploy
-RUN pnpm dlx prisma db seed
+
+# 루트 디렉토리로 이동
+WORKDIR /app
+
+# 빌드
+RUN pnpm run build
+
+# 실행 스테이지 변경
+FROM node:20-slim
+
+# openssl 라이브러리 설치 ( Prisma 생성 시 필요 )
+RUN apt-get update && apt-get install -y openssl
+
+# 루트 디렉토리로 이동
+WORKDIR /app
+
+# pnpm 전역 설치
+RUN npm install -g pnpm
+
+# [Monorepo] 모노레포를 위한 필요한 파일 복사
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/pnpm-lock.yaml ./
+COPY --from=builder /app/pnpm-workspace.yaml ./
+COPY --from=builder /app/turbo.json ./
+
+# [FE] Next.js 파일 복사 (src, node_modules 제외)
+COPY --from=builder /app/apps/fe/ ./apps/fe/
+COPY --from=builder /app/apps/fe/.next ./apps/fe/.next
+RUN rm -rf ./apps/fe/src ./apps/fe/node_modules
+
+# [BE] Nest.js 파일 복사 (src, node_modules 제외)
+COPY --from=builder /app/apps/be/ ./apps/be/
+COPY --from=builder /app/apps/be/dist ./apps/be/dist
+RUN rm -rf ./apps/be/src ./apps/be/node_modules
+
+# [Monorepo] packages 복사
+COPY --from=builder /app/packages ./packages
+
+# 프로덕션 의존성만 설치
+RUN pnpm install --prod
+
+# Prisma 생성
+WORKDIR /app/apps/be
+RUN pnpm dlx prisma generate
 
 WORKDIR /app
 
@@ -29,4 +74,4 @@ WORKDIR /app
 EXPOSE 9000 9050
 
 # 실행 명령어
-CMD ["sh", "-c", "pnpm run build && pnpm run start"]
+CMD ["pnpm", "run", "start"]
