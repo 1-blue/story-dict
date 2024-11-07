@@ -11,11 +11,11 @@ import TanstackQueryProvider from "#fe/providers/TanstackQueryProvider";
 
 export const metadata: Metadata = getSharedMetadata();
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface IProps {
   children: React.ReactNode;
-}>) {
+}
+
+const RootLayout: React.FC<IProps> = ({ children }) => {
   return (
     <html lang="ko">
       <head></head>
@@ -31,4 +31,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

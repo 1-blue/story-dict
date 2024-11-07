@@ -133,25 +133,17 @@ export class PostsService {
     return exPost;
   }
 
-  /** 랜덤 게시글 찾기 */
+  /** (FIXME: 비효율) 랜덤 게시글 찾기 */
   async getManyRandom({ existingIds }: GetManyRandomPostDto) {
     const existingIdsArray = existingIds.split(",").map((id) => id.trim());
 
-    const productsCount = await this.prismaService.post.count();
-    const skip = Math.floor(Math.random() * productsCount);
-    const orderBy = this.randomPick(["id", "title", "content", "createdAt"]);
-    const orderDir = this.randomPick(["asc", "desc"]);
-    const randomPost = await this.prismaService.post.findMany({
+    // 1. 먼저 조건에 맞는 모든 게시글을 가져옵니다
+    const availablePosts = await this.prismaService.post.findMany({
       where: {
         id: {
           notIn: existingIdsArray,
         },
       },
-      orderBy: {
-        [orderBy]: orderDir,
-      },
-      skip,
-      take: 4,
       include: {
         reactions: {
           select: {
@@ -163,7 +155,17 @@ export class PostsService {
       },
     });
 
-    return randomPost;
+    // 2. Fisher-Yates 셔플 알고리즘을 사용하여 배열을 무작위로 섞습니다
+    for (let i = availablePosts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [availablePosts[i], availablePosts[j]] = [
+        availablePosts[j]!,
+        availablePosts[i]!,
+      ];
+    }
+
+    // 3. 앞에서부터 4개만 반환합니다
+    return availablePosts.slice(0, 4);
   }
 
   /** 키워드 기반 게시글 찾기 */

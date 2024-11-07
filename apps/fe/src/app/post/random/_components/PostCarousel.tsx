@@ -21,17 +21,19 @@ import { GetManyRandomPostAPIResponse } from "#fe/apis";
 interface IProps {
   posts: GetManyRandomPostAPIResponse;
   randomPostRefatch: () => void;
-  setExistingIds: (ids: string[]) => void;
+  existingIdsRef: React.MutableRefObject<string[]>;
+  hasMore: boolean;
 }
 
 const PostCarousel: React.FC<IProps> = ({
   posts,
   randomPostRefatch,
-  setExistingIds,
+  existingIdsRef,
+  hasMore,
 }) => {
   useEffect(() => {
-    setExistingIds([...new Set(posts.map((post) => post.id))]);
-  }, [posts, setExistingIds]);
+    existingIdsRef.current = [...new Set(posts.map((post) => post.id))];
+  }, [posts, existingIdsRef]);
 
   return (
     <div className="mx-auto flex h-[calc(100vh-208px)] max-w-xs items-center">
@@ -66,8 +68,8 @@ const PostCarousel: React.FC<IProps> = ({
           <CarouselItem key="refatch" className="shrink basis-1/3 pt-1">
             <Card>
               <CardContent className="flex h-full flex-col items-center justify-center gap-2 p-6">
-                <Button onClick={randomPostRefatch}>
-                  랜덤 게시글 가져오기
+                <Button onClick={randomPostRefatch} disabled={!hasMore}>
+                  {hasMore ? "랜덤 게시글 가져오기" : "불러올 게시글 없음"}
                 </Button>
               </CardContent>
             </Card>

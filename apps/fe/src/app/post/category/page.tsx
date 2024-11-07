@@ -1,21 +1,16 @@
 import type { Metadata, NextPage } from "next";
+import { redirect } from "next/navigation";
 
-import CategoryForm from "./_components/CategoryForm";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
+import { CATEGORIES } from "#fe/constants";
 
-export const generateMetadata = async (): Promise<Metadata> => {
-  return getSharedMetadata({
-    title: "카테고리 게시글",
-    description: "카테고리 게시글",
-  });
-};
+export const metadata: Metadata = getSharedMetadata({
+  title: "카테고리 게시글",
+  description: "카테고리 게시글",
+});
 
 const Page: NextPage = () => {
-  return (
-    <div>
-      <CategoryForm />
-    </div>
-  );
+  return redirect(`/post/category/${CATEGORIES[0]?.value}`);
 };
 
 export default Page;

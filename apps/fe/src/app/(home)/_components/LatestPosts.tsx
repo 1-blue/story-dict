@@ -1,11 +1,11 @@
 "use client";
 
 import PostCard from "#fe/components/PostCard";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { apis } from "#fe/apis";
 
 const LatestPosts: React.FC = () => {
-  const { data: posts } = useQuery({
+  const { data: posts } = useSuspenseQuery({
     queryKey: apis.posts.getAll.key(),
     queryFn: apis.posts.getAll.fn,
   });

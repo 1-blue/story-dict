@@ -2,7 +2,7 @@
 
 import { PostCategory } from "#be/types";
 import PostCard from "#fe/components/PostCard";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import CategoryForm from "../../_components/CategoryForm";
 import { apis } from "#fe/apis";
 
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const CategoryPosts: React.FC<IProps> = ({ category }) => {
-  const { data: posts } = useQuery({
+  const { data: posts } = useSuspenseQuery({
     queryKey: apis.posts.getManyCategory.key({ params: { category } }),
     queryFn: () => apis.posts.getManyCategory.fn({ params: { category } }),
   });

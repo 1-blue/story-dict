@@ -1,10 +1,15 @@
+import { cache } from "react";
 import type { Metadata, NextPage } from "next";
-import { PostCategory } from "#be/types";
-import CategoryPosts from "./_components/CategoryPosts";
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import { redirect } from "next/navigation";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+
+import type { PostCategory } from "#be/types";
+import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
-import { getManyCategoryPostAPI } from "#fe/apis";
+import { apis } from "#fe/apis";
+import { CATEGORIES } from "#fe/constants";
+import CategoryPosts from "#fe/app/post/category/[category]/_components/CategoryPosts";
+import { getQueryClient } from "#fe/libs/getQueryClient";
 
 interface IProps {
   params: {
@@ -12,25 +17,49 @@ interface IProps {
   };
 }
 
+export const dynamic = "force-dynamic";
+export const revalidate = 60 * 30;
+
+const queryClient = getQueryClient();
+const getManyCategoryPost = cache(({ params }: IProps) =>
+  queryClient.fetchQuery({
+    queryKey: apis.posts.getManyCategory.key({ params }),
+    queryFn: () => apis.posts.getManyCategory.fn({ params }),
+  }),
+);
+
 export const generateMetadata = async ({
-  params: { category },
+  params,
 }: IProps): Promise<Metadata> => {
-  const posts = await getManyCategoryPostAPI({ params: { category } });
+  const posts = await getManyCategoryPost({ params });
   const post = posts[0];
 
+  if (!post) {
+    return getSharedMetadata({
+      title: `${postCategoryToKoreanMap[params.category]} 게시글`,
+    });
+  }
+
   return getSharedMetadata({
-    title: `${postCategoryToKoreanMap[category]} 게시글`,
-    description: post?.summary.replace(/\n/g, " ") ?? "",
-    ...(post?.thumbnail && { images: [post.thumbnail.url] }),
+    title: `${postCategoryToKoreanMap[params.category]} 게시글`,
+    description: `[${params.category}] ${post.title}: ${post.summary.replace(/\n/g, " ")}`,
+    keywords: [params.category, ...posts.map((post) => post.title)],
+    ...(post.thumbnail && { images: [post.thumbnail.url] }),
   });
 };
 
-const Page: NextPage<IProps> = ({ params: { category } }) => {
-  if (!Object.keys(postCategoryToKoreanMap).includes(category)) {
-    return redirect("/post/category");
+const Page: NextPage<IProps> = async ({ params }) => {
+  if (!Object.keys(postCategoryToKoreanMap).includes(params.category)) {
+    return redirect(`/post/category/${CATEGORIES[0]?.value}`);
   }
 
-  return <CategoryPosts category={category} />;
+  await getManyCategoryPost({ params });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CategoryPosts category={params.category} />
+    </HydrationBoundary>
+  );
 };
 
 export default Page;

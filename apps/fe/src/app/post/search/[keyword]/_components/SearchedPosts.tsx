@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { apis } from "#fe/apis";
 import PostCard from "#fe/components/PostCard";
@@ -10,7 +10,7 @@ interface SearchedPostsProps {
 }
 
 const SearchedPosts: React.FC<SearchedPostsProps> = ({ keyword }) => {
-  const { data: posts } = useQuery({
+  const { data: posts } = useSuspenseQuery({
     queryKey: apis.posts.getManyKeyword.key({ params: { keyword } }),
     queryFn: () => apis.posts.getManyKeyword.fn({ params: { keyword } }),
   });

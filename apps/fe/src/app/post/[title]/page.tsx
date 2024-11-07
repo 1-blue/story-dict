@@ -3,7 +3,10 @@ import type { Metadata, NextPage } from "next";
 import { apis } from "#fe/apis";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 
-import PostDetail from "./_components/PostDetail";
+import PostDetail from "#fe/app/post/[title]/_components/PostDetail";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 60 * 30;
 
 interface IProps {
   params: {

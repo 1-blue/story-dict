@@ -1,31 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PostCarousel from "./PostCarousel";
-import { apis, GetManyRandomPostAPIResponse } from "#fe/apis";
+import { useEffect, useRef, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { apis, GetManyRandomPostAPIResponse } from "#fe/apis";
+import PostCarousel from "#fe/app/post/random/_components/PostCarousel";
+
 const PostCarouselWrapper: React.FC = () => {
-  const [existingIds, setExistingIds] = useState<string[]>([]);
+  const [posts, setPosts] = useState<GetManyRandomPostAPIResponse>([]);
+  const existingIdsRef = useRef<string[]>([]);
+  const [hasMore, setHasMore] = useState(true);
   const { data, refetch } = useSuspenseQuery({
     queryKey: apis.posts.getManyRandom.key({
-      queries: { existingIds: existingIds.join(",") },
+      queries: { existingIds: existingIdsRef.current.join(",") },
     }),
     queryFn: () =>
       apis.posts.getManyRandom.fn({
-        queries: { existingIds: existingIds.join(",") },
+        queries: { existingIds: existingIdsRef.current.join(",") },
       }),
   });
 
-  const [posts, setPosts] = useState<GetManyRandomPostAPIResponse>([]);
+  useEffect(() => {
+    if (data.length === 0) {
+      setHasMore(false);
+    }
 
-  useEffect(() => setPosts((prev) => [...prev, ...data]), [data]);
+    // 개발모드에서 useEffect가 두 번 실행되기 때문에 조건 추가
+    if (process.env.NODE_ENV === "development") {
+      setPosts((prev) => {
+        const newPostIds = new Set(data.map((post) => post.id));
+        const filteredPrev = prev.filter((post) => !newPostIds.has(post.id));
+        return [...filteredPrev, ...data];
+      });
+    } else {
+      setPosts((prev) => [...prev, ...data]);
+    }
+  }, [data]);
 
   return (
     <PostCarousel
       posts={posts}
       randomPostRefatch={refetch}
-      setExistingIds={setExistingIds}
+      existingIdsRef={existingIdsRef}
+      hasMore={hasMore}
     />
   );
 };

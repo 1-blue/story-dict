@@ -17,8 +17,8 @@ const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
   ]);
 };
 
-// 동적 사이트맵 생성을 위해 revalidate 옵션 추가
-export const revalidate = 3600; // 1시간마다 재생성 (필요에 따라 조정 가능)
+// 동적으로 사이트맵 생성
+export const revalidate = 60 * 60;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 정적 라우트는 항상 포함
@@ -40,7 +40,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [...routes, ...postRoutes];
   } catch (error) {
-    console.error("Failed to fetch posts for sitemap:", error);
-    return routes; // API 호출 실패시 정적 라우트만 반환
+    // API 호출 실패시 정적 라우트만 반환 ( 빌드 시 서버가 안켜져 있어서 실패하기 때문에 처리해줌 )
+    console.error("🚫 사이트맵 생성 실패 >> ", error);
+    return routes;
   }
 }

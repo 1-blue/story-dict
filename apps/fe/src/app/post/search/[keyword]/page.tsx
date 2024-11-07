@@ -1,13 +1,53 @@
-import SearchedPosts from "./_components/SearchedPosts";
+import { cache } from "react";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import type { NextPage } from "next";
 
-interface PageProps {
+import { getSharedMetadata } from "#fe/libs/sharedMetadata";
+import { getQueryClient } from "#fe/libs/getQueryClient";
+import { apis } from "#fe/apis";
+
+import SearchedPosts from "#fe/app/post/search/[keyword]/_components/SearchedPosts";
+
+interface IProps {
   params: {
     keyword: string;
   };
 }
 
-const Page: React.FC<PageProps> = ({ params: { keyword } }) => {
-  return <SearchedPosts keyword={keyword} />;
+export const dynamic = "force-dynamic";
+export const revalidate = 60 * 30;
+
+const queryClient = getQueryClient();
+const getSearchedPosts = cache(({ params }: IProps) =>
+  queryClient.fetchQuery({
+    queryKey: apis.posts.getManyKeyword.key({ params }),
+    queryFn: () => apis.posts.getManyKeyword.fn({ params }),
+  }),
+);
+
+export const generateMetadata = async ({ params }: IProps) => {
+  const posts = await getSearchedPosts({ params });
+  const post = posts[0];
+  // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
+  const hasThumbnailPost = posts.find((post) => !!post.thumbnail);
+
+  if (!post) return getSharedMetadata({ title: `검색: ${params.keyword}` });
+
+  return getSharedMetadata({
+    title: `검색: ${params.keyword}`,
+    description: `[${params.keyword}] ${post.title}: ${post.summary}`,
+    ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnail!.url] }),
+  });
+};
+
+const Page: NextPage<IProps> = async ({ params }) => {
+  await getSearchedPosts({ params });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <SearchedPosts keyword={params.keyword} />
+    </HydrationBoundary>
+  );
 };
 
 export default Page;
