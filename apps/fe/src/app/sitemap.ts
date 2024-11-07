@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const posts = await getAllPostAPI();
     const postRoutes = posts.map((post) => ({
-      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/posts/${post.id}`,
+      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/posts/${post.title}`,
       lastModified: new Date(post.updatedAt),
     }));
 
