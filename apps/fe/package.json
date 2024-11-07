@@ -6,6 +6,7 @@
     "dev": "next dev -p 9000 --turbo",
     "build": "next build",
     "start": "next start -p 9000",
+    "start:prod": "next start -p 9000",
     "lint": "next lint"
   },
   "dependencies": {

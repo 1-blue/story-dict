@@ -74,4 +74,4 @@ WORKDIR /app
 EXPOSE 9000 9050
 
 # 실행 명령어
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm", "run", "start:prod"]

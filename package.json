@@ -5,6 +5,7 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "start": "turbo start",
+    "start:prod": "turbo start:prod",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
 
@@ -20,7 +21,8 @@
 
     "ui:add": "pnpm --filter ui ui:add",
 
-    "clean": "rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install"
+    "clean": "rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install",
+    "docker:clean": "docker system prune -af --volumes"
   },
   "dependencies": {
     "turbo": "^2.1.3"

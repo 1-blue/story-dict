@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
+import { PingModule } from "#be/apis/v0/ping/pings.module";
 import { AuthModule } from "#be/apis/v1/auth/auth.module";
 import { ImagesModule } from "#be/apis/v1/images/images.module";
 import { UsersModule } from "#be/apis/v1/users/users.module";
@@ -15,6 +16,7 @@ import { CommentsModule } from "#be/apis/v1/comments/comments.module";
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
+    PingModule,
     AuthModule,
     ImagesModule,
     UsersModule,
