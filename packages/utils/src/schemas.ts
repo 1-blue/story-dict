@@ -36,7 +36,11 @@ const phone = z
 const title = z
   .string()
   .min(1, { message: "제목을 입력해주세요!" })
-  .max(40, { message: "제목은 최대 40자입니다!" });
+  .max(40, { message: "제목은 최대 40자입니다!" })
+  .regex(/^\S*$/, { message: "띄어쓰기는 사용할 수 없습니다!" })
+  .regex(/^[a-zA-Z가-힣]+$/, {
+    message: "한글, 영문만 사용 가능합니다!",
+  });
 
 /** 요약 유효성 검사 스키마 */
 const summary = z

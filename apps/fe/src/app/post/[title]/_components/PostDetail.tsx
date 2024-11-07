@@ -15,13 +15,14 @@ import { useQuery } from "@tanstack/react-query";
 import { apis } from "#fe/apis";
 
 interface IProps {
-  postId: string;
+  postTitle: string;
 }
 
-const PostDetail: React.FC<IProps> = ({ postId }) => {
+const PostDetail: React.FC<IProps> = ({ postTitle }) => {
   const { data: post, refetch: postRefetch } = useQuery({
-    queryKey: apis.posts.getOne.key({ params: { postId } }),
-    queryFn: () => apis.posts.getOne.fn({ params: { postId } }),
+    queryKey: apis.posts.getOneByTitle.key({ params: { title: postTitle } }),
+    queryFn: () =>
+      apis.posts.getOneByTitle.fn({ params: { title: postTitle } }),
   });
 
   if (!post) return null;
@@ -58,18 +59,18 @@ const PostDetail: React.FC<IProps> = ({ postId }) => {
             </div>
           </div>
 
-          <CommentSheet title={post.title} postId={postId} />
+          <CommentSheet title={post.title} postId={post.id} />
         </div>
         <div className="flex gap-2 self-start">
           <ReactionPopover
             reactions={post.reactions}
-            postId={postId}
+            postId={post.id}
             refetch={postRefetch}
           />
 
           <Reactions
             reactions={post.reactions}
-            postId={postId}
+            postId={post.id}
             refetch={postRefetch}
           />
         </div>

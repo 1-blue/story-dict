@@ -12,6 +12,7 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
+import type { Request } from "express";
 
 import { PostsService } from "#be/apis/v1/posts/posts.service";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
@@ -20,8 +21,9 @@ import { IsLoggedIn } from "#be/guards";
 import { GetManyRandomPostDto } from "#be/apis/v1/posts/dtos/get-many-random-post.dto";
 import { FindKeywordPostDto } from "#be/apis/v1/posts/dtos/find-keyword-post.dto";
 import { GetAllCategoryPostDto } from "#be/apis/v1/posts/dtos/get-all-category-post.dto";
-import type { Request } from "express";
-import { FindByPostIdDto } from "./dtos/find-by-id.dto";
+import { FindByPostIdDto } from "#be/apis/v1/posts/dtos/find-by-id.dto";
+import { CheckUniqueTitleDto } from "#be/apis/v1/posts/dtos/check-unique-title.dto";
+import { GetOnePostByTitleDto } from "#be/apis/v1/posts/dtos/get-one-by-post-title.dto";
 
 @Controller("apis/v1/posts")
 export class PostsController {
@@ -49,6 +51,11 @@ export class PostsController {
     return this.postsService.getOne(findByIdDto);
   }
 
+  @Get("/title/:title")
+  getOneByTitle(@Param() findByTitleDto: GetOnePostByTitleDto) {
+    return this.postsService.getOneByTitle(findByTitleDto);
+  }
+
   @Get("/search/:keyword")
   getManyKeyword(@Param() findSearchPostDto: FindKeywordPostDto) {
     return this.postsService.getManyKeyword(findSearchPostDto);
@@ -73,5 +80,10 @@ export class PostsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param() findByIdDto: FindByPostIdDto) {
     return this.postsService.delete(findByIdDto);
+  }
+
+  @Post("/check-unique-title")
+  checkUniqueTitle(@Body() checkUniqueTitleDto: CheckUniqueTitleDto) {
+    return this.postsService.checkUniqueTitle(checkUniqueTitleDto);
   }
 }

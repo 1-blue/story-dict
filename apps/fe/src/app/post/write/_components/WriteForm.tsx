@@ -58,9 +58,25 @@ const WriteForm: React.FC = () => {
   } | null>(null);
 
   const { patchImageMutate } = useImageMutations();
-  const { createPostMutate } = usePostMutations();
+  const { createPostMutate, checkUniqueTitleMutate } = usePostMutations();
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me?.id) return;
+
+    try {
+      const { isUnique } = await checkUniqueTitleMutate({
+        body: { title: body.title },
+      });
+
+      if (!isUnique) {
+        form.setError("title", {
+          type: "validate",
+          message: "이미 존재하는 제목입니다",
+        });
+        return;
+      }
+    } catch (error) {
+      handleError({ error, title: "이미 존재하는 제목" });
+    }
 
     try {
       if (imageData) {

@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   apis,
+  CheckUniqueTitleAPIRequest,
+  CheckUniqueTitleAPIResponse,
   CreatePostAPIRequest,
   CreatePostAPIResponse,
   DeletePostAPIRequest,
@@ -31,8 +33,20 @@ const usePostMutations = () => {
   >({
     mutationFn: ({ params }) => apis.posts.delete.fn({ params }),
   });
+  const { mutateAsync: checkUniqueTitleMutate } = useMutation<
+    CheckUniqueTitleAPIResponse,
+    Error,
+    CheckUniqueTitleAPIRequest
+  >({
+    mutationFn: ({ body }) => apis.posts.checkUniqueTitle.fn({ body }),
+  });
 
-  return { createPostMutate, patchPostMutate, deletePostMutate };
+  return {
+    createPostMutate,
+    patchPostMutate,
+    deletePostMutate,
+    checkUniqueTitleMutate,
+  };
 };
 
 export default usePostMutations;

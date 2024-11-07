@@ -45,7 +45,7 @@ const PostCarousel: React.FC<IProps> = ({
         <CarouselContent className="-mt-1 h-[50vh] gap-2 md:h-[66vh]">
           {posts?.map((post) => (
             <CarouselItem key={post.id} className="relative basis-1/5 pt-1">
-              <Link href={`/post/${post.id}`}>
+              <Link href={`/post/${post.title}`}>
                 <Badge className="absolute right-2 top-4 text-xs">
                   {postCategoryToKoreanMap[post.category]}
                 </Badge>

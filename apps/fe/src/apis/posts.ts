@@ -95,6 +95,41 @@ export const getOnePostAPI = async ({
     });
 };
 
+// ============================== 제목으로 특정 게시글 가져오기 ==============================
+/** 제목으로 특정 게시글 가져오기 요청 타입 */
+export interface GetOnePostByTitleAPIRequest {
+  params: { title: Post["title"] };
+}
+/** 제목으로 특정 게시글 가져오기 응답 타입 */
+export interface GetOnePostByTitleAPIResponse extends Post {
+  user: Pick<User, "id" | "nickname"> & {
+    image?: Pick<Image, "id" | "url">;
+  };
+  thumbnail?: Pick<Image, "id" | "url">;
+  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+}
+/** 제목으로 특정 게시글 가져오기 함수 */
+export const getOnePostByTitleAPI = async ({
+  params,
+}: GetOnePostByTitleAPIRequest): Promise<GetOnePostByTitleAPIResponse> => {
+  return fetchInstance(postApis.getOneByTitle.endPoint({ params }), {
+    method: "GET",
+  })
+    .then(async (res) => {
+      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
+      const parsedText = await res.text();
+
+      // 성공한 경우
+      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
+
+      // 실패한 경우
+      throw new CustomError(JSON.parse(parsedText));
+    })
+    .catch((err) => {
+      throw new CustomError(err);
+    });
+};
+
 // ============================== 랜덤 게시글들 가져오기 ==============================
 /** 랜덤 게시글들 요청 타입 */
 export interface GetManyRandomPostAPIRequest {
@@ -123,7 +158,6 @@ export const getManyRandomPostAPI = async ({
       throw new CustomError(JSON.parse(parsedText));
     })
     .catch((err) => {
-      console.log("🚀 err >> ", err);
       throw new CustomError(err);
     });
 };
@@ -257,6 +291,38 @@ export const deletePostAPI = async ({
     });
 };
 
+// ============================== 게시글 제목 유니크 확인 ==============================
+/** 게시글 제목 유니크 확인 요청 타입 */
+export interface CheckUniqueTitleAPIRequest {
+  body: Pick<Post, "title">;
+}
+/** 게시글 제목 유니크 확인 응답 타입 */
+export interface CheckUniqueTitleAPIResponse {
+  isUnique: boolean;
+}
+/** 게시글 제목 유니크 확인 함수 */
+export const checkUniqueTitleAPI = async ({
+  body,
+}: CheckUniqueTitleAPIRequest): Promise<CheckUniqueTitleAPIResponse> => {
+  return fetchInstance(postApis.checkUniqueTitle.endPoint(), {
+    method: "POST",
+    body: JSON.stringify(body),
+  })
+    .then(async (res) => {
+      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
+      const parsedText = await res.text();
+
+      // 성공한 경우
+      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
+
+      // 실패한 경우
+      throw new CustomError(JSON.parse(parsedText));
+    })
+    .catch((err) => {
+      throw new CustomError(err);
+    });
+};
+
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const postApis = {
@@ -279,6 +345,17 @@ export const postApis = {
       params.postId,
     ],
     fn: getOnePostAPI,
+  },
+  getOneByTitle: {
+    endPoint: ({ params }: Pick<GetOnePostByTitleAPIRequest, "params">) =>
+      SERVER_URL + `/apis/v1/posts/title/${params.title}`,
+    key: ({ params }: Pick<GetOnePostByTitleAPIRequest, "params">) => [
+      "get",
+      "posts",
+      "title",
+      params.title,
+    ],
+    fn: getOnePostByTitleAPI,
   },
   getManyRandom: {
     endPoint: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) =>
@@ -334,5 +411,15 @@ export const postApis = {
       params.postId,
     ],
     fn: deletePostAPI,
+  },
+  checkUniqueTitle: {
+    endPoint: () => SERVER_URL + "/apis/v1/posts/check-unique-title",
+    key: ({ body }: Pick<CheckUniqueTitleAPIRequest, "body">) => [
+      "check",
+      "unique",
+      "title",
+      body.title,
+    ],
+    fn: checkUniqueTitleAPI,
   },
 };

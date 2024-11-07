@@ -167,7 +167,7 @@ model Post {
   deletedAt DateTime?
 
   /// 게시글 제목
-  title       String
+  title       String       @unique
   /// 게시글 요약
   summary     String
   /// 게시글 내용
