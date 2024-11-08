@@ -1,12 +1,16 @@
 import type { Metadata, NextPage } from "next";
+import { cache } from "react";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { apis } from "#fe/apis";
+import { getQueryClient } from "#fe/libs/getQueryClient";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 
 import PostDetail from "#fe/app/post/[title]/_components/PostDetail";
 
-export const dynamic = "force-dynamic";
 export const revalidate = 60 * 30;
+export const dynamicParams = true;
+export const generateStaticParams = async () => [];
 
 interface IProps {
   params: {
@@ -14,12 +18,18 @@ interface IProps {
   };
 }
 
+const queryClient = getQueryClient();
+const getOneByTitle = cache(({ params }: IProps) =>
+  queryClient.fetchQuery({
+    queryKey: apis.posts.getOneByTitle.key({ params }),
+    queryFn: () => apis.posts.getOneByTitle.fn({ params }),
+  }),
+);
+
 export const generateMetadata = async ({
   params,
 }: IProps): Promise<Metadata> => {
-  const post = await apis.posts.getOneByTitle.fn({
-    params: { title: params.title },
-  });
+  const post = await getOneByTitle({ params });
 
   return getSharedMetadata({
     title: post.title,
@@ -30,7 +40,13 @@ export const generateMetadata = async ({
 };
 
 const Page: NextPage<IProps> = async ({ params }) => {
-  return <PostDetail postTitle={params.title} />;
+  await getOneByTitle({ params });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <PostDetail postTitle={params.title} />
+    </HydrationBoundary>
+  );
 };
 
 export default Page;

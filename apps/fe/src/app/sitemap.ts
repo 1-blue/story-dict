@@ -18,7 +18,7 @@ const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
 };
 
 // 동적으로 사이트맵 생성
-export const revalidate = 60 * 60;
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 정적 라우트는 항상 포함

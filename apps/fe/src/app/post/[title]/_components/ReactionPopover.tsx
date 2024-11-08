@@ -73,7 +73,7 @@ const ReactionPopover: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
 
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button variant="secondary" size="icon" className="rounded-full">
           <FaceIcon className="h-5 w-5 text-muted-foreground" />
         </Button>

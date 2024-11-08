@@ -14,7 +14,8 @@ COPY . .
 RUN pnpm install
 
 # 환경변수 설정
-COPY ./envs/fe/.env.production ./apps/fe/.env
+COPY ./envs/fe/.env.production ./apps/fe/.env.production
+# prisma를 위해서 .env로 복사
 COPY ./envs/be/.env.production ./apps/be/.env
 
 # Prisma 설정
