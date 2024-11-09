@@ -42,8 +42,9 @@ export type GetAllPostAPIResponse = (Post & {
 })[];
 /** 모든 게시글 가져오기 함수 */
 export const getAllPostAPI = async (): Promise<GetAllPostAPIResponse> => {
-  return fetchInstance(process.env.NEXT_PUBLIC_SERVER_URL + `/apis/v1/posts`, {
+  return fetchInstance(postApis.getAll.endPoint(), {
     method: "GET",
+    next: { tags: postApis.getAll.key() },
   })
     .then(async (res) => {
       // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함

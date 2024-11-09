@@ -1,19 +1,22 @@
 "use client";
 
+import { useState } from "react";
 import { z } from "zod";
-import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
-import { schemas } from "@sd/utils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
+import { schemas } from "@sd/utils";
+
+import { apis } from "#fe/apis";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
+import useImageMutations from "#fe/hooks/useImageMutations";
+import usePostMutations from "#fe/hooks/usePostMutations";
+import { revalidateTagForServer } from "#fe/actions/revalidateForServer";
 
 import Metadata from "#fe/app/post/write/_components/Metadata";
 import Editor from "#fe/app/post/write/_components/Editor";
-import { useState } from "react";
-import useImageMutations from "#fe/hooks/useImageMutations";
-import usePostMutations from "#fe/hooks/usePostMutations";
 
 const formSchema = z.object({
   title: schemas.title,
@@ -95,6 +98,8 @@ const WriteForm: React.FC = () => {
           thumbnailId: imageData?.id,
         },
       });
+
+      revalidateTagForServer(apis.posts.getAll.key());
 
       router.replace("/");
 
