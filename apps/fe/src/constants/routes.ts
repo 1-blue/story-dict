@@ -14,44 +14,44 @@ import {
   CubeIcon as SCubeIcon,
   RectangleStackIcon as SRectangleStackIcon,
 } from "@heroicons/react/24/solid";
-import { IRoute } from "#fe/types";
-import { DEFAULT_SITEMAP } from "./sitemap";
 
-export const ROUTES: Record<"post" | "auth" | "information", IRoute[]> = {
-  post: [
+import type { IRoute } from "#fe/types";
+
+import { DEFAULT_SITEMAP } from "#fe/constants/sitemap";
+import { CATEGORIES } from "#fe/constants/category";
+
+export const ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
+  main: [
     {
-      label: "게시글",
-      path: "/post",
-      accessLevel: "public",
-      OIcon: OHomeIcon,
-      SIcon: SHomeIcon,
+      label: "글쓰기",
+      path: "/post/write",
+      accessLevel: "authenticated",
+      OIcon: OPencilSquareIcon,
+      SIcon: SPencilSquareIcon,
       sitemap: DEFAULT_SITEMAP,
-      subRoutes: [
-        {
-          label: "글쓰기",
-          path: "/post/write",
-          accessLevel: "authenticated",
-          OIcon: OPencilSquareIcon,
-          SIcon: SPencilSquareIcon,
-          sitemap: DEFAULT_SITEMAP,
-        },
-        {
-          label: "랜덤",
-          path: "/post/random",
-          accessLevel: "public",
-          OIcon: OCubeIcon,
-          SIcon: SCubeIcon,
-          sitemap: DEFAULT_SITEMAP,
-        },
-        {
-          label: "카테고리",
-          path: "/post/category",
-          accessLevel: "public",
-          OIcon: ORectangleStackIcon,
-          SIcon: SRectangleStackIcon,
-          sitemap: DEFAULT_SITEMAP,
-        },
-      ],
+    },
+    {
+      label: "랜덤",
+      path: "/post/random",
+      accessLevel: "public",
+      OIcon: OCubeIcon,
+      SIcon: SCubeIcon,
+      sitemap: DEFAULT_SITEMAP,
+    },
+    {
+      label: "카테고리",
+      path: "/post/category",
+      accessLevel: "public",
+      OIcon: ORectangleStackIcon,
+      SIcon: SRectangleStackIcon,
+      sitemap: DEFAULT_SITEMAP,
+      subRoutes: CATEGORIES.map((category) => ({
+        label: category.label,
+        path: `/post/category/${category.value}`,
+        accessLevel: "public",
+        OIcon: ORectangleStackIcon,
+        SIcon: SRectangleStackIcon,
+      })),
     },
   ],
   auth: [

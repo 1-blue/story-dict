@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import {
   apis,
@@ -8,9 +8,10 @@ import {
   PostLogOutAPIRequest,
   PostLogOutAPIResponse,
 } from "#fe/apis";
+import { getQueryClient } from "#fe/libs/getQueryClient";
 
 const useMe = () => {
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ["users", "me"],
     queryFn: () => getMeAPI(),
