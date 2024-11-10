@@ -365,6 +365,11 @@ const MySidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
             <Separator orientation="vertical" className="mx-1 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
+                {breadcrumbs[0] === "" && (
+                  <BreadcrumbLink asChild>
+                    <Link href="/">메인</Link>
+                  </BreadcrumbLink>
+                )}
                 {breadcrumbs.map((breadcrumb, index) => (
                   <React.Fragment key={breadcrumb}>
                     <BreadcrumbItem className="flex gap-2">
