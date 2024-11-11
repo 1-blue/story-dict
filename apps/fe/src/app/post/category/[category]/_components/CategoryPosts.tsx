@@ -1,10 +1,12 @@
 "use client";
 
-import { PostCategory } from "#be/types";
-import PostCard from "#fe/components/PostCard";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import CategoryForm from "../../_components/CategoryForm";
+
+import { PostCategory } from "#be/types";
 import { apis } from "#fe/apis";
+import PostCard from "#fe/components/PostCard";
+import EmptyAlert from "#fe/components/EmptyAlert";
+import CategoryForm from "#fe/app/post/category/_components/CategoryForm";
 
 interface IProps {
   category: PostCategory;
@@ -20,9 +22,18 @@ const CategoryPosts: React.FC<IProps> = ({ category }) => {
     <article className="flex flex-col gap-4">
       <CategoryForm defaultCategory={category} />
 
-      <ul className="flex flex-wrap gap-4">
-        {posts?.map((post) => <PostCard key={post.id} post={post} />)}
-      </ul>
+      {posts.length > 0 ? (
+        <ul className="flex flex-wrap gap-4">
+          {posts.map((post) => (
+            <PostCard key={post.id} post={post} />
+          ))}
+        </ul>
+      ) : (
+        <EmptyAlert
+          title="게시글 없음"
+          description="해당 카테고리의 게시글이 존재하지 않아요 🥲"
+        />
+      )}
     </article>
   );
 };

@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 정적 라우트는 항상 포함
   const routes = [
     ...generateSitemap(
-      ROUTES.post.filter((route): route is Required<IRoute> => !!route.sitemap),
+      ROUTES.main.filter((route): route is Required<IRoute> => !!route.sitemap),
     ),
     ...generateSitemap(
       ROUTES.auth.filter((route): route is Required<IRoute> => !!route.sitemap),

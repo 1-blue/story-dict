@@ -1,24 +1,22 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   apis,
-  getMeAPI,
   PostLogInAPIRequest,
   PostLogInAPIResponse,
   PostLogOutAPIRequest,
   PostLogOutAPIResponse,
 } from "#fe/apis";
-import { getQueryClient } from "#fe/libs/getQueryClient";
 
 const useMe = () => {
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
-    queryKey: ["users", "me"],
-    queryFn: () => getMeAPI(),
+    queryKey: apis.users.getMe.key(),
+    queryFn: apis.users.getMe.fn,
   });
 
   const mutation = useMutation({
-    mutationFn: getMeAPI,
+    mutationFn: apis.users.getMe.fn,
   });
   const { mutateAsync: logInMutate } = useMutation<
     PostLogInAPIResponse,
@@ -27,7 +25,7 @@ const useMe = () => {
   >({
     mutationFn: ({ body }) => apis.auth.login.fn({ body }),
     onSuccess(user) {
-      queryClient.setQueryData(["users", "me"], user);
+      queryClient.setQueryData(apis.users.getMe.key(), user);
     },
   });
   const { mutateAsync: logOutMutate } = useMutation<
@@ -35,9 +33,9 @@ const useMe = () => {
     Error,
     PostLogOutAPIRequest
   >({
-    mutationFn: () => apis.auth.logout.fn(),
+    mutationFn: apis.auth.logout.fn,
     onSuccess() {
-      queryClient.setQueryData(["users", "me"], null);
+      queryClient.setQueryData(apis.users.getMe.key(), null);
     },
   });
 

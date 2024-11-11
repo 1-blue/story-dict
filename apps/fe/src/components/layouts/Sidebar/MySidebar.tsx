@@ -48,11 +48,7 @@ const MySidebar: React.FC = () => {
 
       <SidebarContent>
         <SidebarSearchGroup />
-        <SidebarCenterGroup
-          label="게시글"
-          routes={filteredPostRoutes}
-          defaultOpen
-        />
+        <SidebarCenterGroup label="게시글" routes={filteredPostRoutes} />
         <SidebarCenterGroup label="인증" routes={filteredAuthRoutes} />
         <SidebarInfoGroup routes={ROUTES.information} />
       </SidebarContent>

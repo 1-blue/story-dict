@@ -27,7 +27,7 @@ const PostCard: React.FC<IProps> = ({ post }) => {
     <Card className="flex w-[350px] flex-col">
       <Link href={`/post/${post.title}`} className="flex flex-1 flex-col">
         <CardHeader>
-          <CardTitle className="overflow-hidden text-ellipsis">
+          <CardTitle className="typography-body-sm overflow-hidden text-ellipsis">
             {post.title}
           </CardTitle>
         </CardHeader>
@@ -38,7 +38,9 @@ const PostCard: React.FC<IProps> = ({ post }) => {
         </CardContent>
       </Link>
       <CardFooter className="flex items-end justify-between">
-        <Badge>{convertToCategory(post.category)}</Badge>
+        <Link href={`/post/category/${post.category}`}>
+          <Badge>{convertToCategory(post.category)}</Badge>
+        </Link>
         {post.thumbnail?.url && (
           <Popover>
             <PopoverTrigger asChild className="cursor-pointer">
