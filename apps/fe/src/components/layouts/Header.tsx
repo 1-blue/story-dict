@@ -25,8 +25,11 @@ const Header: React.FC = () => {
     setBreadcrumbs(pathname.split("/").slice(1).map(decodeURIComponent));
   }, [pathname]);
 
+  // 랜딩페이지에서는 헤더 제거
+  if (pathname === "/") return null;
+
   return (
-    <header className="sticky top-4 z-10 flex shrink-0 items-center gap-2 rounded-md border bg-sidebar-background p-4">
+    <header className="sticky top-4 z-10 mx-auto flex w-[98%] shrink-0 items-center gap-2 rounded-md border bg-sidebar-background p-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mx-1 h-4" />

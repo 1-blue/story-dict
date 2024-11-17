@@ -24,7 +24,7 @@ interface IProps {
 
 const PostCard: React.FC<IProps> = ({ post }) => {
   return (
-    <Card className="flex w-[350px] flex-col">
+    <Card className="flex w-80 flex-col">
       <Link href={`/post/${post.title}`} className="flex flex-1 flex-col">
         <CardHeader>
           <CardTitle className="typography-body-sm overflow-hidden text-ellipsis">

@@ -5,6 +5,7 @@ import {
   PencilSquareIcon as OPencilSquareIcon,
   CubeIcon as OCubeIcon,
   RectangleStackIcon as ORectangleStackIcon,
+  CpuChipIcon as OCupChipIcon,
 } from "@heroicons/react/24/outline";
 import {
   LockOpenIcon as SLockOpenIcon,
@@ -13,6 +14,7 @@ import {
   PencilSquareIcon as SPencilSquareIcon,
   CubeIcon as SCubeIcon,
   RectangleStackIcon as SRectangleStackIcon,
+  CpuChipIcon as SCupChipIcon,
 } from "@heroicons/react/24/solid";
 
 import type { IRoute } from "#fe/types";
@@ -22,6 +24,14 @@ import { CATEGORIES } from "#fe/constants/category";
 
 export const ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
   main: [
+    {
+      label: "게시글",
+      path: "/post",
+      accessLevel: "public",
+      OIcon: OCupChipIcon,
+      SIcon: SCupChipIcon,
+      sitemap: DEFAULT_SITEMAP,
+    },
     {
       label: "글쓰기",
       path: "/post/write",

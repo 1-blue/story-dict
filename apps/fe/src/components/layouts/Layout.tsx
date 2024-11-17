@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { SidebarInset, SidebarProvider } from "@sd/ui";
 import { ThemeToggle } from "@sd/ui/theme";
 
@@ -7,8 +10,12 @@ import Main from "#fe/components/layouts/Main";
 import Footer from "#fe/components/layouts/Footer";
 
 const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const pathname = usePathname();
+
+  const isRoot = pathname === "/";
+
   return (
-    <SidebarProvider>
+    <SidebarProvider {...(isRoot && { open: false })}>
       <MySidebar />
       <div className="flex flex-1 flex-col gap-2 p-4">
         <Header />
