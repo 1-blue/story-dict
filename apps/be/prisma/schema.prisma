@@ -154,6 +154,8 @@ enum PostCategory {
   QUOTATION
   /// 단순 정보
   INFORMATION
+  /// 넌센스
+  NONSENSE
 }
 
 model Post {

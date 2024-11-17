@@ -41,7 +41,7 @@ const LogInForm: React.FC = () => {
       try {
         await logInMutate({ body });
 
-        router.replace("/");
+        router.replace("/post");
 
         toast.success("로그인 성공", {
           description: "메인페이지로 이동합니다.",

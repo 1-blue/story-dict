@@ -49,7 +49,10 @@ const summary = z
   .max(120, { message: "설명은 최대 120자입니다!" });
 
 /** 내용 유효성 검사 스키마 */
-const content = z.string().min(1, { message: "내용을 입력해주세요!" });
+const content = z
+  .string()
+  .min(1, { message: "내용을 입력해주세요!" })
+  .max(300, { message: "내용은 최대 300자입니다!" });
 
 /** 카테고리 유효성 검사 스키마 */
 const category = z.enum([

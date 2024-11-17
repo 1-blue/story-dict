@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -55,6 +55,25 @@ const WriteForm: React.FC = () => {
     defaultValues: DEV_DEFAULT_VALUES,
   });
 
+  const [tab, setTab] = useState<"editor" | "metadata">("editor");
+  useEffect(() => {
+    const errors = form.formState.errors;
+    if (errors.content) {
+      setTab("editor");
+      toast.error(errors.content?.message);
+      return;
+    }
+    if (errors.title || errors.summary || errors.category) {
+      setTab("metadata");
+      toast.error(
+        errors.title?.message ||
+          errors.summary?.message ||
+          errors.category?.message,
+      );
+      return;
+    }
+  }, [form.formState.errors]);
+
   const [imageData, setImageData] = useState<{
     id: string;
     url: string;
@@ -101,7 +120,7 @@ const WriteForm: React.FC = () => {
 
       revalidateTagForServer(apis.posts.getAll.key());
 
-      router.replace("/");
+      router.replace("/post");
 
       toast.success("게시글 생성 성공", {
         description: `게시글이 성공적으로 생성되었습니다.\n메인 페이지로 이동됩니다!`,
@@ -114,10 +133,14 @@ const WriteForm: React.FC = () => {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <Tabs defaultValue="metadata">
+        <Tabs value={tab}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="metadata">메타데이터</TabsTrigger>
-            <TabsTrigger value="editor">에디터</TabsTrigger>
+            <TabsTrigger value="editor" onClick={() => setTab("editor")}>
+              에디터
+            </TabsTrigger>
+            <TabsTrigger value="metadata" onClick={() => setTab("metadata")}>
+              메타데이터
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="metadata">
             <Metadata imageData={imageData} setImageData={setImageData} />

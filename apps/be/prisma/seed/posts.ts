@@ -31,6 +31,30 @@ const datas = [
     content: `개복치는 돌연사의 대명사이지만 사실 매우 단단한 생물입니다.\n하드웨어는 매우 단단하지만 소프트웨어가 약한 것일 뿐입니다.\n또한 개복치는 \`태양 물고기\`라고 불리기도 합니다.`,
     category: `INFORMATION` as PostCategory,
   },
+  {
+    title: `모르핀`,
+    summary: `양귀비에서 추출된 성분`,
+    content: `고통을 잊게 하고 마치 꿈을 꾸는 듯한 느낌을 준다하여,\n그리스 신화에 등장하는 꿈의 신 \`모르페우스\`에서 유래된 말입니다.`,
+    category: `ETYMOLOGY` as PostCategory,
+  },
+  {
+    title: `카르만 라인`,
+    summary: `지구의 대기권과 우주를 구분하는 경계`,
+    content: `지상에서 100km 높이까지를 대기권이라고 부르는데, 이 경계선을 카르만 라인이라고 부릅니다.`,
+    category: `GENERAL_KNOWLEDGE` as PostCategory,
+  },
+  {
+    title: `귤락`,
+    summary: `귤의 알맹이에 붙어있는 하얀 실`,
+    content: `귤의 알맹이에 붙어있는 하얀 실을 귤락이라고 부릅니다.`,
+    category: `GENERAL_KNOWLEDGE` as PostCategory,
+  },
+  {
+    title: `함흥차사`,
+    summary: `실제 함흥으로 보낸 차사에서 유래된 말`,
+    content: `태종 이방원이 함흥으로 보낸 차사들이 모두 죽어 소식이 끊겨서 생긴 말\n\`뭘 실켜서 보냈는데 한참이 지나도 소식이 없는 사람\`을 뜻하는 말입니다.`,
+    category: `ETYMOLOGY` as PostCategory,
+  },
 ];
 
 /** 기본 게시물들 */

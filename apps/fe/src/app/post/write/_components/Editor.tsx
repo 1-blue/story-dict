@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useTheme } from "next-themes";
+import { useFormContext } from "react-hook-form";
 import dynamic from "next/dynamic";
 const MarkdownEditor = dynamic(() => import("@uiw/react-markdown-editor"), {
   ssr: false,
@@ -14,6 +15,7 @@ interface IProps {
 }
 
 const Editor: React.FC<IProps> = ({ content, onChange }) => {
+  const { watch } = useFormContext();
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -21,13 +23,22 @@ const Editor: React.FC<IProps> = ({ content, onChange }) => {
   }, [theme]);
 
   return (
-    <MarkdownEditor
-      height="calc(100vh - 281px)"
-      value={content}
-      onChange={onChange}
-      enableScroll
-      visible
-    />
+    <div className="relative">
+      <MarkdownEditor
+        height="calc(100vh - 281px)"
+        value={content}
+        onChange={onChange}
+        enableScroll
+        visible
+        previewProps={{
+          className: "whitespace-pre-wrap break-keep",
+        }}
+      />
+
+      <span className="absolute bottom-2 right-3 text-xs text-muted-foreground">
+        {watch("content").length} / 300
+      </span>
+    </div>
   );
 };
 

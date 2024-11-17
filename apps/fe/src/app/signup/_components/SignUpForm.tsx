@@ -52,7 +52,7 @@ const SignUpForm: React.FC = () => {
           },
         });
 
-        router.replace("/");
+        router.replace("/post");
 
         toast.success("회원가입 성공", {
           description: `가입을 축하드립니다.\n로그인 후 메인 페이지로 이동됩니다!`,
