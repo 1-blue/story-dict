@@ -9,10 +9,10 @@ import {
   CardTitle,
 } from "@sd/ui";
 import { Marquee } from "@sd/ui/magics";
-import { convertToCategory } from "@sd/utils";
 
 import type { Post } from "#be/types";
 import { routes } from "#fe/constants";
+import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 
 const posts: Pick<Post, "title" | "summary" | "category">[] = [
   {
@@ -106,7 +106,7 @@ const PostCard: React.FC<IPostCardProps> = ({ title, summary, category }) => {
       </Link>
       <CardFooter className="flex items-end justify-between">
         <Link href={routes.post.category.detail.url(category)}>
-          <Badge>{convertToCategory(category)}</Badge>
+          <Badge>{postCategoryToKoreanMap[category]}</Badge>
         </Link>
       </CardFooter>
     </Card>

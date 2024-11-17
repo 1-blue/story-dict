@@ -7,6 +7,7 @@ export const postCategoryToKoreanMap: Record<PostCategory, string> = {
   PURE_KOREAN: "순우리말",
   QUOTATION: "명대사",
   INFORMATION: "단순 정보",
+  NONSENSE: "넌센스",
 };
 
 /** 리액션 타입과 이모지를 맵핑 */

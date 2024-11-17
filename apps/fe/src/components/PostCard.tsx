@@ -15,10 +15,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@sd/ui";
-import { convertToCategory } from "@sd/utils";
 
 import { routes } from "#fe/constants";
 import { TGetAllPostAPIResponse } from "#fe/apis";
+import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 
 interface IProps {
   post: TGetAllPostAPIResponse[number];
@@ -44,7 +44,7 @@ const PostCard: React.FC<IProps> = ({ post }) => {
       </Link>
       <CardFooter className="flex items-end justify-between">
         <Link href={routes.post.category.detail.url(post.category)}>
-          <Badge>{convertToCategory(post.category)}</Badge>
+          <Badge>{postCategoryToKoreanMap[post.category]}</Badge>
         </Link>
         {post.thumbnail?.url && (
           <Popover>

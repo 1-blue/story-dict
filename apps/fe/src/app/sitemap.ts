@@ -21,18 +21,13 @@ const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // 정적 라우트는 항상 포함
+  const hasValidSitemap = (route: IRoute): route is Required<IRoute> =>
+    !!route.sitemap;
+
+  // 정적 라우트 생성
   const routes = [
-    ...generateSitemap(
-      NAV_ROUTES.main.filter(
-        (route): route is Required<IRoute> => !!route.sitemap,
-      ),
-    ),
-    ...generateSitemap(
-      NAV_ROUTES.auth.filter(
-        (route): route is Required<IRoute> => !!route.sitemap,
-      ),
-    ),
+    ...generateSitemap(NAV_ROUTES.main.filter(hasValidSitemap)),
+    ...generateSitemap(NAV_ROUTES.auth.filter(hasValidSitemap)),
   ];
 
   try {
@@ -44,7 +39,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [...routes, ...postRoutes];
   } catch (error) {
-    // API 호출 실패시 정적 라우트만 반환 ( 빌드 시 서버가 안켜져 있어서 실패하기 때문에 처리해줌 )
     console.error("🚫 사이트맵 생성 실패 >> ", error);
     return routes;
   }

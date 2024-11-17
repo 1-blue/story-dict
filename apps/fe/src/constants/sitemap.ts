@@ -1,4 +1,4 @@
-import { ISitemap } from "#fe/types";
+import type { ISitemap } from "#fe/types";
 
 export const DEFAULT_SITEMAP: ISitemap = {
   priority: 1,

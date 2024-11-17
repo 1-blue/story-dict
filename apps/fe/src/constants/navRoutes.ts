@@ -19,8 +19,7 @@ import {
 
 import type { IRoute } from "#fe/types";
 
-import { DEFAULT_SITEMAP, routes } from "#fe/constants";
-import { CATEGORIES } from "#fe/constants/category";
+import { CATEGORIES, DEFAULT_SITEMAP, routes } from "#fe/constants";
 
 export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
   main: [
