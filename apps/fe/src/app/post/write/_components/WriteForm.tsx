@@ -23,14 +23,7 @@ const formSchema = z.object({
   title: schemas.title,
   content: schemas.content,
   summary: schemas.summary,
-  // FIXME: 백엔드 타입 가져와서 사용하는 방법 찾아보기
-  category: z.enum([
-    "GENERAL_KNOWLEDGE",
-    "ETYMOLOGY",
-    "PURE_KOREAN",
-    "QUOTATION",
-    "INFORMATION",
-  ]),
+  category: schemas.category,
 });
 
 const DEV_DEFAULT_VALUES =

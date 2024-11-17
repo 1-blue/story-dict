@@ -22,8 +22,6 @@ declare namespace NodeJS {
     /** 실행 포트 */
     readonly PORT: string;
 
-    // TODO:
-
     /** 클라이언트 URL */
     readonly CLIENT_URL: string;
 

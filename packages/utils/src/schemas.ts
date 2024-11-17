@@ -61,6 +61,7 @@ const category = z.enum([
   "PURE_KOREAN",
   "QUOTATION",
   "INFORMATION",
+  "NONSENSE",
 ]);
 
 export const schemas = {
