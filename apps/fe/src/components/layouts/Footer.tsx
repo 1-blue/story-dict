@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { EnvelopeClosedIcon, GitHubLogoIcon } from "@radix-ui/react-icons";
 
+import { routes } from "#fe/constants";
+
 interface IProps extends React.HTMLAttributes<HTMLElement> {}
 
 const Footer: React.FC<IProps> = (props) => {
   return (
     <footer {...props}>
       <span>© 2024. 1-blue All rights reserved</span>
-      <Link href="https://github.com/1-blue" target="_blank">
+      <Link href={routes.github.url} target="_blank">
         <GitHubLogoIcon />
       </Link>
-      <Link href="mailto:ghksaud678@gmail.com">
+      <Link href={routes.email.url}>
         <EnvelopeClosedIcon />
       </Link>
     </footer>

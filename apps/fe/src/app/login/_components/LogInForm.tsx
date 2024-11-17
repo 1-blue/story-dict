@@ -9,6 +9,7 @@ import { schemas } from "@sd/utils";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
 import { useRouter } from "next/navigation";
+import { routes } from "#fe/constants";
 
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
@@ -41,7 +42,7 @@ const LogInForm: React.FC = () => {
       try {
         await logInMutate({ body });
 
-        router.replace("/post");
+        router.replace(routes.post.url);
 
         toast.success("로그인 성공", {
           description: "메인페이지로 이동합니다.",

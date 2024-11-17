@@ -3,9 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 
-import useMe from "#fe/hooks/useMe";
 import { toast } from "@sd/ui";
+import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
+import { routes } from "#fe/constants";
 
 const ShortCutProvider: React.FC = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const ShortCutProvider: React.FC = () => {
       handleError({ error, title: "로그아웃 실패" });
     }
   });
-  useHotkeys("shift+mod+1", () => router.push("/"));
+  useHotkeys("shift+mod+1", () => router.push(routes.home.url));
   useHotkeys("shift+mod+2", () => router.push(""));
 
   return null;

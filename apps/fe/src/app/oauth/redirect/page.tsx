@@ -3,12 +3,14 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+import { routes } from "#fe/constants";
+
 /** 2023/07/09 - OAuth 로그인 성공 페이지 ( 백엔드에서 리다이렉트 ) - by 1-blue */
 const OAuthSuccess = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/");
+    router.replace(routes.home.url);
   }, [router]);
 
   return (

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
+import { routes } from "#fe/constants";
 import { apis } from "#fe/apis";
 import useMe from "#fe/hooks/useMe";
 import { handleError } from "#fe/libs/handleError";
@@ -120,7 +121,7 @@ const WriteForm: React.FC = () => {
 
       revalidateTagForServer(apis.posts.getAll.key());
 
-      router.replace("/post");
+      router.replace(routes.post.url);
 
       toast.success("게시글 생성 성공", {
         description: `게시글이 성공적으로 생성되었습니다.\n메인 페이지로 이동됩니다!`,

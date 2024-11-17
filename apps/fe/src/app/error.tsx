@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { FaceFrownIcon, CursorArrowRaysIcon } from "@heroicons/react/24/solid";
 import { Alert, Button, Calendar } from "@sd/ui";
-import Link from "next/link";
+
+import { routes } from "#fe/constants";
 
 interface IProps {
   error: Error & { digest?: string };
@@ -17,13 +19,13 @@ const Error: React.FC<IProps> = ({ error, reset }) => {
       <Alert>
         <p>
           지속적으로 실패한다면
-          <Link href="https://open.kakao.com/o/gGD8z8Vg" target="_blank">
+          <Link href={routes.openKakaoChat.url} target="_blank">
             <Button variant="link" className="px-1 py-0">
               오픈 카톡방
             </Button>
           </Link>
           으로 문의해주시거나 기다려주세요! (
-          <Link href="/">
+          <Link href={routes.home.url}>
             <Button variant="link" className="px-1 py-0">
               메인 페이지로 이동
             </Button>

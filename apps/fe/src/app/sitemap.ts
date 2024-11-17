@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-import { ROUTES } from "#fe/constants";
+import { NAV_ROUTES } from "#fe/constants";
 import type { IRoute } from "#fe/types";
 import { getAllPostAPI } from "#fe/apis";
 
@@ -24,10 +24,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 정적 라우트는 항상 포함
   const routes = [
     ...generateSitemap(
-      ROUTES.main.filter((route): route is Required<IRoute> => !!route.sitemap),
+      NAV_ROUTES.main.filter(
+        (route): route is Required<IRoute> => !!route.sitemap,
+      ),
     ),
     ...generateSitemap(
-      ROUTES.auth.filter((route): route is Required<IRoute> => !!route.sitemap),
+      NAV_ROUTES.auth.filter(
+        (route): route is Required<IRoute> => !!route.sitemap,
+      ),
     ),
   ];
 

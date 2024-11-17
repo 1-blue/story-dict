@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,6 +15,7 @@ import {
 } from "@sd/ui";
 
 import { breadcrumbToKoreanMap } from "#fe/libs/mappings";
+import { routes } from "#fe/constants";
 
 const Header: React.FC = () => {
   const pathname = usePathname();
@@ -37,7 +37,7 @@ const Header: React.FC = () => {
           <BreadcrumbList>
             {breadcrumbs[0] === "" && (
               <BreadcrumbLink asChild>
-                <Link href="/">메인</Link>
+                <Link href={routes.home.url}>메인</Link>
               </BreadcrumbLink>
             )}
             {breadcrumbs.map((breadcrumb, index) => (

@@ -2,13 +2,15 @@
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, RFHInput, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
-import { useRouter } from "next/navigation";
+
 import { handleError } from "#fe/libs/handleError";
 import useMe from "#fe/hooks/useMe";
 import useUserMutations from "#fe/hooks/useUserMutations";
+import { routes } from "#fe/constants";
 
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
@@ -52,7 +54,7 @@ const SignUpForm: React.FC = () => {
           },
         });
 
-        router.replace("/post");
+        router.replace(routes.post.url);
 
         toast.success("회원가입 성공", {
           description: `가입을 축하드립니다.\n로그인 후 메인 페이지로 이동됩니다!`,

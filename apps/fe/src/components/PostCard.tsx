@@ -1,6 +1,7 @@
 "use client";
 
-import { TGetAllPostAPIResponse } from "#fe/apis";
+import Image from "next/image";
+import Link from "next/link";
 import {
   AspectRatio,
   Badge,
@@ -15,8 +16,9 @@ import {
   PopoverTrigger,
 } from "@sd/ui";
 import { convertToCategory } from "@sd/utils";
-import Image from "next/image";
-import Link from "next/link";
+
+import { routes } from "#fe/constants";
+import { TGetAllPostAPIResponse } from "#fe/apis";
 
 interface IProps {
   post: TGetAllPostAPIResponse[number];
@@ -25,7 +27,10 @@ interface IProps {
 const PostCard: React.FC<IProps> = ({ post }) => {
   return (
     <Card className="flex w-80 flex-col">
-      <Link href={`/post/${post.title}`} className="flex flex-1 flex-col">
+      <Link
+        href={routes.post.detail.url(post.title)}
+        className="flex flex-1 flex-col"
+      >
         <CardHeader>
           <CardTitle className="typography-body-sm overflow-hidden text-ellipsis">
             {post.title}
@@ -38,7 +43,7 @@ const PostCard: React.FC<IProps> = ({ post }) => {
         </CardContent>
       </Link>
       <CardFooter className="flex items-end justify-between">
-        <Link href={`/post/category/${post.category}`}>
+        <Link href={routes.post.category.detail.url(post.category)}>
           <Badge>{convertToCategory(post.category)}</Badge>
         </Link>
         {post.thumbnail?.url && (

@@ -5,6 +5,8 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 
 import { Label, SidebarGroup, SidebarGroupContent, SidebarInput } from "@sd/ui";
 
+import { routes } from "#fe/constants";
+
 const SidebarSearchGroup: React.FC = () => {
   const router = useRouter();
 
@@ -18,7 +20,7 @@ const SidebarSearchGroup: React.FC = () => {
 
     if (!keyword) return;
 
-    router.push(`/post/search/${keyword}`);
+    router.push(routes.post.search.detail.url(keyword));
   };
 
   return (

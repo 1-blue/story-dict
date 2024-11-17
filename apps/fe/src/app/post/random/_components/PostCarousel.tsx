@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import {
   Badge,
   Button,
@@ -13,10 +14,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@sd/ui";
+
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
-import Reactions from "./Reactions";
-import Link from "next/link";
 import { TGetManyRandomPostAPIResponse } from "#fe/apis";
+import { routes } from "#fe/constants";
+
+import Reactions from "#fe/app/post/random/_components/Reactions";
 
 interface IProps {
   posts: TGetManyRandomPostAPIResponse;
@@ -47,7 +50,7 @@ const PostCarousel: React.FC<IProps> = ({
         <CarouselContent className="-mt-1 h-[50vh] gap-2 md:h-[66vh]">
           {posts?.map((post) => (
             <CarouselItem key={post.id} className="relative basis-1/5 pt-1">
-              <Link href={`/post/${post.title}`}>
+              <Link href={routes.post.detail.url(post.title)}>
                 <Badge className="absolute right-2 top-4 text-xs">
                   {postCategoryToKoreanMap[post.category]}
                 </Badge>

@@ -4,13 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CommandLineIcon as SCommandLineIcon } from "@heroicons/react/24/solid";
 import { CommandLineIcon as OCommandLineIcon } from "@heroicons/react/24/outline";
-
 import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@sd/ui";
+
+import { routes } from "#fe/constants";
 
 const SidebarTop: React.FC = () => {
   const pathname = usePathname();
@@ -21,7 +22,7 @@ const SidebarTop: React.FC = () => {
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" asChild>
             <Link
-              href="/"
+              href={routes.home.url}
               className="transition-colors hover:bg-muted-foreground/20"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">

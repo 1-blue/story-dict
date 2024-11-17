@@ -10,6 +10,7 @@ import CategoryCombobox from "./CategoryCombobox";
 import { useRouter } from "next/navigation";
 import { PostCategory } from "#be/types";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
+import { routes } from "#fe/constants";
 
 const formSchema = z.object({
   category: z.object({
@@ -37,7 +38,7 @@ const CategoryForm: React.FC<IProps> = ({ defaultCategory }) => {
   });
 
   const onSubmit = form.handleSubmit((formData) => {
-    router.push(`/post/category/${formData.category.value}`);
+    router.push(routes.post.category.detail.url(formData.category.value));
   });
 
   const buttonRef = useRef<HTMLButtonElement>(null);

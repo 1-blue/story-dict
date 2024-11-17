@@ -1,4 +1,4 @@
-import type { Post } from "#be/types";
+import Link from "next/link";
 import {
   Badge,
   Card,
@@ -10,7 +10,9 @@ import {
 } from "@sd/ui";
 import { Marquee } from "@sd/ui/magics";
 import { convertToCategory } from "@sd/utils";
-import Link from "next/link";
+
+import type { Post } from "#be/types";
+import { routes } from "#fe/constants";
 
 const posts: Pick<Post, "title" | "summary" | "category">[] = [
   {
@@ -52,7 +54,10 @@ interface IPostCardProps {
 const PostCard: React.FC<IPostCardProps> = ({ title, summary, category }) => {
   return (
     <Card className="flex w-64 flex-col sm:w-80">
-      <Link href={`/post/${title}`} className="flex flex-1 flex-col">
+      <Link
+        href={routes.post.detail.url(title)}
+        className="flex flex-1 flex-col"
+      >
         <CardHeader>
           <CardTitle className="typography-body-sm overflow-hidden text-ellipsis">
             {title}
@@ -65,7 +70,7 @@ const PostCard: React.FC<IPostCardProps> = ({ title, summary, category }) => {
         </CardContent>
       </Link>
       <CardFooter className="flex items-end justify-between">
-        <Link href={`/post/category/${category}`}>
+        <Link href={routes.post.category.detail.url(category)}>
           <Badge>{convertToCategory(category)}</Badge>
         </Link>
       </CardFooter>
