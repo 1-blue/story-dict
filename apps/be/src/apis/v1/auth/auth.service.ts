@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import type { OAuthUser } from "#be/types";
+import type { IOAuthUser } from "#be/types";
 import { UsersService } from "#be/apis/v1/users/users.service";
 import { ImagesService } from "#be/apis/v1/images/images.service";
 
@@ -17,7 +17,7 @@ export class AuthService {
   }
 
   /** OAuth 로그인 검증 */
-  async validateOAuth(oauthUser: OAuthUser) {
+  async validateOAuth(oauthUser: IOAuthUser) {
     const exOAuthUser = await this.usersService.findOneByProviderId(
       oauthUser.providerId ?? undefined,
     );

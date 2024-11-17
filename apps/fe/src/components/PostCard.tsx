@@ -1,6 +1,6 @@
 "use client";
 
-import { GetAllPostAPIResponse } from "#fe/apis";
+import { TGetAllPostAPIResponse } from "#fe/apis";
 import {
   AspectRatio,
   Badge,
@@ -19,7 +19,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface IProps {
-  post: GetAllPostAPIResponse[number];
+  post: TGetAllPostAPIResponse[number];
 }
 
 const PostCard: React.FC<IProps> = ({ post }) => {

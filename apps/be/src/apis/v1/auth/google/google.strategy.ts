@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy, VerifyCallback } from "passport-google-oauth20";
 
-import type { OAuthUser } from "#be/types";
+import type { IOAuthUser } from "#be/types";
 
 export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
   constructor() {
@@ -29,7 +29,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, "google") {
     profile: Profile,
     done: VerifyCallback,
   ) {
-    const oauthUser: OAuthUser = {
+    const oauthUser: IOAuthUser = {
       id: uuidv4(),
       email: profile._json.email ?? "",
       provider: "GOOGLE",

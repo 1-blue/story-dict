@@ -1,33 +1,33 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   apis,
-  CreateReactionAPIRequest,
-  CreateReactionAPIResponse,
-  DeleteReactionAPIRequest,
-  DeleteReactionAPIResponse,
-  PatchReactionAPIRequest,
-  PatchReactionAPIResponse,
+  ICreateReactionAPIRequest,
+  ICreateReactionAPIResponse,
+  IDeleteReactionAPIRequest,
+  IDeleteReactionAPIResponse,
+  IPatchReactionAPIRequest,
+  IPatchReactionAPIResponse,
 } from "#fe/apis";
 
 const useReactionMutations = () => {
   const { mutateAsync: createReactionMutate } = useMutation<
-    CreateReactionAPIResponse,
+    ICreateReactionAPIResponse,
     Error,
-    CreateReactionAPIRequest
+    ICreateReactionAPIRequest
   >({
     mutationFn: ({ body }) => apis.reactions.create.fn({ body }),
   });
   const { mutateAsync: patchReactionMutate } = useMutation<
-    PatchReactionAPIResponse,
+    IPatchReactionAPIResponse,
     Error,
-    PatchReactionAPIRequest
+    IPatchReactionAPIRequest
   >({
     mutationFn: ({ body, params }) => apis.reactions.patch.fn({ body, params }),
   });
   const { mutateAsync: deleteReactionMutate } = useMutation<
-    DeleteReactionAPIResponse,
+    IDeleteReactionAPIResponse,
     Error,
-    DeleteReactionAPIRequest
+    IDeleteReactionAPIRequest
   >({
     mutationFn: ({ params }) => apis.reactions.delete.fn({ params }),
   });

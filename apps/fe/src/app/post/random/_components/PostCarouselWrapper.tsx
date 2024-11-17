@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { apis, GetManyRandomPostAPIResponse } from "#fe/apis";
+import { apis, TGetManyRandomPostAPIResponse } from "#fe/apis";
 import PostCarousel from "#fe/app/post/random/_components/PostCarousel";
 
 const PostCarouselWrapper: React.FC = () => {
-  const [posts, setPosts] = useState<GetManyRandomPostAPIResponse>([]);
+  const [posts, setPosts] = useState<TGetManyRandomPostAPIResponse>([]);
   const existingIdsRef = useRef<string[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const { data, refetch } = useSuspenseQuery({

@@ -1,33 +1,33 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   apis,
-  CreatePresignedURLAPIRequest,
-  CreatePresignedURLAPIResponse,
-  PatchImageAPIRequest,
-  PatchImageAPIResponse,
-  CreateImageAPIRequest,
-  CreateImageAPIResponse,
+  ICreatePresignedURLAPIRequest,
+  ICreatePresignedURLAPIResponse,
+  IPatchImageAPIRequest,
+  IPatchImageAPIResponse,
+  ICreateImageAPIRequest,
+  ICreateImageAPIResponse,
 } from "#fe/apis";
 
 const useImageMutations = () => {
   const { mutateAsync: createImageMutate } = useMutation<
-    CreateImageAPIResponse,
+    ICreateImageAPIResponse,
     Error,
-    CreateImageAPIRequest
+    ICreateImageAPIRequest
   >({
     mutationFn: ({ body }) => apis.images.create.fn({ body }),
   });
   const { mutateAsync: patchImageMutate } = useMutation<
-    PatchImageAPIResponse,
+    IPatchImageAPIResponse,
     Error,
-    PatchImageAPIRequest
+    IPatchImageAPIRequest
   >({
     mutationFn: ({ body, params }) => apis.images.patch.fn({ body, params }),
   });
   const { mutateAsync: createPresignedURLMutate } = useMutation<
-    CreatePresignedURLAPIResponse,
+    ICreatePresignedURLAPIResponse,
     Error,
-    CreatePresignedURLAPIRequest
+    ICreatePresignedURLAPIRequest
   >({
     mutationFn: ({ body }) => apis.images.createPresignedURL.fn({ body }),
   });

@@ -2,13 +2,13 @@ import { toast } from "@sd/ui";
 
 import { CustomError } from "#fe/libs/error";
 
-interface HandleErrorArgs {
+interface IHandleErrorArgs {
   error: unknown;
   title: string;
 }
 
 /** 공용 에러 처리 함수 */
-export const handleError = ({ error, title }: HandleErrorArgs) => {
+export const handleError = ({ error, title }: IHandleErrorArgs) => {
   console.error(`🚫 Error ${title} >> `, error);
 
   const errorToast = (description: string) =>

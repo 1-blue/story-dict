@@ -4,16 +4,16 @@ import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 게시글 생성 ==============================
 /** 게시글 생성 요청 타입 */
-export interface CreatePostAPIRequest {
+export interface ICreatePostAPIRequest {
   body: Partial<Pick<Post, "id" | "category" | "thumbnailId">> &
     Pick<Post, "title" | "summary" | "content">;
 }
 /** 게시글 생성 응답 타입 */
-export interface CreatePostAPIResponse extends Post {}
+export interface ICreatePostAPIResponse extends Post {}
 /** 게시글 생성 함수 */
 export const createPostAPI = async ({
   body,
-}: CreatePostAPIRequest): Promise<CreatePostAPIResponse> => {
+}: ICreatePostAPIRequest): Promise<ICreatePostAPIResponse> => {
   return fetchInstance(postApis.create.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
@@ -35,13 +35,13 @@ export const createPostAPI = async ({
 
 // ============================== 모든 게시글 가져오기 ==============================
 /** 모든 게시글 가져오기 요청 타입 */
-export interface GetAllPostAPIRequest {}
+export interface IGetAllPostAPIRequest {}
 /** 모든 게시글 가져오기 응답 타입 */
-export type GetAllPostAPIResponse = (Post & {
+export type TGetAllPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
 })[];
 /** 모든 게시글 가져오기 함수 */
-export const getAllPostAPI = async (): Promise<GetAllPostAPIResponse> => {
+export const getAllPostAPI = async (): Promise<TGetAllPostAPIResponse> => {
   return fetchInstance(postApis.getAll.endPoint(), {
     method: "GET",
     next: { tags: postApis.getAll.key() },
@@ -63,11 +63,11 @@ export const getAllPostAPI = async (): Promise<GetAllPostAPIResponse> => {
 
 // ============================== 특정 게시글 가져오기 ==============================
 /** 특정 게시글 가져오기 요청 타입 */
-export interface GetOnePostAPIRequest {
+export interface IGetOnePostAPIRequest {
   params: { postId: Post["id"] };
 }
 /** 특정 게시글 가져오기 응답 타입 */
-export interface GetOnePostAPIResponse extends Post {
+export interface IGetOnePostAPIResponse extends Post {
   user: Pick<User, "id" | "nickname"> & {
     image?: Pick<Image, "id" | "url">;
   };
@@ -77,7 +77,7 @@ export interface GetOnePostAPIResponse extends Post {
 /** 특정 게시글 가져오기 함수 */
 export const getOnePostAPI = async ({
   params,
-}: GetOnePostAPIRequest): Promise<GetOnePostAPIResponse> => {
+}: IGetOnePostAPIRequest): Promise<IGetOnePostAPIResponse> => {
   return fetchInstance(postApis.getOne.endPoint({ params }), {
     method: "GET",
   })
@@ -98,11 +98,11 @@ export const getOnePostAPI = async ({
 
 // ============================== 제목으로 특정 게시글 가져오기 ==============================
 /** 제목으로 특정 게시글 가져오기 요청 타입 */
-export interface GetOnePostByTitleAPIRequest {
+export interface IGetOnePostByTitleAPIRequest {
   params: { title: Post["title"] };
 }
 /** 제목으로 특정 게시글 가져오기 응답 타입 */
-export interface GetOnePostByTitleAPIResponse extends Post {
+export interface IGetOnePostByTitleAPIResponse extends Post {
   user: Pick<User, "id" | "nickname"> & {
     image?: Pick<Image, "id" | "url">;
   };
@@ -112,7 +112,7 @@ export interface GetOnePostByTitleAPIResponse extends Post {
 /** 제목으로 특정 게시글 가져오기 함수 */
 export const getOnePostByTitleAPI = async ({
   params,
-}: GetOnePostByTitleAPIRequest): Promise<GetOnePostByTitleAPIResponse> => {
+}: IGetOnePostByTitleAPIRequest): Promise<IGetOnePostByTitleAPIResponse> => {
   return fetchInstance(postApis.getOneByTitle.endPoint({ params }), {
     method: "GET",
   })
@@ -133,18 +133,18 @@ export const getOnePostByTitleAPI = async ({
 
 // ============================== 랜덤 게시글들 가져오기 ==============================
 /** 랜덤 게시글들 요청 타입 */
-export interface GetManyRandomPostAPIRequest {
+export interface IGetManyRandomPostAPIRequest {
   queries: { existingIds?: string };
 }
 /** 랜덤 게시글들 응답 타입 */
-export type GetManyRandomPostAPIResponse = (Post & {
+export type TGetManyRandomPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
   reactions: Pick<Reaction, "id" | "type" | "userId">[];
 })[];
 /** 랜덤 게시글들 가져오기 함수 */
 export const getManyRandomPostAPI = async ({
   queries,
-}: GetManyRandomPostAPIRequest): Promise<GetManyRandomPostAPIResponse> => {
+}: IGetManyRandomPostAPIRequest): Promise<TGetManyRandomPostAPIResponse> => {
   return fetchInstance(postApis.getManyRandom.endPoint({ queries }), {
     method: "GET",
   })
@@ -165,18 +165,18 @@ export const getManyRandomPostAPI = async ({
 
 // ============================== 검색된 게시글들 가져오기 ==============================
 /** 검색된 게시글들 가져오기 요청 타입 */
-export interface GetManyCategoryPostAPIRequest {
+export interface IGetManyCategoryPostAPIRequest {
   params: { category: PostCategory };
 }
 /** 검색된 게시글들 가져오기 응답 타입 */
-export type GetManyCategoryPostAPIResponse = (Post & {
+export type TGetManyCategoryPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
   reactions: Pick<Reaction, "id" | "type" | "userId">[];
 })[];
 /** 검색된 게시글들 가져오기  함수 */
 export const getManyCategoryPostAPI = async ({
   params,
-}: GetManyCategoryPostAPIRequest): Promise<GetManyCategoryPostAPIResponse> => {
+}: IGetManyCategoryPostAPIRequest): Promise<TGetManyCategoryPostAPIResponse> => {
   return fetchInstance(postApis.getManyCategory.endPoint({ params }), {
     method: "GET",
   })
@@ -197,18 +197,18 @@ export const getManyCategoryPostAPI = async ({
 
 // ============================== 카테고리 게시글들 가져오기 ==============================
 /** 카테고리 게시글들 가져오기 요청 타입 */
-export interface GetManyKeywordPostAPIRequest {
+export interface IGetManyKeywordPostAPIRequest {
   params: { keyword: string };
 }
 /** 카테고리 게시글들 가져오기 응답 타입 */
-export type GetManyKeywordPostAPIResponse = (Post & {
+export type TGetManyKeywordPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
   reactions: Pick<Reaction, "id" | "type" | "userId">[];
 })[];
 /** 카테고리 게시글들 가져오기  함수 */
 export const getManyKeywordPostAPI = async ({
   params,
-}: GetManyKeywordPostAPIRequest): Promise<GetManyKeywordPostAPIResponse> => {
+}: IGetManyKeywordPostAPIRequest): Promise<TGetManyKeywordPostAPIResponse> => {
   return fetchInstance(
     process.env.NEXT_PUBLIC_SERVER_URL +
       `/apis/v1/posts/search/${params?.keyword}`,
@@ -233,17 +233,17 @@ export const getManyKeywordPostAPI = async ({
 
 // ============================== 게시글 수정 ==============================
 /** 게시글 수정 요청 타입 */
-export interface PatchPostAPIRequest {
+export interface IPatchPostAPIRequest {
   params: { postId: Post["id"] };
-  body: Partial<CreatePostAPIRequest["body"]>;
+  body: Partial<ICreatePostAPIRequest["body"]>;
 }
 /** 게시글 수정 응답 타입 */
-export interface PatchPostAPIResponse extends Post {}
+export interface IPatchPostAPIResponse extends Post {}
 /** 게시글 수정 함수 */
 export const patchPostAPI = async ({
   body,
   params,
-}: PatchPostAPIRequest): Promise<PatchPostAPIResponse> => {
+}: IPatchPostAPIRequest): Promise<IPatchPostAPIResponse> => {
   return fetchInstance(postApis.patch.endPoint({ params }), {
     method: "PATCH",
     body: JSON.stringify(body),
@@ -265,15 +265,15 @@ export const patchPostAPI = async ({
 
 // ============================== 게시글 삭제 ==============================
 /** 게시글 삭제 요청 타입 */
-export interface DeletePostAPIRequest {
+export interface IDeletePostAPIRequest {
   params: { postId: Post["id"] };
 }
 /** 게시글 삭제 응답 타입 */
-export interface DeletePostAPIResponse extends Post {}
+export interface IDeletePostAPIResponse extends Post {}
 /** 게시글 삭제 함수 */
 export const deletePostAPI = async ({
   params,
-}: DeletePostAPIRequest): Promise<DeletePostAPIResponse> => {
+}: IDeletePostAPIRequest): Promise<IDeletePostAPIResponse> => {
   return fetchInstance(postApis.delete.endPoint({ params }), {
     method: "DELETE",
   })
@@ -294,17 +294,17 @@ export const deletePostAPI = async ({
 
 // ============================== 게시글 제목 유니크 확인 ==============================
 /** 게시글 제목 유니크 확인 요청 타입 */
-export interface CheckUniqueTitleAPIRequest {
+export interface ICheckUniqueTitleAPIRequest {
   body: Pick<Post, "title">;
 }
 /** 게시글 제목 유니크 확인 응답 타입 */
-export interface CheckUniqueTitleAPIResponse {
+export interface ICheckUniqueTitleAPIResponse {
   isUnique: boolean;
 }
 /** 게시글 제목 유니크 확인 함수 */
 export const checkUniqueTitleAPI = async ({
   body,
-}: CheckUniqueTitleAPIRequest): Promise<CheckUniqueTitleAPIResponse> => {
+}: ICheckUniqueTitleAPIRequest): Promise<ICheckUniqueTitleAPIResponse> => {
   return fetchInstance(postApis.checkUniqueTitle.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
@@ -338,9 +338,9 @@ export const postApis = {
     fn: getAllPostAPI,
   },
   getOne: {
-    endPoint: ({ params }: Pick<GetOnePostAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IGetOnePostAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/${params.postId}`,
-    key: ({ params }: Pick<GetOnePostAPIRequest, "params">) => [
+    key: ({ params }: Pick<IGetOnePostAPIRequest, "params">) => [
       "get",
       "posts",
       params.postId,
@@ -348,9 +348,9 @@ export const postApis = {
     fn: getOnePostAPI,
   },
   getOneByTitle: {
-    endPoint: ({ params }: Pick<GetOnePostByTitleAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IGetOnePostByTitleAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/title/${params.title}`,
-    key: ({ params }: Pick<GetOnePostByTitleAPIRequest, "params">) => [
+    key: ({ params }: Pick<IGetOnePostByTitleAPIRequest, "params">) => [
       "get",
       "posts",
       "title",
@@ -359,11 +359,11 @@ export const postApis = {
     fn: getOnePostByTitleAPI,
   },
   getManyRandom: {
-    endPoint: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) =>
+    endPoint: ({ queries }: Pick<IGetManyRandomPostAPIRequest, "queries">) =>
       SERVER_URL +
       `/apis/v1/posts/random` +
       `${queries.existingIds ? `?existingIds=${queries.existingIds}` : `?existingIds=""`}`,
-    key: ({ queries }: Pick<GetManyRandomPostAPIRequest, "queries">) => [
+    key: ({ queries }: Pick<IGetManyRandomPostAPIRequest, "queries">) => [
       "get",
       "posts",
       "random",
@@ -372,9 +372,9 @@ export const postApis = {
     fn: getManyRandomPostAPI,
   },
   getManyCategory: {
-    endPoint: ({ params }: Pick<GetManyCategoryPostAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IGetManyCategoryPostAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/category/${params.category}`,
-    key: ({ params }: Pick<GetManyCategoryPostAPIRequest, "params">) => [
+    key: ({ params }: Pick<IGetManyCategoryPostAPIRequest, "params">) => [
       "get",
       "posts",
       "category",
@@ -383,9 +383,9 @@ export const postApis = {
     fn: getManyCategoryPostAPI,
   },
   getManyKeyword: {
-    endPoint: ({ params }: Pick<GetManyKeywordPostAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IGetManyKeywordPostAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/search/${params.keyword}`,
-    key: ({ params }: Pick<GetManyKeywordPostAPIRequest, "params">) => [
+    key: ({ params }: Pick<IGetManyKeywordPostAPIRequest, "params">) => [
       "get",
       "posts",
       "keyword",
@@ -394,9 +394,9 @@ export const postApis = {
     fn: getManyKeywordPostAPI,
   },
   patch: {
-    endPoint: ({ params }: Pick<PatchPostAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IPatchPostAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/${params.postId}`,
-    key: ({ params }: Pick<PatchPostAPIRequest, "params">) => [
+    key: ({ params }: Pick<IPatchPostAPIRequest, "params">) => [
       "patch",
       "posts",
       params.postId,
@@ -404,9 +404,9 @@ export const postApis = {
     fn: patchPostAPI,
   },
   delete: {
-    endPoint: ({ params }: Pick<DeletePostAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IDeletePostAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/${params.postId}`,
-    key: ({ params }: Pick<DeletePostAPIRequest, "params">) => [
+    key: ({ params }: Pick<IDeletePostAPIRequest, "params">) => [
       "delete",
       "posts",
       params.postId,
@@ -415,7 +415,7 @@ export const postApis = {
   },
   checkUniqueTitle: {
     endPoint: () => SERVER_URL + "/apis/v1/posts/check-unique-title",
-    key: ({ body }: Pick<CheckUniqueTitleAPIRequest, "body">) => [
+    key: ({ body }: Pick<ICheckUniqueTitleAPIRequest, "body">) => [
       "check",
       "unique",
       "title",

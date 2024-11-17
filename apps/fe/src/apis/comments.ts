@@ -4,13 +4,13 @@ import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 댓글 생성 ==============================
 /** 댓글 생성 요청 타입 */
-export interface CreateCommentAPIRequest {
+export interface ICreateCommentAPIRequest {
   params: { postId: Post["id"] };
   body: Partial<Pick<Comment, "id">> & Pick<Comment, "content">;
 }
 
 /** 댓글 생성 응답 타입 */
-export interface CreateCommentAPIResponse extends Comment {
+export interface ICreateCommentAPIResponse extends Comment {
   user: Pick<User, "id" | "nickname"> & {
     image: Pick<Image, "id" | "url">;
   };
@@ -20,7 +20,7 @@ export interface CreateCommentAPIResponse extends Comment {
 export const createCommentAPI = async ({
   params,
   body,
-}: CreateCommentAPIRequest): Promise<CreateCommentAPIResponse> => {
+}: ICreateCommentAPIRequest): Promise<ICreateCommentAPIResponse> => {
   return fetchInstance(commentApis.create.endPoint({ params }), {
     method: "POST",
     body: JSON.stringify(body),
@@ -37,11 +37,11 @@ export const createCommentAPI = async ({
 
 // ============================== 모든 댓글 요청 ==============================
 /** 모든 댓글 요청 요청 타입 */
-export interface GetAllCommentAPIRequest {
+export interface IGetAllCommentAPIRequest {
   params: { postId: Post["id"] };
 }
 /** 모든 댓글 요청 응답 타입 */
-export type GetAllCommentAPIResponse = (Comment & {
+export type TGetAllCommentAPIResponse = (Comment & {
   user: Pick<User, "id" | "nickname"> & {
     image: Pick<Image, "id" | "url">;
   };
@@ -50,7 +50,7 @@ export type GetAllCommentAPIResponse = (Comment & {
 /** 모든 댓글 요청 함수 */
 export const getAllCommentAPI = async ({
   params,
-}: GetAllCommentAPIRequest): Promise<GetAllCommentAPIResponse> => {
+}: IGetAllCommentAPIRequest): Promise<TGetAllCommentAPIResponse> => {
   return fetchInstance(commentApis.getAll.endPoint({ params }), {
     method: "GET",
   }).then(async (res) => {
@@ -66,12 +66,12 @@ export const getAllCommentAPI = async ({
 
 // ============================== 댓글 수정 ==============================
 /** 댓글 수정 요청 타입 */
-export interface PatchCommentAPIRequest {
+export interface IPatchCommentAPIRequest {
   params: { postId: Post["id"]; commentId: Comment["id"] };
-  body: Partial<CreateCommentAPIRequest["body"]>;
+  body: Partial<ICreateCommentAPIRequest["body"]>;
 }
 /** 댓글 수정 응답 타입 */
-export type PatchCommentAPIResponse = (Comment & {
+export type IPatchCommentAPIResponse = (Comment & {
   user: Pick<User, "id" | "nickname"> & {
     image: Pick<Image, "id" | "url">;
   };
@@ -81,7 +81,7 @@ export type PatchCommentAPIResponse = (Comment & {
 export const patchCommentAPI = async ({
   body,
   params,
-}: PatchCommentAPIRequest): Promise<PatchCommentAPIResponse> => {
+}: IPatchCommentAPIRequest): Promise<IPatchCommentAPIResponse> => {
   return fetchInstance(commentApis.patch.endPoint({ params }), {
     method: "PATCH",
     body: JSON.stringify(body),
@@ -98,15 +98,15 @@ export const patchCommentAPI = async ({
 
 // ============================== 댓글 삭제 ==============================
 /** 댓글 삭제 요청 타입 */
-export interface DeleteCommentAPIRequest {
+export interface IDeleteCommentAPIRequest {
   params: { postId: Post["id"]; commentId: Comment["id"] };
 }
 /** 댓글 삭제 응답 타입 */
-export interface DeleteCommentAPIResponse extends Comment {}
+export interface IDeleteCommentAPIResponse extends Comment {}
 /** 댓글 삭제 함수 */
 export const deleteCommentAPI = async ({
   params,
-}: DeleteCommentAPIRequest): Promise<DeleteCommentAPIResponse> => {
+}: IDeleteCommentAPIRequest): Promise<IDeleteCommentAPIResponse> => {
   return fetchInstance(commentApis.delete.endPoint({ params }), {
     method: "DELETE",
   }).then(async (res) => {
@@ -124,9 +124,9 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const commentApis = {
   create: {
-    endPoint: ({ params }: Pick<CreateCommentAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<ICreateCommentAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/${params.postId}/comments`,
-    key: ({ params }: CreateCommentAPIRequest) => [
+    key: ({ params }: ICreateCommentAPIRequest) => [
       "create",
       "posts",
       params.postId,
@@ -135,9 +135,9 @@ export const commentApis = {
     fn: createCommentAPI,
   },
   getAll: {
-    endPoint: ({ params }: Pick<GetAllCommentAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IGetAllCommentAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/posts/${params.postId}/comments`,
-    key: ({ params }: GetAllCommentAPIRequest) => [
+    key: ({ params }: IGetAllCommentAPIRequest) => [
       "get",
       "posts",
       params.postId,
@@ -146,10 +146,10 @@ export const commentApis = {
     fn: getAllCommentAPI,
   },
   patch: {
-    endPoint: ({ params }: Pick<PatchCommentAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IPatchCommentAPIRequest, "params">) =>
       SERVER_URL +
       `/apis/v1/posts/${params.postId}/comments/${params.commentId}`,
-    key: ({ params }: PatchCommentAPIRequest) => [
+    key: ({ params }: IPatchCommentAPIRequest) => [
       "patch",
       "posts",
       params.postId,
@@ -159,10 +159,10 @@ export const commentApis = {
     fn: patchCommentAPI,
   },
   delete: {
-    endPoint: ({ params }: Pick<DeleteCommentAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IDeleteCommentAPIRequest, "params">) =>
       SERVER_URL +
       `/apis/v1/posts/${params.postId}/comments/${params.commentId}`,
-    key: ({ params }: DeleteCommentAPIRequest) => [
+    key: ({ params }: IDeleteCommentAPIRequest) => [
       "delete",
       "posts",
       params.postId,

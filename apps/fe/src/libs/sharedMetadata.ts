@@ -15,7 +15,7 @@ const sharedKeywords = [
 ];
 const sharedImages = ["/images/default/preview.jpg"];
 
-interface GetSharedMetadataArgs {
+interface IGetSharedMetadataArgs {
   title?: Metadata["title"];
   description?: string;
   keywords?: string[];
@@ -28,7 +28,7 @@ export const getSharedMetadata = ({
   description = sharedDescription,
   keywords = sharedKeywords,
   images = sharedImages,
-}: GetSharedMetadataArgs = {}): Metadata => ({
+}: IGetSharedMetadataArgs = {}): Metadata => ({
   metadataBase: new URL(process.env.NEXT_PUBLIC_CLIENT_URL),
   title,
   description,

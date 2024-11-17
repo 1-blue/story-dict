@@ -1,42 +1,42 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   apis,
-  CheckUniqueTitleAPIRequest,
-  CheckUniqueTitleAPIResponse,
-  CreatePostAPIRequest,
-  CreatePostAPIResponse,
-  DeletePostAPIRequest,
-  DeletePostAPIResponse,
-  PatchPostAPIRequest,
-  PatchPostAPIResponse,
+  ICheckUniqueTitleAPIRequest,
+  ICheckUniqueTitleAPIResponse,
+  ICreatePostAPIRequest,
+  ICreatePostAPIResponse,
+  IDeletePostAPIRequest,
+  IDeletePostAPIResponse,
+  IPatchPostAPIRequest,
+  IPatchPostAPIResponse,
 } from "#fe/apis";
 
 const usePostMutations = () => {
   const { mutateAsync: createPostMutate } = useMutation<
-    CreatePostAPIResponse,
+    ICreatePostAPIResponse,
     Error,
-    CreatePostAPIRequest
+    ICreatePostAPIRequest
   >({
     mutationFn: ({ body }) => apis.posts.create.fn({ body }),
   });
   const { mutateAsync: patchPostMutate } = useMutation<
-    PatchPostAPIResponse,
+    IPatchPostAPIResponse,
     Error,
-    PatchPostAPIRequest
+    IPatchPostAPIRequest
   >({
     mutationFn: ({ body, params }) => apis.posts.patch.fn({ body, params }),
   });
   const { mutateAsync: deletePostMutate } = useMutation<
-    DeletePostAPIResponse,
+    IDeletePostAPIResponse,
     Error,
-    DeletePostAPIRequest
+    IDeletePostAPIRequest
   >({
     mutationFn: ({ params }) => apis.posts.delete.fn({ params }),
   });
   const { mutateAsync: checkUniqueTitleMutate } = useMutation<
-    CheckUniqueTitleAPIResponse,
+    ICheckUniqueTitleAPIResponse,
     Error,
-    CheckUniqueTitleAPIRequest
+    ICheckUniqueTitleAPIRequest
   >({
     mutationFn: ({ body }) => apis.posts.checkUniqueTitle.fn({ body }),
   });

@@ -16,10 +16,10 @@ import {
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 import Reactions from "./Reactions";
 import Link from "next/link";
-import { GetManyRandomPostAPIResponse } from "#fe/apis";
+import { TGetManyRandomPostAPIResponse } from "#fe/apis";
 
 interface IProps {
-  posts: GetManyRandomPostAPIResponse;
+  posts: TGetManyRandomPostAPIResponse;
   randomPostRefatch: () => void;
   existingIdsRef: React.MutableRefObject<string[]>;
   hasMore: boolean;

@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
-import { apis, CreateUserAPIRequest, CreateUserAPIResponse } from "#fe/apis";
+import { apis, ICreateUserAPIRequest, ICreateUserAPIResponse } from "#fe/apis";
 
 const useUserMutations = () => {
   const { mutateAsync: createUserMutate } = useMutation<
-    CreateUserAPIResponse,
+    ICreateUserAPIResponse,
     Error,
-    CreateUserAPIRequest
+    ICreateUserAPIRequest
   >({
     mutationFn: ({ body }) => apis.users.create.fn({ body }),
   });

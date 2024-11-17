@@ -2,10 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   apis,
-  PostLogInAPIRequest,
-  PostLogInAPIResponse,
-  PostLogOutAPIRequest,
-  PostLogOutAPIResponse,
+  IPostLogInAPIRequest,
+  IPostLogInAPIResponse,
+  IPostLogOutAPIRequest,
+  IPostLogOutAPIResponse,
 } from "#fe/apis";
 
 const useMe = () => {
@@ -19,9 +19,9 @@ const useMe = () => {
     mutationFn: apis.users.getMe.fn,
   });
   const { mutateAsync: logInMutate } = useMutation<
-    PostLogInAPIResponse,
+    IPostLogInAPIResponse,
     Error,
-    PostLogInAPIRequest
+    IPostLogInAPIRequest
   >({
     mutationFn: ({ body }) => apis.auth.login.fn({ body }),
     onSuccess(user) {
@@ -29,9 +29,9 @@ const useMe = () => {
     },
   });
   const { mutateAsync: logOutMutate } = useMutation<
-    PostLogOutAPIResponse,
+    IPostLogOutAPIResponse,
     Error,
-    PostLogOutAPIRequest
+    IPostLogOutAPIRequest
   >({
     mutationFn: apis.auth.logout.fn,
     onSuccess() {

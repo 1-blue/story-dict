@@ -4,14 +4,14 @@ import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 로그인된 유저 정보 ==============================
 /** 로그인된 유저 정보 요청 타입 */
-export interface GetMeAPIRequest {}
+export interface IGetMeAPIRequest {}
 /** 로그인된 유저 정보 응답 타입 */
-export interface GetMeAPIResponse
+export interface IGetMeAPIResponse
   extends Pick<User, "id" | "nickname" | "role" | "email"> {
   image?: Pick<Image, "id" | "url">;
 }
 /** 로그인된 유저 정보 가져오기 함수 */
-export const getMeAPI = async (): Promise<GetMeAPIResponse> => {
+export const getMeAPI = async (): Promise<IGetMeAPIResponse> => {
   return fetchInstance(userApis.getMe.endPoint(), {
     method: "GET",
   }).then(async (res) => {
@@ -27,7 +27,7 @@ export const getMeAPI = async (): Promise<GetMeAPIResponse> => {
 
 // ============================== 유저 생성 ==============================
 /** 유저 생성 요청 타입 */
-export interface CreateUserAPIRequest {
+export interface ICreateUserAPIRequest {
   body: Pick<User, "email" | "password" | "nickname"> &
     Partial<
       Pick<
@@ -43,13 +43,13 @@ export interface CreateUserAPIRequest {
     >;
 }
 /** 유저 생성 응답 타입 */
-export interface CreateUserAPIResponse extends Omit<User, "password"> {
+export interface ICreateUserAPIResponse extends Omit<User, "password"> {
   image?: Pick<Image, "id" | "url">;
 }
 /** 유저 생성 함수 */
 export const createUserAPI = async ({
   body,
-}: CreateUserAPIRequest): Promise<CreateUserAPIResponse> => {
+}: ICreateUserAPIRequest): Promise<ICreateUserAPIResponse> => {
   return fetchInstance(userApis.create.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),

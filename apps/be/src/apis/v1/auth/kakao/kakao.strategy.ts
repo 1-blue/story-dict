@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { PassportStrategy } from "@nestjs/passport";
 import { Profile, Strategy } from "passport-kakao";
 
-import type { OAuthUser } from "#be/types";
+import type { IOAuthUser } from "#be/types";
 
 export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
   constructor() {
@@ -16,7 +16,7 @@ export class KakaoStrategy extends PassportStrategy(Strategy, "kakao") {
 
   /** 응답값이 `serializeUser()`로 들어감 */
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    const oauthUser: OAuthUser = {
+    const oauthUser: IOAuthUser = {
       id: uuidv4(),
       email: profile._json.kakao_account.email,
       provider: "KAKAO",

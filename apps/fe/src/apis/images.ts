@@ -4,17 +4,17 @@ import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 이미지 업로드 ==============================
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 요청 타입 */
-export interface PostUploadPresignedURLByPresignedURLAPIRequest {
+export interface IPostUploadPresignedURLByPresignedURLAPIRequest {
   imageFile: File;
   fields: Record<string, string>;
 }
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 응답 타입 */
-export interface PostUploadPresignedURLByPresignedURLAPIResponse {}
+export interface IPostUploadPresignedURLByPresignedURLAPIResponse {}
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 함수 */
 export const postUploadImageByPresignedURL = async ({
   fields,
   imageFile,
-}: PostUploadPresignedURLByPresignedURLAPIRequest) => {
+}: IPostUploadPresignedURLByPresignedURLAPIRequest) => {
   const formData = new FormData();
   Object.entries(fields).forEach(([key, value]) => {
     formData.append(key, value);
@@ -39,16 +39,16 @@ export const postUploadImageByPresignedURL = async ({
 
 // ============================== 이미지 생성 ==============================
 /** 이미지 생성 요청 타입 */
-export interface CreateImageAPIRequest {
+export interface ICreateImageAPIRequest {
   body: Partial<Pick<Image, "id" | "status" | "purpose">> &
     Pick<Image, "name" | "url">;
 }
 /** 이미지 생성 응답 타입 */
-export interface CreateImageAPIResponse extends Image {}
+export interface ICreateImageAPIResponse extends Image {}
 /** 이미지 생성 함수 */
 export const createImageAPI = async ({
   body,
-}: CreateImageAPIRequest): Promise<CreateImageAPIResponse> => {
+}: ICreateImageAPIRequest): Promise<ICreateImageAPIResponse> => {
   return fetchInstance(imageApis.create.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
@@ -70,7 +70,7 @@ export const createImageAPI = async ({
 
 // ============================== 이미지 이동 ==============================
 /** 이미지 이동 요청 타입 */
-export interface PatchImageAPIRequest {
+export interface IPatchImageAPIRequest {
   params: { imageId: Image["id"] };
   body: {
     beforeStatus: Exclude<ImageStatus, "default">;
@@ -78,12 +78,12 @@ export interface PatchImageAPIRequest {
   };
 }
 /** 이미지 이동 응답 타입 */
-export interface PatchImageAPIResponse extends Image {}
+export interface IPatchImageAPIResponse extends Image {}
 /** 이미지 이동 함수 */
 export const patchImageAPI = async ({
   params,
   body,
-}: PatchImageAPIRequest): Promise<PatchImageAPIResponse> => {
+}: IPatchImageAPIRequest): Promise<IPatchImageAPIResponse> => {
   return fetchInstance(imageApis.patch.endPoint({ params }), {
     method: "PATCH",
     body: JSON.stringify(body),
@@ -105,11 +105,11 @@ export const patchImageAPI = async ({
 
 // ============================== presignedURL 생성 ==============================
 /** presignedURL 생성 요청 타입 */
-export interface CreatePresignedURLAPIRequest {
+export interface ICreatePresignedURLAPIRequest {
   body: Partial<Pick<Image, "status">> & { filename: string };
 }
 /** presignedURL 생성 응답 타입 */
-export interface CreatePresignedURLAPIResponse {
+export interface ICreatePresignedURLAPIResponse {
   url: string;
   fields: {
     bucket: string;
@@ -124,7 +124,7 @@ export interface CreatePresignedURLAPIResponse {
 /** presignedURL 생성 함수 */
 export const createPresignedURLAPI = async ({
   body,
-}: CreatePresignedURLAPIRequest): Promise<CreatePresignedURLAPIResponse> => {
+}: ICreatePresignedURLAPIRequest): Promise<ICreatePresignedURLAPIResponse> => {
   return fetchInstance(imageApis.createPresignedURL.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
@@ -158,9 +158,9 @@ export const imageApis = {
     fn: createImageAPI,
   },
   patch: {
-    endPoint: ({ params }: Pick<PatchImageAPIRequest, "params">) =>
+    endPoint: ({ params }: Pick<IPatchImageAPIRequest, "params">) =>
       SERVER_URL + `/apis/v1/images/${params.imageId}`,
-    key: ({ params }: PatchImageAPIRequest) => [
+    key: ({ params }: IPatchImageAPIRequest) => [
       "patch",
       "images",
       params.imageId,

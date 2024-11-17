@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import {
   apis,
-  CreateCommentAPIRequest,
-  CreateCommentAPIResponse,
+  ICreateCommentAPIRequest,
+  ICreateCommentAPIResponse,
 } from "#fe/apis";
 
 const useCommentMutations = () => {
   const { mutateAsync: createCommentMutate } = useMutation<
-    CreateCommentAPIResponse,
+    ICreateCommentAPIResponse,
     Error,
-    CreateCommentAPIRequest
+    ICreateCommentAPIRequest
   >({
     mutationFn: ({ params, body }) => apis.comments.create.fn({ params, body }),
   });

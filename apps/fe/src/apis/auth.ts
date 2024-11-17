@@ -4,15 +4,15 @@ import { fetchInstance } from "#fe/apis/fetchInstance";
 
 // ============================== 로그인 ==============================
 /** 로그인 요청 타입 */
-export interface PostLogInAPIRequest {
+export interface IPostLogInAPIRequest {
   body: Pick<User, "email" | "password">;
 }
 /** 로그인 응답 타입 */
-export interface PostLogInAPIResponse extends Omit<User, "password"> {}
+export interface IPostLogInAPIResponse extends Omit<User, "password"> {}
 /** 로그인 함수 */
 const postLogInAPI = async ({
   body,
-}: PostLogInAPIRequest): Promise<PostLogInAPIResponse> => {
+}: IPostLogInAPIRequest): Promise<IPostLogInAPIResponse> => {
   return fetchInstance(authApis.login.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
@@ -30,11 +30,11 @@ const postLogInAPI = async ({
 
 // ============================== 로그아웃 ==============================
 /** 로그아웃 요청 타입 */
-export interface PostLogOutAPIRequest {}
+export interface IPostLogOutAPIRequest {}
 /** 로그아웃 응답 타입 */
-export interface PostLogOutAPIResponse {}
+export interface IPostLogOutAPIResponse {}
 /** 로그아웃 함수 */
-const postLogOutAPI = async (): Promise<PostLogOutAPIResponse> => {
+const postLogOutAPI = async (): Promise<IPostLogOutAPIResponse> => {
   return fetchInstance(authApis.logout.endPoint(), {
     method: "POST",
   }).then(async (res) => {

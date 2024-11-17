@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import type { Request, Response } from "express";
 
-import type { RequestWithOAuthUser } from "#be/types";
+import type { IRequestWithOAuthUser } from "#be/types";
 import { IsLoggedIn, IsLoggedOut } from "#be/guards";
 import { AuthService } from "#be/apis/v1/auth/auth.service";
 import { LocalAuthGuard } from "#be/apis/v1/auth/local/local.guard";
@@ -43,7 +43,7 @@ export class AuthController {
   @UseGuards(KakaoAuthGuard)
   @Get("login/kakao/redirect")
   async oauthKakaoRedirect(
-    @Req() req: RequestWithOAuthUser,
+    @Req() req: IRequestWithOAuthUser,
     @Res() res: Response,
   ) {
     await this.authService.validateOAuth(req.user);
@@ -69,7 +69,7 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @Get("login/google/redirect")
   async oauthGoogleRedirect(
-    @Req() req: RequestWithOAuthUser,
+    @Req() req: IRequestWithOAuthUser,
     @Res() res: Response,
   ) {
     await this.authService.validateOAuth(req.user);
