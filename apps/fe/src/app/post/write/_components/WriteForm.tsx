@@ -80,7 +80,7 @@ const WriteForm: React.FC = () => {
 
     try {
       const { isUnique } = await checkUniqueTitleMutate({
-        body: { title: body.title },
+        body: { title: body.title.trim() },
       });
 
       if (!isUnique) {
@@ -108,6 +108,7 @@ const WriteForm: React.FC = () => {
       await createPostMutate({
         body: {
           ...body,
+          title: body.title.trim(),
           thumbnailId: imageData?.id,
         },
       });

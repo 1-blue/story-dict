@@ -55,6 +55,24 @@ const datas = [
     content: `태종 이방원이 함흥으로 보낸 차사들이 모두 죽어 소식이 끊겨서 생긴 말\n\`뭘 실켜서 보냈는데 한참이 지나도 소식이 없는 사람\`을 뜻하는 말입니다.`,
     category: `ETYMOLOGY` as PostCategory,
   },
+  {
+    title: `온새미로`,
+    summary: `언제나 변함없이`,
+    content: `\`가르거나 쪼개지 않고 본래의 모습 그대로\`라는 뜻의 순우리말`,
+    category: `PURE_KOREAN` as PostCategory,
+  },
+  {
+    title: `숙주`,
+    summary: `조선시대 관리인 신숙주를 비하하는 의미`,
+    content: `신숙주는 단종을 배신하고 수양대군을 도운 변절자입니다.\n숙주나물도 쉽게 상하고 변질되는 특징을 가지고 있어서 숙주라는 이름을 갖게 되었습니다.`,
+    category: `ETYMOLOGY` as PostCategory,
+  },
+  {
+    title: `옥수수 알갱이와 수염`,
+    summary: `알갱이와 수염의 개수는 거의 동일함`,
+    content: `옥수수의 수염은 꽃가루를 수정시키는 역할을 합니다.\n즉 옥수수 수염 하나에 하나가 하나의 알갱이를 만들어냅니다.`,
+    category: `INFORMATION` as PostCategory,
+  },
 ];
 
 /** 기본 게시물들 */

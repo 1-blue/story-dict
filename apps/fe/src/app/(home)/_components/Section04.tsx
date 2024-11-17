@@ -40,6 +40,41 @@ const posts: Pick<Post, "title" | "summary" | "category">[] = [
     summary: `사실 개복치는 매우 단단한 존재`,
     category: `INFORMATION`,
   },
+  {
+    title: `모르핀`,
+    summary: `양귀비에서 추출된 성분`,
+    category: `ETYMOLOGY`,
+  },
+  {
+    title: `카르만 라인`,
+    summary: `지구의 대기권과 우주를 구분하는 경계`,
+    category: `GENERAL_KNOWLEDGE`,
+  },
+  {
+    title: `귤락`,
+    summary: `귤의 알맹이에 붙어있는 하얀 실`,
+    category: `GENERAL_KNOWLEDGE`,
+  },
+  {
+    title: `함흥차사`,
+    summary: `실제 함흥으로 보낸 차사에서 유래된 말`,
+    category: `ETYMOLOGY`,
+  },
+  {
+    title: `온새미로`,
+    summary: `언제나 변함없이`,
+    category: `PURE_KOREAN`,
+  },
+  {
+    title: `숙주`,
+    summary: `조선시대 관리인 신숙주를 비하하는 의미`,
+    category: `ETYMOLOGY`,
+  },
+  {
+    title: `옥수수 알갱이와 수염`,
+    summary: `알갱이와 수염의 개수는 거의 동일함`,
+    category: `INFORMATION`,
+  },
 ];
 
 const firstRow = posts.slice(0, posts.length / 2);

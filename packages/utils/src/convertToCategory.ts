@@ -3,7 +3,8 @@ type Category =
   | "ETYMOLOGY"
   | "PURE_KOREAN"
   | "QUOTATION"
-  | "INFORMATION";
+  | "INFORMATION"
+  | "NONSENSE";
 
 /** 카테고리 한글로 변환 */
 export const convertToCategory = (category: Category) => {
@@ -18,5 +19,7 @@ export const convertToCategory = (category: Category) => {
       return "명대사";
     case "INFORMATION":
       return "정보";
+    case "NONSENSE":
+      return "넌센스";
   }
 };
