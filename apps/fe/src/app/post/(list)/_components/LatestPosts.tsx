@@ -13,7 +13,9 @@ const LatestPosts: React.FC = () => {
   return (
     <article>
       <ul className="flex flex-wrap gap-4">
-        {posts?.map((post) => <PostCard key={post.id} post={post} />)}
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
       </ul>
     </article>
   );

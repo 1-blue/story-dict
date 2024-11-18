@@ -32,8 +32,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
   });
 };
 
-const Page: React.FC = async () => {
-  await getAllPosts();
+const Page: React.FC = () => {
+  getAllPosts();
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

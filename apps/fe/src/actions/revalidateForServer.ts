@@ -2,10 +2,10 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export const revalidatePathForServer = async (path: string) => {
+export const revalidatePathForServer = (path: string) => {
   revalidatePath(path);
 };
-export const revalidateTagForServer = async (tags: string[]) => {
+export const revalidateTagForServer = (tags: string[]) => {
   const METHODS = ["GET", "POST", "PATCH", "PUT", "DELETE"];
 
   tags

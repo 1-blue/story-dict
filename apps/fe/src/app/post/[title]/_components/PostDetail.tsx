@@ -13,6 +13,7 @@ import MarkdownViewer from "#fe/app/post/[title]/_components/MarkdownViewer";
 import CommentSheet from "#fe/app/post/[title]/_components/CommentSheet";
 import ReactionPopover from "#fe/app/post/[title]/_components/ReactionPopover";
 import Reactions from "#fe/app/post/[title]/_components/Reactions";
+import PanelPopover from "./PanelPopover";
 
 interface IProps {
   postTitle: string;
@@ -30,9 +31,10 @@ const PostDetail: React.FC<IProps> = ({ postTitle }) => {
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-4">
       <section className="relative flex flex-col items-center justify-center gap-4 rounded-md border bg-background p-4">
-        <Badge className="absolute right-4 top-4">
-          {postCategoryToKoreanMap[post.category]}
-        </Badge>
+        <div className="absolute top-0 flex w-full items-center justify-between px-2 pt-2">
+          <Badge className="">{postCategoryToKoreanMap[post.category]}</Badge>
+          <PanelPopover postId={post.id} />
+        </div>
         <div className="flex flex-col items-center justify-center gap-1">
           <h1 className="text-2xl font-bold">{post.title}</h1>
           <p className="text-base font-semibold text-muted-foreground">
@@ -43,10 +45,7 @@ const PostDetail: React.FC<IProps> = ({ postTitle }) => {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-              <time
-                dateTime={new Date(post.createdAt).toISOString()}
-                className="text-xs text-muted-foreground"
-              >
+              <time className="text-xs text-muted-foreground">
                 {new Date(post.createdAt).toLocaleDateString("ko-KR")}
               </time>
             </div>

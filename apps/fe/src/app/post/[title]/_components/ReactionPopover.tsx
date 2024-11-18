@@ -81,6 +81,7 @@ const ReactionPopover: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
       <PopoverContent
         onClick={onClickReaction}
         className="grid w-full grid-cols-4 gap-2"
+        align="start"
       >
         {Object.entries(reactionTypeToEmojiMap).map(([key, emoji]) => (
           <Button
