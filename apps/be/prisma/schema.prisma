@@ -125,7 +125,7 @@ model User {
   providerId String?      @unique
 
   /// [1:N] 유저의 이미지
-  image   Image?  @relation(fields: [imageId], references: [id])
+  image   Image?  @relation(fields: [imageId], references: [id], onDelete: Cascade)
   /// [1:N] 이미지 식별자
   imageId String?
 
@@ -177,12 +177,12 @@ model Post {
   /// 게시글 카테고리
   category    PostCategory @default(GENERAL_KNOWLEDGE)
   /// 게시글 썸네일 이미지
-  thumbnail   Image?       @relation(fields: [thumbnailId], references: [id])
+  thumbnail   Image?       @relation(fields: [thumbnailId], references: [id], onDelete: Cascade)
   /// [1:N] 이미지 식별자
   thumbnailId String?
 
   /// [1:N] 게시글의 유저
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// [1:N] 유저 식별자
   userId String
 
@@ -233,22 +233,22 @@ model Reaction {
   type ReactionType
 
   /// 반응 유저
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// [1:N] 유저 식별자
   userId String
 
   /// [1:N] 반응 게시글
-  post   Post?   @relation(fields: [postId], references: [id])
+  post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
   /// [1:N] 게시글 식별자
   postId String?
 
   /// [1:N] 반응 댓글
-  comment   Comment? @relation(fields: [commentId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
   /// [1:N] 댓글 식별자
   commentId String?
 
   /// [1:N] 반응 대댓글
-  reply   Reply?  @relation(fields: [replyId], references: [id])
+  reply   Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
   /// [1:N] 대댓글 식별자
   replyId String?
 }
@@ -267,12 +267,12 @@ model Comment {
   content String
 
   /// [1:N] 댓글의 유저
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// [1:N] 유저 식별자
   userId String
 
   /// [1:N] 댓글의 게시글
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   /// [1:N] 게시글 식별자
   postId String
 
@@ -297,17 +297,17 @@ model Reply {
   content String
 
   /// [1:N] 대댓글의 유저
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// [1:N] 유저 식별자
   userId String
 
   /// [1:N] 대댓글의 게시글
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   /// [1:N] 게시글 식별자
   postId String
 
   /// [1:N] 대댓글의 댓글
-  comment   Comment @relation(fields: [commentId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   /// [1:N] 댓글 식별자
   commentId String
 
