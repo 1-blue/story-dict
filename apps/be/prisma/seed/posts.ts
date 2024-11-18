@@ -79,7 +79,7 @@ const datas = [
 export const seedPosts: Prisma.PostCreateManyInput[] = datas.map(
   (data, index) => ({
     ...data,
-    id: `00000000-0000-0000-0000-00000000000${index}`,
+    id: `00000000-0000-0000-0000-${index}00000000000`.slice(0, 36),
     userId: `00000000-0000-0000-0000-000000000000`,
   }),
 );
