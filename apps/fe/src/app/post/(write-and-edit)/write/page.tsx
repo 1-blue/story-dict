@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import WriteForm from "#fe/app/post/write/_components/WriteForm";
+import WriteForm from "#fe/app/post/(write-and-edit)/_components/WriteForm";
 
 const Page: NextPage = () => {
   return <WriteForm />;

@@ -16,8 +16,8 @@ import useImageMutations from "#fe/hooks/useImageMutations";
 import usePostMutations from "#fe/hooks/usePostMutations";
 import { revalidateTagForServer } from "#fe/actions/revalidateForServer";
 
-import Metadata from "#fe/app/post/write/_components/Metadata";
-import Editor from "#fe/app/post/write/_components/Editor";
+import Metadata from "#fe/app/post/(write-and-edit)/_components/Metadata";
+import Editor from "#fe/app/post/(write-and-edit)/_components/Editor";
 
 const formSchema = z.object({
   title: schemas.title,
@@ -41,12 +41,17 @@ const DEV_DEFAULT_VALUES =
         category: "GENERAL_KNOWLEDGE",
       } as const);
 
-const WriteForm: React.FC = () => {
+interface IProps {
+  postId?: string;
+  defaultValues?: z.infer<typeof formSchema>;
+}
+
+const WriteForm: React.FC<IProps> = ({ postId, defaultValues }) => {
   const router = useRouter();
   const { me } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: DEV_DEFAULT_VALUES,
+    defaultValues: defaultValues ?? DEV_DEFAULT_VALUES,
   });
 
   const [tab, setTab] = useState<"editor" | "metadata">("editor");
@@ -73,25 +78,32 @@ const WriteForm: React.FC = () => {
     url: string;
   } | null>(null);
 
+  const isEdit = !!postId;
+
   const { patchImageMutate } = useImageMutations();
-  const { createPostMutate, checkUniqueTitleMutate } = usePostMutations();
+  const { createPostMutate, checkUniqueTitleMutate, patchPostMutate } =
+    usePostMutations();
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me?.id) return;
 
-    try {
-      const { isUnique } = await checkUniqueTitleMutate({
-        body: { title: body.title.trim() },
-      });
+    const isTitleUnchanged = defaultValues?.title === body.title;
 
-      if (!isUnique) {
-        form.setError("title", {
-          type: "validate",
-          message: "이미 존재하는 제목입니다",
+    if (!isTitleUnchanged) {
+      try {
+        const { isUnique } = await checkUniqueTitleMutate({
+          body: { title: body.title.trim() },
         });
-        return;
+
+        if (!isUnique) {
+          form.setError("title", {
+            type: "validate",
+            message: "이미 존재하는 제목입니다",
+          });
+          return;
+        }
+      } catch (error) {
+        handleError({ error, title: "이미 존재하는 제목" });
       }
-    } catch (error) {
-      handleError({ error, title: "이미 존재하는 제목" });
     }
 
     try {
@@ -105,13 +117,24 @@ const WriteForm: React.FC = () => {
         });
       }
 
-      await createPostMutate({
-        body: {
-          ...body,
-          title: body.title.trim(),
-          thumbnailId: imageData?.id,
-        },
-      });
+      if (isEdit) {
+        await patchPostMutate({
+          params: { postId },
+          body: {
+            ...body,
+            title: body.title.trim(),
+            thumbnailId: imageData?.id,
+          },
+        });
+      } else {
+        await createPostMutate({
+          body: {
+            ...body,
+            title: body.title.trim(),
+            thumbnailId: imageData?.id,
+          },
+        });
+      }
 
       revalidateTagForServer(apis.posts.getAll.key());
 

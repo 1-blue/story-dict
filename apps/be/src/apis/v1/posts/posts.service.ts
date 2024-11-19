@@ -225,12 +225,16 @@ export class PostsService {
 
   /** 특정 게시글 수정 */
   async update({ postId }: FindByPostIdDto, { ...post }: UpdatePostDto) {
-    await this.getOne({ postId });
+    const originalPost = await this.getOne({ postId });
 
-    if (post.title) {
-      const { isUnique } = await this.checkUniqueTitle({ title: post.title });
+    const isTitleChanged = originalPost.title !== post.title;
 
-      if (!isUnique) throw new ConflictException("이미 존재하는 제목입니다.");
+    if (isTitleChanged) {
+      if (post.title) {
+        const { isUnique } = await this.checkUniqueTitle({ title: post.title });
+
+        if (!isUnique) throw new ConflictException("이미 존재하는 제목입니다.");
+      }
     }
 
     return await this.prismaService.post.update({
