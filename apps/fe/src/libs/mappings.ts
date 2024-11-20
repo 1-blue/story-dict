@@ -32,6 +32,7 @@ export const breadcrumbToKoreanMap: Record<string, string> = {
   category: "카테고리",
   random: "랜덤",
   write: "글쓰기",
+  edit: "수정",
   search: "검색",
   ...postCategoryToKoreanMap,
 };

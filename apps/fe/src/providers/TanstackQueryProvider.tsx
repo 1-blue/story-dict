@@ -18,7 +18,7 @@ const TanstackQueryProvider: React.FC<React.PropsWithChildren> = ({
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      <ReactQueryDevtools position="right" />
+      {/* <ReactQueryDevtools position="right" /> */}
     </QueryClientProvider>
   );
 };

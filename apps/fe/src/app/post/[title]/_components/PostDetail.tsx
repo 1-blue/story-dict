@@ -9,11 +9,11 @@ import "#fe/css/github-markdown.css";
 import { apis } from "#fe/apis";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 
-import MarkdownViewer from "#fe/app/post/[title]/_components/MarkdownViewer";
-import CommentSheet from "#fe/app/post/[title]/_components/CommentSheet";
-import ReactionPopover from "#fe/app/post/[title]/_components/ReactionPopover";
-import Reactions from "#fe/app/post/[title]/_components/Reactions";
-import PanelPopover from "./PanelPopover";
+import Reactions from "#fe/app/post/[title]/_components/Section01/Reactions";
+import ReactionPopover from "#fe/app/post/[title]/_components/Section01/ReactionPopover";
+import PanelPopover from "#fe/app/post/[title]/_components/Section01/PanelPopover";
+import MarkdownViewer from "#fe/app/post/[title]/_components/Section02/MarkdownViewer";
+import CommentSheet from "#fe/app/post/[title]/_components/Section03/CommentSheet";
 
 interface IProps {
   postTitle: string;
