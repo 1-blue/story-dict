@@ -11,16 +11,4 @@ export class CreateReactionDto {
     message: "유효하지 않은 리액션 타입입니다.",
   })
   type: ReactionType;
-
-  @IsOptional()
-  @IsUUID("all", { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
-  postId?: string;
-
-  @IsOptional()
-  @IsUUID("all", { message: "댓글 식별자는 UUID 형태만 입력이 가능합니다." })
-  commentId?: string;
-
-  @IsOptional()
-  @IsUUID("all", { message: "답글 식별자는 UUID 형태만 입력이 가능합니다." })
-  replyId?: string;
 }

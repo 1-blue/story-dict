@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
-import type { CreateCommentDto } from "#be/apis/v1/comments/dtos/create-comment.dto";
-import type { UpdateCommentDto } from "#be/apis/v1/comments/dtos/update-comment.dto";
+import type { CreateCommentDto } from "#be/apis/v1/posts/comments/dtos/create-comment.dto";
+import type { UpdateCommentDto } from "#be/apis/v1/posts/comments/dtos/update-comment.dto";
 import {
   FindByPostIdAndCommentIdDto,
   FindByPostIdDto,
-} from "#be/apis/v1/comments/dtos/find-by-id.dto";
+} from "#be/apis/v1/posts/comments/dtos/find-by-id.dto";
 
 @Injectable()
-export class CommentsService {
+export class PostsCommentsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(

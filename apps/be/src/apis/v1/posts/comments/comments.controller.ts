@@ -13,18 +13,18 @@ import {
 } from "@nestjs/common";
 import type { Request } from "express";
 
-import { CommentsService } from "#be/apis/v1/comments/comments.service";
-import { CreateCommentDto } from "#be/apis/v1/comments/dtos/create-comment.dto";
-import { UpdateCommentDto } from "#be/apis/v1/comments/dtos/update-comment.dto";
+import { PostsCommentsService } from "#be/apis/v1/posts/comments/comments.service";
+import { CreateCommentDto } from "#be/apis/v1/posts/comments/dtos/create-comment.dto";
+import { UpdateCommentDto } from "#be/apis/v1/posts/comments/dtos/update-comment.dto";
 import { IsLoggedIn } from "#be/guards";
 import {
   FindByPostIdAndCommentIdDto,
   FindByPostIdDto,
-} from "#be/apis/v1/comments/dtos/find-by-id.dto";
+} from "#be/apis/v1/posts/comments/dtos/find-by-id.dto";
 
 @Controller("apis/v1/posts/:postId/comments")
-export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+export class PostsCommentsController {
+  constructor(private readonly postsCommentsService: PostsCommentsService) {}
 
   @UseGuards(IsLoggedIn)
   @Post()
@@ -34,7 +34,7 @@ export class CommentsController {
     @Param() findByIdDto: FindByPostIdDto,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    return this.commentsService.create(
+    return this.postsCommentsService.create(
       req.user!.id,
       findByIdDto,
       createCommentDto,
@@ -43,7 +43,7 @@ export class CommentsController {
 
   @Get()
   findMany(@Param() findByIdDto: FindByPostIdDto) {
-    return this.commentsService.findMany(findByIdDto);
+    return this.postsCommentsService.findMany(findByIdDto);
   }
 
   @UseGuards(IsLoggedIn)
@@ -52,13 +52,13 @@ export class CommentsController {
     @Param() findByIdDto: FindByPostIdAndCommentIdDto,
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
-    return this.commentsService.update(findByIdDto, updateCommentDto);
+    return this.postsCommentsService.update(findByIdDto, updateCommentDto);
   }
 
   @UseGuards(IsLoggedIn)
   @Delete(":commentId")
   @HttpCode(HttpStatus.NO_CONTENT)
   delete(@Param() findByIdDto: FindByPostIdAndCommentIdDto) {
-    return this.commentsService.delete(findByIdDto);
+    return this.postsCommentsService.delete(findByIdDto);
   }
 }

@@ -7,23 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// [테스트용] 고양이 모델
-model Cat {
-  /// 고양이 식별자
-  id        String    @id @default(uuid())
-  /// 생성 일자
-  createdAt DateTime  @default(now())
-  /// 수정 일자
-  updatedAt DateTime  @updatedAt
-  /// 삭제 일자
-  deletedAt DateTime?
+/// 유저 역할
+enum UserRole {
+  /// 관리자
+  ADMIN
+  /// 일부 권한을 부여받은 유저
+  MANAGER
+  /// 일반 유저
+  USER
+  /// 로그인하지 않고 체험으로 사용하는 유저 ( 1일 )
+  GUEST
+}
 
-  /// 고양이 이름
-  name   String  @unique
-  /// 고양이 나이
-  age    Int
-  /// 고양이 성별
-  gender Boolean @default(true)
+/// 유저 로그인 방식
+enum UserProvider {
+  /// 일반 로그인 ( 이메일 + 비밀번호 )
+  LOCAL
+  /// 카카오 로그인
+  KAKAO
+  /// 구글 로그인
+  GOOGLE
 }
 
 /// 이미지 저장 상태
@@ -46,6 +49,64 @@ enum ImagePurpose {
   USER_PROFILE
   /// 게시글 썸네일 이미지
   POST_THUMBNAIL
+}
+
+/// 게시글 카테고리
+enum PostCategory {
+  /// 상식
+  GENERAL_KNOWLEDGE
+  /// 어원
+  ETYMOLOGY
+  /// 순우리말
+  PURE_KOREAN
+  /// 명대사
+  QUOTATION
+  /// 단순 정보
+  INFORMATION
+  /// 넌센스
+  NONSENSE
+}
+
+enum ReactionType {
+  /// 좋아요 👍
+  GOOD
+  /// 싫어요 👎
+  BAD
+  /// 불타오르다 🔥
+  FIRE
+  /// 보다 👀
+  SEE
+  /// 하트 ❤️
+  HEART
+  /// 웃다 😊
+  SMILE
+  /// 슬프다 😢
+  SAD
+  /// 화나다 😠
+  ANGRY
+  /// 놀랐다 🫢
+  WOW
+  /// 의문 🤔
+  QUESTION
+}
+
+/// [테스트용] 고양이 모델
+model Cat {
+  /// 고양이 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 고양이 이름
+  name   String  @unique
+  /// 고양이 나이
+  age    Int
+  /// 고양이 성별
+  gender Boolean @default(true)
 }
 
 /// 이미지 모델
@@ -72,28 +133,6 @@ model Image {
   users User[]
   /// [1:N] 연결된 게시글
   posts Post[]
-}
-
-/// 유저 역할
-enum UserRole {
-  /// 관리자
-  ADMIN
-  /// 일부 권한을 부여받은 유저
-  MANAGER
-  /// 일반 유저
-  USER
-  /// 로그인하지 않고 체험으로 사용하는 유저 ( 1일 )
-  GUEST
-}
-
-/// 유저 로그인 방식
-enum UserProvider {
-  /// 일반 로그인 ( 이메일 + 비밀번호 )
-  LOCAL
-  /// 카카오 로그인
-  KAKAO
-  /// 구글 로그인
-  GOOGLE
 }
 
 /// 유저 모델
@@ -130,32 +169,19 @@ model User {
   imageId String?
 
   /// [1:N] 유저의 게시글
-  posts Post[]
-
-  /// [1:N] 유저의 게시글
-  reactions Reaction[]
+  posts         Post[]
+  /// [1:N] 유저의 게시글 반응
+  postReactions PostReaction[]
 
   /// [1:N] 유저의 댓글
-  comments Comment[]
+  comments         Comment[]
+  /// [1:N] 유저의 댓글 반응
+  commentReactions CommentReaction[]
 
   /// [1:N] 유저의 대댓글
-  replies Reply[]
-}
-
-/// 게시글 카테고리
-enum PostCategory {
-  /// 상식
-  GENERAL_KNOWLEDGE
-  /// 어원
-  ETYMOLOGY
-  /// 순우리말
-  PURE_KOREAN
-  /// 명대사
-  QUOTATION
-  /// 단순 정보
-  INFORMATION
-  /// 넌센스
-  NONSENSE
+  replies        Reply[]
+  /// [1:N] 유저의 대댓글 반응
+  replyReactions ReplyReaction[]
 }
 
 model Post {
@@ -187,39 +213,22 @@ model Post {
   userId String
 
   /// [1:N] 게시글의 반응
-  reactions Reaction[]
+  reactions PostReaction[]
 
   /// [1:N] 게시글의 댓글
   comments Comment[]
 
   /// [1:N] 게시글의 대댓글
   replies Reply[]
+
+  /// [1:N] 게시글의 댓글 반응
+  commentReactions CommentReaction[]
+
+  /// [1:N] 게시글의 댓글의 대댓글 반응
+  replyReactions ReplyReaction[]
 }
 
-enum ReactionType {
-  /// 좋아요 👍
-  GOOD
-  /// 싫어요 👎
-  BAD
-  /// 불타오르다 🔥
-  FIRE
-  /// 보다 👀
-  SEE
-  /// 하트 ❤️
-  HEART
-  /// 웃다 😊
-  SMILE
-  /// 슬프다 😢
-  SAD
-  /// 화나다 😠
-  ANGRY
-  /// 놀랐다 🫢
-  WOW
-  /// 의문 🤔
-  QUESTION
-}
-
-model Reaction {
+model PostReaction {
   /// 반응 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
@@ -238,19 +247,9 @@ model Reaction {
   userId String
 
   /// [1:N] 반응 게시글
-  post   Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   /// [1:N] 게시글 식별자
-  postId String?
-
-  /// [1:N] 반응 댓글
-  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  /// [1:N] 댓글 식별자
-  commentId String?
-
-  /// [1:N] 반응 대댓글
-  reply   Reply?  @relation(fields: [replyId], references: [id], onDelete: Cascade)
-  /// [1:N] 대댓글 식별자
-  replyId String?
+  postId String
 }
 
 model Comment {
@@ -280,7 +279,39 @@ model Comment {
   replies Reply[]
 
   /// [1:N] 댓글의 반응
-  reactions Reaction[]
+  reactions CommentReaction[]
+
+  /// [1:N] 댓글의 대댓글 반응
+  replyReactions ReplyReaction[]
+}
+
+model CommentReaction {
+  /// 반응 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 리액션 타입
+  type ReactionType
+
+  /// 반응 유저
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// [1:N] 유저 식별자
+  userId String
+
+  /// [1:N] 반응 게시글
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  /// [1:N] 게시글 식별자
+  postId String
+
+  /// [1:N] 반응 댓글
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  /// [1:N] 댓글 식별자
+  commentId String
 }
 
 model Reply {
@@ -312,5 +343,39 @@ model Reply {
   commentId String
 
   /// [1:N] 대댓글의 반응
-  reactions Reaction[]
+  reactions ReplyReaction[]
+}
+
+model ReplyReaction {
+  /// 반응 식별자
+  id        String    @id @default(uuid())
+  /// 생성 일자
+  createdAt DateTime  @default(now())
+  /// 수정 일자
+  updatedAt DateTime  @updatedAt
+  /// 삭제 일자
+  deletedAt DateTime?
+
+  /// 리액션 타입
+  type ReactionType
+
+  /// 반응 유저
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// [1:N] 유저 식별자
+  userId String
+
+  /// [1:N] 반응 게시글
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  /// [1:N] 게시글 식별자
+  postId String
+
+  /// [1:N] 반응 댓글
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  /// [1:N] 댓글 식별자
+  commentId String
+
+  /// [1:N] 반응 대댓글
+  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  /// [1:N] 대댓글 식별자
+  replyId String
 }

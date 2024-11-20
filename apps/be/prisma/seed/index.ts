@@ -38,13 +38,13 @@ async function main() {
   });
 
   console.log(`✅ seeding to postReactions ...`);
-  await prisma.reaction.createMany({
+  await prisma.postReaction.createMany({
     data: postReactions,
     skipDuplicates: true,
   });
 
   console.log(`✅ seeding to commentReactions ...`);
-  await prisma.reaction.createMany({
+  await prisma.commentReaction.createMany({
     data: commentReactions,
     skipDuplicates: true,
   });

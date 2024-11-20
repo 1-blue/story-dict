@@ -14,7 +14,7 @@ const reactionTypes: ReactionType[] = [
 ];
 
 /** 기본 게시물 리액션들  */
-export const postReactions: Prisma.ReactionCreateManyInput[] =
+export const postReactions: Prisma.PostReactionCreateManyInput[] =
   reactionTypes.map((type, index) => ({
     id: `00000000-0000-0000-0000-${index}00000000000`.slice(0, 36),
     type,
