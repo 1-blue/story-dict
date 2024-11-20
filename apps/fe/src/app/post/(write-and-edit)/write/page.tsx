@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 
-import WriteForm from "#fe/app/post/(write-and-edit)/_components/WriteForm";
+import PostForm from "#fe/app/post/(write-and-edit)/_components/PostForm";
 
 const Page: NextPage = () => {
-  return <WriteForm />;
+  return <PostForm />;
 };
 
 export default Page;

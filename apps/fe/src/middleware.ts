@@ -1,14 +1,35 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import { CATEGORIES } from "#fe/constants";
+import { routes } from "#fe/constants";
+
+export const authenticatedRoutes = [
+  routes.post.write.url,
+  routes.post.edit.url(""),
+];
+export const unauthenticatedRoutes = [
+  routes.login.url,
+  routes.signup.url,
+] as string[];
 
 export function middleware(request: NextRequest) {
-  // 카테고리 페이지 리다이렉트
-  if (request.nextUrl.pathname === "/post/category") {
-    return NextResponse.redirect(
-      new URL(`/post/category/${CATEGORIES[0]?.value}`, request.url),
-    );
+  const isLoggedIn = request.cookies.get("sd_logged_in")?.value;
+  const { pathname } = request.nextUrl;
+
+  // 로그인 후 접근 가능한 페이지인데
+  if (authenticatedRoutes.some((route) => pathname.includes(route))) {
+    // 로그인 안된 경우
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL(routes.login.url, request.url));
+    }
+  }
+
+  // 로그인 전 접근 가능한 페이지인데
+  if (unauthenticatedRoutes.includes(pathname)) {
+    // 로그인 된 경우
+    if (isLoggedIn) {
+      return NextResponse.redirect(new URL(routes.post.url, request.url));
+    }
   }
 
   return NextResponse.next();

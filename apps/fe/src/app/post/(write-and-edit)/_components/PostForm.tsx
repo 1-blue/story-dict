@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
@@ -42,11 +42,12 @@ const DEV_DEFAULT_VALUES =
       } as const);
 
 interface IProps {
+  ownerId?: string;
   postId?: string;
   defaultValues?: z.infer<typeof formSchema>;
 }
 
-const WriteForm: React.FC<IProps> = ({ postId, defaultValues }) => {
+const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
   const router = useRouter();
   const { me } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -148,6 +149,11 @@ const WriteForm: React.FC<IProps> = ({ postId, defaultValues }) => {
     }
   });
 
+  if (ownerId && ownerId !== me?.id) {
+    toast.warning("권한이 없습니다", { id: "unauthorized" });
+    return redirect(routes.post.url);
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
@@ -175,4 +181,4 @@ const WriteForm: React.FC<IProps> = ({ postId, defaultValues }) => {
   );
 };
 
-export default WriteForm;
+export default PostForm;

@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 
 import { apis } from "#fe/apis";
 import { getQueryClient } from "#fe/libs/getQueryClient";
-import WriteForm from "#fe/app/post/(write-and-edit)/_components/WriteForm";
+import PostForm from "#fe/app/post/(write-and-edit)/_components/PostForm";
 
 const queryClient = getQueryClient();
 
@@ -21,7 +21,8 @@ const Page: NextPage<IProps> = async ({ params }) => {
   });
 
   return (
-    <WriteForm
+    <PostForm
+      ownerId={post.userId}
       postId={post.id}
       defaultValues={{
         title: post.title,
