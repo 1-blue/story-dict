@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
 
 import { toast } from "@sd/ui";
-import useMe from "#fe/hooks/useMe";
+import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
 import { routes } from "#fe/constants";
 

@@ -15,7 +15,7 @@ export class CustomError extends Error {
     super();
 
     // Error
-    this.name = error;
+    this.name = error || "CustomError";
 
     // CustomError
     this.message = message;

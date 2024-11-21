@@ -10,10 +10,10 @@ import { schemas } from "@sd/utils";
 
 import { routes } from "#fe/constants";
 import { apis } from "#fe/apis";
-import useMe from "#fe/hooks/useMe";
+import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
-import useImageMutations from "#fe/hooks/useImageMutations";
-import usePostMutations from "#fe/hooks/usePostMutations";
+import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
+import usePostMutations from "#fe/hooks/mutations/posts/usePostMutations";
 import { revalidateTagForServer } from "#fe/actions/revalidateForServer";
 
 import Metadata from "#fe/app/post/(write-and-edit)/_components/Metadata";

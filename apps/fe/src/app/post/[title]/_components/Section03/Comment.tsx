@@ -3,14 +3,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@sd/ui";
 import { format } from "date-fns";
 
-import { TGetAllCommentAPIResponse } from "#fe/apis";
+import { TGetAllPostCommentAPIResponse } from "#fe/apis";
 
-import Reactions from "#fe/app/post/[title]/_components/Section03/Reactions";
-import ReactionPopover from "#fe/app/post/[title]/_components/Section03/ReactionPopover";
-import ReactionPanelPopover from "#fe/app/post/[title]/_components/Section03/ReactionPanelPopover";
+import CommentReactions from "#fe/app/post/[title]/_components/Section03/CommentReactions";
+import CommentReactionPopover from "#fe/app/post/[title]/_components/Section03/CommentReactionPopover";
+import CommentReactionPanelPopover from "#fe/app/post/[title]/_components/Section03/CommentReactionPanelPopover";
 
 interface IProps {
-  comment: TGetAllCommentAPIResponse[number];
+  comment: TGetAllPostCommentAPIResponse[number];
+  // FIXME: refetch 없애고 mutation에서 처리하도록 수정
   commentRefetch: () => void;
 }
 const Comment: React.FC<IProps> = ({ comment, commentRefetch }) => {
@@ -33,7 +34,7 @@ const Comment: React.FC<IProps> = ({ comment, commentRefetch }) => {
           </div>
         </div>
 
-        <ReactionPanelPopover
+        <CommentReactionPanelPopover
           postId={comment.postId}
           commentId={comment.id}
           refetch={commentRefetch}
@@ -43,13 +44,15 @@ const Comment: React.FC<IProps> = ({ comment, commentRefetch }) => {
         {comment.content}
       </p>
       <div className="flex gap-2">
-        <ReactionPopover
+        <CommentReactionPopover
           reactions={comment.reactions}
+          postId={comment.postId}
           commentId={comment.id}
           refetch={commentRefetch}
         />
-        <Reactions
+        <CommentReactions
           reactions={comment.reactions}
+          postId={comment.postId}
           commentId={comment.id}
           refetch={commentRefetch}
         />

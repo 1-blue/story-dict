@@ -9,9 +9,9 @@ import "#fe/css/github-markdown.css";
 import { apis } from "#fe/apis";
 import { postCategoryToKoreanMap } from "#fe/libs/mappings";
 
-import Reactions from "#fe/app/post/[title]/_components/Section01/Reactions";
-import ReactionPopover from "#fe/app/post/[title]/_components/Section01/ReactionPopover";
-import PanelPopover from "#fe/app/post/[title]/_components/Section01/PanelPopover";
+import PostReactions from "#fe/app/post/[title]/_components/Section01/PostReactions";
+import PostReactionPopover from "#fe/app/post/[title]/_components/Section01/PostReactionPopover";
+import PostPanelPopover from "#fe/app/post/[title]/_components/Section01/PostPanelPopover";
 import MarkdownViewer from "#fe/app/post/[title]/_components/Section02/MarkdownViewer";
 import CommentSheet from "#fe/app/post/[title]/_components/Section03/CommentSheet";
 
@@ -33,7 +33,7 @@ const PostDetail: React.FC<IProps> = ({ postTitle }) => {
       <section className="relative flex flex-col items-center justify-center gap-4 rounded-md border bg-background p-4">
         <div className="absolute top-0 flex w-full items-center justify-between px-2 pt-2">
           <Badge className="">{postCategoryToKoreanMap[post.category]}</Badge>
-          <PanelPopover postId={post.id} />
+          <PostPanelPopover postId={post.id} />
         </div>
         <div className="flex flex-col items-center justify-center gap-1">
           <h1 className="text-2xl font-bold">{post.title}</h1>
@@ -61,13 +61,13 @@ const PostDetail: React.FC<IProps> = ({ postTitle }) => {
           <CommentSheet title={post.title} postId={post.id} />
         </div>
         <div className="flex gap-2 self-start">
-          <ReactionPopover
+          <PostReactionPopover
             reactions={post.reactions}
             postId={post.id}
             refetch={postRefetch}
           />
 
-          <Reactions
+          <PostReactions
             reactions={post.reactions}
             postId={post.id}
             refetch={postRefetch}

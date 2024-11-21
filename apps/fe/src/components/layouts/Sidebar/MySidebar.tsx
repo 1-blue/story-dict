@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 
 import { Sidebar, SidebarContent } from "@sd/ui";
 
-import useMe from "#fe/hooks/useMe";
+import useMe from "#fe/hooks/queries/users/useMe";
 import { NAV_ROUTES } from "#fe/constants";
 import SidebarCenterGroup from "#fe/components/layouts/Sidebar/_components/SidebarCenterGroup";
 import SidebarInfoGroup from "#fe/components/layouts/Sidebar/_components/SidebarInfoGroup";

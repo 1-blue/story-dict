@@ -1,22 +1,26 @@
 "use client";
 
-import { Reaction, ReactionType } from "#be/types";
-import useMe from "#fe/hooks/useMe";
-import useReactionMutations from "#fe/hooks/useReactionMutations";
+import { PostReaction, ReactionType } from "#be/types";
+import useMe from "#fe/hooks/queries/users/useMe";
+import usePostCommentReactionMutations from "#fe/hooks/mutations/posts/comments/reactions/usePostCommentReactionMutations";
 import { handleError } from "#fe/libs/handleError";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
 import { toast } from "@sd/ui";
 import { cn } from "@sd/ui/libs";
 
 interface IProps {
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
   refetch: () => void;
-  postId?: string;
-  commentId?: string;
-  replyId?: string;
+  postId: string;
+  commentId: string;
 }
 
-const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
+const CommentReactions: React.FC<IProps> = ({
+  reactions,
+  refetch,
+  postId,
+  commentId,
+}) => {
   const { me } = useMe();
 
   const reactionCounts = reactions.reduce(
@@ -36,8 +40,11 @@ const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
     (reaction) => reaction.userId === me?.id,
   )?.type;
 
-  const { createReactionMutate, patchReactionMutate, deleteReactionMutate } =
-    useReactionMutations();
+  const {
+    createPostCommentReactionMutate,
+    patchPostCommentReactionMutate,
+    deletePostCommentReactionMutate,
+  } = usePostCommentReactionMutations();
   const onClickReaction: React.MouseEventHandler<HTMLElement> = async (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
     const type = e.target.dataset.type as ReactionType;
@@ -50,43 +57,41 @@ const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
     try {
       // 리액션 생성
       if (!exReaction) {
-        await createReactionMutate({
-          body: {
-            type,
-            ...ids,
-          },
+        await createPostCommentReactionMutate({
+          params: { postId, commentId },
+          body: { type },
         });
 
         refetch();
-        return toast.info("리액션 생성", {
-          description: `"${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
+        return toast.info("댓글 리액션 생성", {
+          description: `댓글의 "${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
         });
       }
 
       // 리액션 교체
       if (exReaction.type !== type) {
-        await patchReactionMutate({
+        await patchPostCommentReactionMutate({
+          params: { postId, commentId, reactionId: exReaction.id },
           body: { type },
-          params: { reactionId: exReaction.id },
         });
 
         refetch();
-        return toast.info("리액션 교체", {
-          description: `"${reactionTypeToEmojiMap[exReaction.type]}"에서 "${reactionTypeToEmojiMap[type]}"으로 교체했습니다.`,
+        return toast.info("댓글 리액션 교체", {
+          description: `댓글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 "${reactionTypeToEmojiMap[type]}"로 교체했습니다.`,
         });
       }
 
       // 리액션 제거
-      await deleteReactionMutate({
-        params: { reactionId: exReaction.id },
+      await deletePostCommentReactionMutate({
+        params: { postId, commentId, reactionId: exReaction.id },
       });
 
       refetch();
-      return toast.info("리액션 제거", {
-        description: `"${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
+      return toast.info("댓글 리액션 제거", {
+        description: `댓글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
       });
     } catch (error) {
-      handleError({ error, title: "리액션 실패" });
+      handleError({ error, title: "댓글 리액션 실패" });
     }
   };
 
@@ -113,4 +118,4 @@ const Reactions: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
   );
 };
 
-export default Reactions;
+export default CommentReactions;

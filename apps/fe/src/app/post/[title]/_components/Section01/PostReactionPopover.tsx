@@ -1,24 +1,29 @@
-import { Reaction, ReactionType } from "#be/types";
-import useMe from "#fe/hooks/useMe";
-import useReactionMutations from "#fe/hooks/useReactionMutations";
+import { CommentReaction, ReactionType } from "#be/types";
+import useMe from "#fe/hooks/queries/users/useMe";
+import usePostReactionMutations from "#fe/hooks/mutations/posts/reactions/usePostReactionMutations";
 import { handleError } from "#fe/libs/handleError";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
 import { FaceIcon } from "@radix-ui/react-icons";
 import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
 interface IProps {
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
   refetch: () => void;
-  postId?: string;
-  commentId?: string;
-  replyId?: string;
+  postId: string;
 }
 
-const ReactionPopover: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
+const PostReactionPopover: React.FC<IProps> = ({
+  reactions,
+  refetch,
+  postId,
+}) => {
   const { me } = useMe();
 
-  const { createReactionMutate, patchReactionMutate, deleteReactionMutate } =
-    useReactionMutations();
+  const {
+    createPostReactionMutate,
+    patchPostReactionMutate,
+    deletePostReactionMutate,
+  } = usePostReactionMutations();
   const onClickReaction: React.MouseEventHandler<HTMLElement> = async (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
     const type = e.target.dataset.type as ReactionType;
@@ -31,43 +36,41 @@ const ReactionPopover: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
     try {
       // 리액션 생성
       if (!exReaction) {
-        await createReactionMutate({
-          body: {
-            type,
-            ...ids,
-          },
+        await createPostReactionMutate({
+          params: { postId },
+          body: { type },
         });
 
         refetch();
-        return toast.success("리액션 생성", {
-          description: `"${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
+        return toast.success("게시글 리액션 생성", {
+          description: `게시글의 "${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
         });
       }
 
       // 리액션 교체
       if (exReaction.type !== type) {
-        await patchReactionMutate({
-          params: { reactionId: exReaction.id },
+        await patchPostReactionMutate({
+          params: { postId, reactionId: exReaction.id },
           body: { type },
         });
 
         refetch();
-        return toast("리액션 교체", {
-          description: `"${reactionTypeToEmojiMap[exReaction.type]}"에서 "${reactionTypeToEmojiMap[type]}"으로 교체했습니다.`,
+        return toast("게시글 리액션 교체", {
+          description: `게시글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 "${reactionTypeToEmojiMap[type]}"로 교체했습니다.`,
         });
       }
 
       // 리액션 제거
-      await deleteReactionMutate({
-        params: { reactionId: exReaction.id },
+      await deletePostReactionMutate({
+        params: { postId, reactionId: exReaction.id },
       });
 
       refetch();
-      return toast("리액션 제거", {
-        description: `"${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
+      return toast("게시글 리액션 제거", {
+        description: `게시글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
       });
     } catch (error) {
-      handleError({ error, title: "리액션 실패" });
+      handleError({ error, title: "게시글 리액션 실패" });
     }
   };
 
@@ -98,4 +101,4 @@ const ReactionPopover: React.FC<IProps> = ({ reactions, refetch, ...ids }) => {
   );
 };
 
-export default ReactionPopover;
+export default PostReactionPopover;

@@ -5,22 +5,22 @@ import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
 import type { Comment, Post } from "#be/types";
 import { handleError } from "#fe/libs/handleError";
-import useCommentMutations from "#fe/hooks/useCommentMutations";
+import usePostCommentMutations from "#fe/hooks/mutations/posts/comments/usePostCommentMutations";
 
 interface IProps {
   postId: Post["id"];
   commentId: Comment["id"];
   refetch: () => void;
 }
-const ReactionPanelPopover: React.FC<IProps> = ({
+const CommentReactionPanelPopover: React.FC<IProps> = ({
   postId,
   commentId,
   refetch,
 }) => {
-  const { deleteCommentMutate } = useCommentMutations();
+  const { deletePostCommentMutate } = usePostCommentMutations();
   const onClickDeleteButton = async () => {
     try {
-      await deleteCommentMutate({ params: { postId, commentId } });
+      await deletePostCommentMutate({ params: { postId, commentId } });
       toast.success("댓글 삭제 완료");
       refetch();
     } catch (error) {
@@ -48,4 +48,4 @@ const ReactionPanelPopover: React.FC<IProps> = ({
   );
 };
 
-export default ReactionPanelPopover;
+export default CommentReactionPanelPopover;

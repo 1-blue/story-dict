@@ -1,6 +1,9 @@
 import type { User } from "#be/types";
-import { CustomError } from "#fe/libs/error";
-import { fetchInstance } from "#fe/apis/fetchInstance";
+import {
+  fetchInstance,
+  fetchInstanceHandleError,
+  fetchInstanceHandleResponse,
+} from "#fe/apis/fetchInstance";
 
 // ============================== 로그인 ==============================
 /** 로그인 요청 타입 */
@@ -16,16 +19,9 @@ const postLogInAPI = async ({
   return fetchInstance(authApis.login.endPoint(), {
     method: "POST",
     body: JSON.stringify(body),
-  }).then(async (res) => {
-    // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-    const parsedText = await res.text();
-
-    // 성공한 경우
-    if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-    // 실패한 경우
-    throw new CustomError(JSON.parse(parsedText));
-  });
+  })
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 로그아웃 ==============================
@@ -37,16 +33,9 @@ export interface IPostLogOutAPIResponse {}
 const postLogOutAPI = async (): Promise<IPostLogOutAPIResponse> => {
   return fetchInstance(authApis.logout.endPoint(), {
     method: "POST",
-  }).then(async (res) => {
-    // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-    const parsedText = await res.text();
-
-    // 성공한 경우
-    if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-    // 실패한 경우
-    throw new CustomError(JSON.parse(parsedText));
-  });
+  })
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;

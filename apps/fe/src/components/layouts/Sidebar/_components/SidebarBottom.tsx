@@ -23,7 +23,7 @@ import {
   toast,
 } from "@sd/ui";
 
-import useMe from "#fe/hooks/useMe";
+import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
 
 const SidebarBottom: React.FC = () => {

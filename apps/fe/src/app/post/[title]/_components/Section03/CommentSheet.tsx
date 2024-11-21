@@ -18,8 +18,8 @@ import { schemas } from "@sd/utils";
 
 import { apis } from "#fe/apis";
 import { handleError } from "#fe/libs/handleError";
-import useMe from "#fe/hooks/useMe";
-import useCommentMutations from "#fe/hooks/useCommentMutations";
+import useMe from "#fe/hooks/queries/users/useMe";
+import usePostCommentMutations from "#fe/hooks/mutations/posts/comments/usePostCommentMutations";
 
 import Comment from "#fe/app/post/[title]/_components/Section03/Comment";
 
@@ -42,17 +42,17 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
     },
   });
 
-  const { createCommentMutate } = useCommentMutations();
+  const { createPostCommentMutate } = usePostCommentMutations();
   const { data: comments, refetch: commentRefetch } = useQuery({
-    queryKey: apis.comments.getAll.key({ params: { postId } }),
-    queryFn: () => apis.comments.getAll.fn({ params: { postId } }),
+    queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+    queryFn: () => apis.posts.comments.getAll.fn({ params: { postId } }),
   });
 
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me) return toast.warning("로그인 후 이용해주세요.");
 
     try {
-      await createCommentMutate({
+      await createPostCommentMutate({
         params: { postId },
         body: { content: body.content },
       });

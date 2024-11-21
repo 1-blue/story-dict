@@ -1,6 +1,9 @@
-import { CustomError } from "#fe/libs/error";
-import type { Image, Post, PostCategory, Reaction, User } from "#be/types";
-import { fetchInstance } from "#fe/apis/fetchInstance";
+import type { Image, Post, PostCategory, PostReaction, User } from "#be/types";
+import {
+  fetchInstance,
+  fetchInstanceHandleResponse,
+  fetchInstanceHandleError,
+} from "#fe/apis/fetchInstance";
 
 // ============================== 게시글 생성 ==============================
 /** 게시글 생성 요청 타입 */
@@ -18,19 +21,8 @@ export const createPostAPI = async ({
     method: "POST",
     body: JSON.stringify(body),
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 모든 게시글 가져오기 ==============================
@@ -46,19 +38,8 @@ export const getAllPostAPI = async (): Promise<TGetAllPostAPIResponse> => {
     method: "GET",
     next: { tags: postApis.getAll.key() },
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 특정 게시글 가져오기 ==============================
@@ -72,7 +53,7 @@ export interface IGetOnePostAPIResponse extends Post {
     image?: Pick<Image, "id" | "url">;
   };
   thumbnail?: Pick<Image, "id" | "url">;
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
 }
 /** 특정 게시글 가져오기 함수 */
 export const getOnePostAPI = async ({
@@ -81,19 +62,8 @@ export const getOnePostAPI = async ({
   return fetchInstance(postApis.getOne.endPoint({ params }), {
     method: "GET",
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 제목으로 특정 게시글 가져오기 ==============================
@@ -107,7 +77,7 @@ export interface IGetOnePostByTitleAPIResponse extends Post {
     image?: Pick<Image, "id" | "url">;
   };
   thumbnail?: Pick<Image, "id" | "url">;
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
 }
 /** 제목으로 특정 게시글 가져오기 함수 */
 export const getOnePostByTitleAPI = async ({
@@ -116,19 +86,8 @@ export const getOnePostByTitleAPI = async ({
   return fetchInstance(postApis.getOneByTitle.endPoint({ params }), {
     method: "GET",
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 랜덤 게시글들 가져오기 ==============================
@@ -139,7 +98,7 @@ export interface IGetManyRandomPostAPIRequest {
 /** 랜덤 게시글들 응답 타입 */
 export type TGetManyRandomPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
 })[];
 /** 랜덤 게시글들 가져오기 함수 */
 export const getManyRandomPostAPI = async ({
@@ -148,19 +107,8 @@ export const getManyRandomPostAPI = async ({
   return fetchInstance(postApis.getManyRandom.endPoint({ queries }), {
     method: "GET",
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 검색된 게시글들 가져오기 ==============================
@@ -171,7 +119,7 @@ export interface IGetManyCategoryPostAPIRequest {
 /** 검색된 게시글들 가져오기 응답 타입 */
 export type TGetManyCategoryPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
 })[];
 /** 검색된 게시글들 가져오기  함수 */
 export const getManyCategoryPostAPI = async ({
@@ -180,19 +128,8 @@ export const getManyCategoryPostAPI = async ({
   return fetchInstance(postApis.getManyCategory.endPoint({ params }), {
     method: "GET",
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 카테고리 게시글들 가져오기 ==============================
@@ -203,7 +140,7 @@ export interface IGetManyKeywordPostAPIRequest {
 /** 카테고리 게시글들 가져오기 응답 타입 */
 export type TGetManyKeywordPostAPIResponse = (Post & {
   thumbnail?: Pick<Image, "url">;
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
 })[];
 /** 카테고리 게시글들 가져오기  함수 */
 export const getManyKeywordPostAPI = async ({
@@ -216,19 +153,8 @@ export const getManyKeywordPostAPI = async ({
       method: "GET",
     },
   )
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 게시글 수정 ==============================
@@ -248,19 +174,8 @@ export const patchPostAPI = async ({
     method: "PATCH",
     body: JSON.stringify(body),
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 게시글 삭제 ==============================
@@ -277,19 +192,8 @@ export const deletePostAPI = async ({
   return fetchInstance(postApis.delete.endPoint({ params }), {
     method: "DELETE",
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 // ============================== 게시글 제목 유니크 확인 ==============================
@@ -309,19 +213,8 @@ export const checkUniqueTitleAPI = async ({
     method: "POST",
     body: JSON.stringify(body),
   })
-    .then(async (res) => {
-      // json 형태로 응답을 주지 않는 경우 에러 발생을 처리하기 위함
-      const parsedText = await res.text();
-
-      // 성공한 경우
-      if (res.ok) return parsedText ? JSON.parse(parsedText) : parsedText;
-
-      // 실패한 경우
-      throw new CustomError(JSON.parse(parsedText));
-    })
-    .catch((err) => {
-      throw new CustomError(err);
-    });
+    .then(fetchInstanceHandleResponse)
+    .catch(fetchInstanceHandleError);
 };
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;

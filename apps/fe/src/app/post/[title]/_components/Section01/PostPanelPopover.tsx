@@ -5,14 +5,14 @@ import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
 import type { Post } from "#be/types";
-import usePostMutations from "#fe/hooks/usePostMutations";
+import usePostMutations from "#fe/hooks/mutations/posts/usePostMutations";
 import { handleError } from "#fe/libs/handleError";
 import { routes } from "#fe/constants";
 
 interface IProps {
   postId: Post["id"];
 }
-const PanelPopover: React.FC<IProps> = ({ postId }) => {
+const PostPanelPopover: React.FC<IProps> = ({ postId }) => {
   const { title } = useParams<{ title: string }>();
   const router = useRouter();
 
@@ -56,4 +56,4 @@ const PanelPopover: React.FC<IProps> = ({ postId }) => {
   );
 };
 
-export default PanelPopover;
+export default PostPanelPopover;

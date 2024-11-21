@@ -2,21 +2,28 @@ export * from "./auth";
 export * from "./users";
 export * from "./images";
 export * from "./posts";
-export * from "./comments";
-export * from "./reactions";
+export * from "./posts/comments";
+export * from "./posts/reactions";
+export * from "./posts/comments/reactions";
 
 import { authApis } from "./auth";
 import { userApis } from "./users";
 import { imageApis } from "./images";
 import { postApis } from "./posts";
-import { commentApis } from "./comments";
-import { reactionApis } from "./reactions";
+import { postCommentApis } from "./posts/comments";
+import { reactionApis } from "./posts/reactions";
+import { postCommentReactionApis } from "./posts/comments/reactions";
 
 export const apis = {
   auth: authApis,
   users: userApis,
   images: imageApis,
-  posts: postApis,
-  comments: commentApis,
-  reactions: reactionApis,
+  posts: {
+    ...postApis,
+    comments: {
+      ...postCommentApis,
+      reactions: postCommentReactionApis,
+    },
+    reactions: reactionApis,
+  },
 };

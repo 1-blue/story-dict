@@ -22,7 +22,7 @@ import { useRef } from "react";
 import { handleError } from "#fe/libs/handleError";
 import { postUploadImageByPresignedURL } from "#fe/apis";
 import { CameraIcon } from "@radix-ui/react-icons";
-import useImageMutations from "#fe/hooks/useImageMutations";
+import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
 
 interface IProps {
   imageData: { id: string; url: string } | null;

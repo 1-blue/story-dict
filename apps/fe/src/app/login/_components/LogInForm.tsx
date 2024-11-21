@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LockOpen1Icon } from "@radix-ui/react-icons";
 import { Button, Form, RFHInput, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
-import useMe from "#fe/hooks/useMe";
+import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
 import { useRouter } from "next/navigation";
 import { routes } from "#fe/constants";

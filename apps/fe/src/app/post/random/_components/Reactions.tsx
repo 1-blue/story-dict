@@ -1,12 +1,12 @@
 "use client";
 
-import { Reaction, ReactionType } from "#be/types";
-import useMe from "#fe/hooks/useMe";
+import { PostReaction, ReactionType } from "#be/types";
+import useMe from "#fe/hooks/queries/users/useMe";
 import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
 import { cn } from "@sd/ui/libs";
 
 interface IProps {
-  reactions: Pick<Reaction, "id" | "type" | "userId">[];
+  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
 }
 
 const Reactions: React.FC<IProps> = ({ reactions }) => {

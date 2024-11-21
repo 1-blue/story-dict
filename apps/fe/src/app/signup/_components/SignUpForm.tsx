@@ -8,8 +8,8 @@ import { Button, Form, RFHInput, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
 import { handleError } from "#fe/libs/handleError";
-import useMe from "#fe/hooks/useMe";
-import useUserMutations from "#fe/hooks/useUserMutations";
+import useMe from "#fe/hooks/queries/users/useMe";
+import useUserMutations from "#fe/hooks/mutations/users/useUserMutations";
 import { routes } from "#fe/constants";
 
 const DEV_DEFAULT_VALUES =
