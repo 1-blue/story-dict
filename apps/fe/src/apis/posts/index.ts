@@ -37,6 +37,7 @@ export const getAllPostAPI = async (): Promise<TGetAllPostAPIResponse> => {
   return fetchInstance(postApis.getAll.endPoint(), {
     method: "GET",
     next: { tags: postApis.getAll.key() },
+    cache: "no-cache",
   })
     .then(fetchInstanceHandleResponse)
     .catch(fetchInstanceHandleError);

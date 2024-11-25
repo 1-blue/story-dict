@@ -94,7 +94,7 @@ module.exports = {
           to: { transform: "translateY(calc(-100% - var(--gap)))" },
         },
         // magic-ui PulsatingButton
-        pulse: {
+        "mu-pulse": {
           "0%, 100%": { boxShadow: "0 0 0 0 var(--pulse-color)" },
           "50%": { boxShadow: "0 0 0 8px var(--pulse-color)" },
         },
@@ -107,7 +107,7 @@ module.exports = {
         marquee: "marquee var(--duration) linear infinite",
         "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
         // magic-ui PulsatingButton
-        pulse: "pulse var(--duration) ease-out infinite",
+        "mu-pulse": "mu-pulse var(--duration) ease-out infinite",
       },
     },
   },

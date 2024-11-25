@@ -7,8 +7,7 @@ import { getQueryClient } from "#fe/libs/getQueryClient";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import LatestPosts from "#fe/app/post/(list)/_components/LatestPosts";
 
-// TODO: 미래에 ISR로 변경하기
-export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 const queryClient = getQueryClient();
 const getAllPosts = cache(() =>
@@ -37,9 +36,7 @@ const Page: React.FC = () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex flex-col gap-6">
-        <LatestPosts />
-      </div>
+      <LatestPosts />
     </HydrationBoundary>
   );
 };

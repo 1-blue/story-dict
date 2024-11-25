@@ -42,14 +42,14 @@ export function PulsatingButton({
       )}
       style={
         {
-          "--pulse-color": pulseColor,
+          "--pulse-color": `${pulseColor}48`,
           "--duration": duration,
         } as React.CSSProperties
       }
       {...(props as any)}
     >
       <div className="relative z-10">{children}</div>
-      <div className="absolute top-1/2 left-1/2 size-full rounded-lg bg-inherit animate-pulse -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute top-1/2 left-1/2 size-full rounded-lg bg-inherit animate-mu-pulse -translate-x-1/2 -translate-y-1/2" />
     </motion.button>
   );
 }

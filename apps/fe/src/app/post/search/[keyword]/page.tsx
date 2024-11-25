@@ -31,11 +31,13 @@ export const generateMetadata = async ({ params }: IProps) => {
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
   const hasThumbnailPost = posts.find((post) => !!post.thumbnail);
 
-  if (!post) return getSharedMetadata({ title: `검색: ${params.keyword}` });
+  const decodedKeyword = decodeURIComponent(params.keyword);
+
+  if (!post) return getSharedMetadata({ title: `${decodedKeyword} (게시글)` });
 
   return getSharedMetadata({
-    title: `검색: ${params.keyword}`,
-    description: `[${params.keyword}] ${post.title}: ${post.summary}`,
+    title: `${decodedKeyword} (게시글)`,
+    description: `[${decodedKeyword}] ${post.title}: ${post.summary}`,
     ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnail!.url] }),
   });
 };
@@ -45,7 +47,7 @@ const Page: NextPage<IProps> = async ({ params }) => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <SearchedPosts keyword={params.keyword} />
+      <SearchedPosts keyword={decodeURIComponent(params.keyword)} />
     </HydrationBoundary>
   );
 };

@@ -18,11 +18,6 @@ import { GetOnePostByTitleDto } from "#be/apis/v1/posts/dtos/get-one-by-post-tit
 export class PostsService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  /** 랜덤 선택 함수 */
-  private randomPick<T>(array: T[]): T {
-    return array[Math.floor(Math.random() * array.length)]!;
-  }
-
   /** 게시글 생성 */
   async create(userId: string, { ...post }: CreatePostDto) {
     const { isUnique } = await this.checkUniqueTitle({ title: post.title });

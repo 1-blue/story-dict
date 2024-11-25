@@ -7,6 +7,7 @@ import { getQueryClient } from "#fe/libs/getQueryClient";
 import { apis } from "#fe/apis";
 import PostCarouselWrapper from "#fe/app/post/random/_components/PostCarouselWrapper";
 
+// FIXME: 리팩토링하기
 export const dynamic = "force-dynamic";
 
 const queryClient = getQueryClient();

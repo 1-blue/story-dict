@@ -12,8 +12,18 @@ const sharedKeywords = [
   "어원",
   "순우리말",
   "명대사",
+  "의미",
+  "뜻",
 ];
 const sharedImages = ["/images/default/preview.jpg"];
+const getSharedKeywords = (title: string) => [
+  `${title} 뜻`,
+  `${title} 어원`,
+  `${title} 의미`,
+  `${title} 예시`,
+  `${title} 예문`,
+  `${title}이란`,
+];
 
 interface IGetSharedMetadataArgs {
   title?: Metadata["title"];
@@ -32,7 +42,13 @@ export const getSharedMetadata = ({
   metadataBase: new URL(process.env.NEXT_PUBLIC_CLIENT_URL),
   title,
   description,
-  keywords: [...new Set([...sharedKeywords, ...keywords])],
+  keywords: [
+    ...new Set([
+      ...sharedKeywords,
+      ...getSharedKeywords(String(title)),
+      ...keywords,
+    ]),
+  ],
   openGraph: {
     title: title ?? sharedTitle,
     description,

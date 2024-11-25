@@ -30,7 +30,8 @@ export const fetchInstanceHandleError = (err: unknown) => {
     throw new CustomError(err);
   }
   if (err instanceof Error) {
-    throw new Error(err.message);
+    console.log("🚀 err >> ", err);
+    throw new Error(err?.message || "알 수 없는 에러");
   }
   throw new Error("알 수 없는 에러");
 };
