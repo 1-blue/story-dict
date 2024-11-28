@@ -4,6 +4,7 @@ import {
   fetchInstanceHandleResponse,
   fetchInstanceHandleError,
 } from "#fe/apis/fetchInstance";
+import type { IAPIResponse } from "#fe/types/api";
 
 // ============================== 게시글 생성 ==============================
 /** 게시글 생성 요청 타입 */
@@ -12,7 +13,7 @@ export interface ICreatePostAPIRequest {
     Pick<Post, "title" | "summary" | "content">;
 }
 /** 게시글 생성 응답 타입 */
-export interface ICreatePostAPIResponse extends Post {}
+export interface ICreatePostAPIResponse extends IAPIResponse<Post> {}
 /** 게시글 생성 함수 */
 export const createPostAPI = async ({
   body,
@@ -29,11 +30,14 @@ export const createPostAPI = async ({
 /** 모든 게시글 가져오기 요청 타입 */
 export interface IGetAllPostAPIRequest {}
 /** 모든 게시글 가져오기 응답 타입 */
-export type TGetAllPostAPIResponse = (Post & {
-  thumbnail?: Pick<Image, "url">;
-})[];
+export interface IGetAllPostAPIResponse
+  extends IAPIResponse<
+    (Post & {
+      thumbnail?: Pick<Image, "url">;
+    })[]
+  > {}
 /** 모든 게시글 가져오기 함수 */
-export const getAllPostAPI = async (): Promise<TGetAllPostAPIResponse> => {
+export const getAllPostAPI = async (): Promise<IGetAllPostAPIResponse> => {
   return fetchInstance(postApis.getAll.endPoint(), {
     method: "GET",
     next: { tags: postApis.getAll.key() },
@@ -49,13 +53,16 @@ export interface IGetOnePostAPIRequest {
   params: { postId: Post["id"] };
 }
 /** 특정 게시글 가져오기 응답 타입 */
-export interface IGetOnePostAPIResponse extends Post {
-  user: Pick<User, "id" | "nickname"> & {
-    image?: Pick<Image, "id" | "url">;
-  };
-  thumbnail?: Pick<Image, "id" | "url">;
-  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-}
+export interface IGetOnePostAPIResponse
+  extends IAPIResponse<
+    Post & {
+      user: Pick<User, "id" | "nickname"> & {
+        image?: Pick<Image, "id" | "url">;
+      };
+      thumbnail?: Pick<Image, "id" | "url">;
+      reactions: Pick<PostReaction, "id" | "type" | "userId">[];
+    }
+  > {}
 /** 특정 게시글 가져오기 함수 */
 export const getOnePostAPI = async ({
   params,
@@ -73,13 +80,16 @@ export interface IGetOnePostByTitleAPIRequest {
   params: { title: Post["title"] };
 }
 /** 제목으로 특정 게시글 가져오기 응답 타입 */
-export interface IGetOnePostByTitleAPIResponse extends Post {
-  user: Pick<User, "id" | "nickname"> & {
-    image?: Pick<Image, "id" | "url">;
-  };
-  thumbnail?: Pick<Image, "id" | "url">;
-  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-}
+export interface IGetOnePostByTitleAPIResponse
+  extends IAPIResponse<
+    Post & {
+      user: Pick<User, "id" | "nickname"> & {
+        image?: Pick<Image, "id" | "url">;
+      };
+      thumbnail?: Pick<Image, "id" | "url">;
+      reactions: Pick<PostReaction, "id" | "type" | "userId">[];
+    }
+  > {}
 /** 제목으로 특정 게시글 가져오기 함수 */
 export const getOnePostByTitleAPI = async ({
   params,
@@ -97,14 +107,17 @@ export interface IGetManyRandomPostAPIRequest {
   queries: { existingIds?: string };
 }
 /** 랜덤 게시글들 응답 타입 */
-export type TGetManyRandomPostAPIResponse = (Post & {
-  thumbnail?: Pick<Image, "url">;
-  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-})[];
+export interface IGetManyRandomPostAPIResponse
+  extends IAPIResponse<
+    (Post & {
+      thumbnail?: Pick<Image, "url">;
+      reactions: Pick<PostReaction, "id" | "type" | "userId">[];
+    })[]
+  > {}
 /** 랜덤 게시글들 가져오기 함수 */
 export const getManyRandomPostAPI = async ({
   queries,
-}: IGetManyRandomPostAPIRequest): Promise<TGetManyRandomPostAPIResponse> => {
+}: IGetManyRandomPostAPIRequest): Promise<IGetManyRandomPostAPIResponse> => {
   return fetchInstance(postApis.getManyRandom.endPoint({ queries }), {
     method: "GET",
   })
@@ -118,14 +131,17 @@ export interface IGetManyCategoryPostAPIRequest {
   params: { category: PostCategory };
 }
 /** 검색된 게시글들 가져오기 응답 타입 */
-export type TGetManyCategoryPostAPIResponse = (Post & {
-  thumbnail?: Pick<Image, "url">;
-  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-})[];
+export interface IGetManyCategoryPostAPIResponse
+  extends IAPIResponse<
+    (Post & {
+      thumbnail?: Pick<Image, "url">;
+      reactions: Pick<PostReaction, "id" | "type" | "userId">[];
+    })[]
+  > {}
 /** 검색된 게시글들 가져오기  함수 */
 export const getManyCategoryPostAPI = async ({
   params,
-}: IGetManyCategoryPostAPIRequest): Promise<TGetManyCategoryPostAPIResponse> => {
+}: IGetManyCategoryPostAPIRequest): Promise<IGetManyCategoryPostAPIResponse> => {
   return fetchInstance(postApis.getManyCategory.endPoint({ params }), {
     method: "GET",
   })
@@ -139,14 +155,17 @@ export interface IGetManyKeywordPostAPIRequest {
   params: { keyword: string };
 }
 /** 카테고리 게시글들 가져오기 응답 타입 */
-export type TGetManyKeywordPostAPIResponse = (Post & {
-  thumbnail?: Pick<Image, "url">;
-  reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-})[];
+export interface IGetManyKeywordPostAPIResponse
+  extends IAPIResponse<
+    (Post & {
+      thumbnail?: Pick<Image, "url">;
+      reactions: Pick<PostReaction, "id" | "type" | "userId">[];
+    })[]
+  > {}
 /** 카테고리 게시글들 가져오기  함수 */
 export const getManyKeywordPostAPI = async ({
   params,
-}: IGetManyKeywordPostAPIRequest): Promise<TGetManyKeywordPostAPIResponse> => {
+}: IGetManyKeywordPostAPIRequest): Promise<IGetManyKeywordPostAPIResponse> => {
   return fetchInstance(
     process.env.NEXT_PUBLIC_SERVER_URL +
       `/apis/v1/posts/search/${params?.keyword}`,
@@ -165,7 +184,7 @@ export interface IPatchPostAPIRequest {
   body: Partial<ICreatePostAPIRequest["body"]>;
 }
 /** 게시글 수정 응답 타입 */
-export interface IPatchPostAPIResponse extends Post {}
+export interface IPatchPostAPIResponse extends IAPIResponse<Post> {}
 /** 게시글 수정 함수 */
 export const patchPostAPI = async ({
   body,
@@ -185,7 +204,7 @@ export interface IDeletePostAPIRequest {
   params: { postId: Post["id"] };
 }
 /** 게시글 삭제 응답 타입 */
-export interface IDeletePostAPIResponse extends Post {}
+export interface IDeletePostAPIResponse extends IAPIResponse<Post> {}
 /** 게시글 삭제 함수 */
 export const deletePostAPI = async ({
   params,
@@ -203,9 +222,10 @@ export interface ICheckUniqueTitleAPIRequest {
   body: Pick<Post, "title">;
 }
 /** 게시글 제목 유니크 확인 응답 타입 */
-export interface ICheckUniqueTitleAPIResponse {
-  isUnique: boolean;
-}
+export interface ICheckUniqueTitleAPIResponse
+  extends IAPIResponse<{
+    isUnique: boolean;
+  }> {}
 /** 게시글 제목 유니크 확인 함수 */
 export const checkUniqueTitleAPI = async ({
   body,

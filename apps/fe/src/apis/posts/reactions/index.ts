@@ -4,6 +4,7 @@ import {
   fetchInstanceHandleError,
   fetchInstanceHandleResponse,
 } from "#fe/apis/fetchInstance";
+import type { IAPIResponse } from "#fe/types/api";
 
 // ============================== 게시글의 리액션 생성 ==============================
 /** 게시글의 리액션 생성 요청 타입 */
@@ -12,7 +13,8 @@ export interface ICreatePostReactionAPIRequest {
   body: Partial<Pick<PostReaction, "id">> & Pick<PostReaction, "type">;
 }
 /** 게시글의 리액션 생성 응답 타입 */
-export interface ICreatePostReactionAPIResponse extends PostReaction {}
+export interface ICreatePostReactionAPIResponse
+  extends IAPIResponse<PostReaction> {}
 /** 게시글의 리액션 생성 함수 */
 export const createPostReactionAPI = async ({
   params,
@@ -33,7 +35,8 @@ export interface IPatchPostReactionAPIRequest {
   body: Partial<ICreatePostReactionAPIRequest["body"]>;
 }
 /** 게시글의 리액션 수정 응답 타입 */
-export interface IPatchPostReactionAPIResponse extends PostReaction {}
+export interface IPatchPostReactionAPIResponse
+  extends IAPIResponse<PostReaction> {}
 /** 게시글의 리액션 수정 함수 */
 export const patchPostReactionAPI = async ({
   params,
@@ -53,7 +56,8 @@ export interface IDeletePostReactionAPIRequest {
   params: Pick<PostReaction, "postId"> & { reactionId: PostReaction["id"] };
 }
 /** 게시글의 리액션 삭제 응답 타입 */
-export interface IDeletePostReactionAPIResponse extends PostReaction {}
+export interface IDeletePostReactionAPIResponse
+  extends IAPIResponse<PostReaction> {}
 /** 게시글의 리액션 삭제 함수 */
 export const deletePostReactionAPI = async ({
   params,

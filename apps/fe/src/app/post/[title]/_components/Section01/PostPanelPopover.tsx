@@ -2,12 +2,10 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
+import { Button, Popover, PopoverContent, PopoverTrigger } from "@sd/ui";
 
 import type { Post } from "#be/types";
 import usePostMutations from "#fe/hooks/mutations/posts/usePostMutations";
-import { handleError } from "#fe/libs/handleError";
-import { routes } from "#fe/constants";
 
 interface IProps {
   postId: Post["id"];
@@ -18,15 +16,9 @@ const PostPanelPopover: React.FC<IProps> = ({ postId }) => {
 
   const onClickEditButton = () => router.replace(`/post/edit/${title}`);
 
-  const { deletePostMutate } = usePostMutations();
-  const onClickDeleteButton = async () => {
-    try {
-      await deletePostMutate({ params: { postId } });
-      toast.success("게시글 삭제 완료");
-      router.replace(routes.post.url);
-    } catch (error) {
-      handleError({ error, title: "게시글 삭제 실패" });
-    }
+  const { deletePostMutateAsync } = usePostMutations();
+  const onClickDeleteButton = () => {
+    deletePostMutateAsync({ params: { postId } });
   };
 
   return (

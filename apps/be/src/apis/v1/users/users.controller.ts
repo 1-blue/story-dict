@@ -21,22 +21,30 @@ import { CheckNicknameDto } from "#be/apis/v1/users/dto/check-nickname.dto";
 import { CheckPhoneDto } from "#be/apis/v1/users/dto/check-phone.dto";
 import { ValidateUserDto } from "#be/apis/v1/users/dto/validate-user.dto";
 import { IsLoggedIn, IsLoggedOut } from "#be/guards";
-import { FindByUserIdDto } from "./dto/find-by-user-id.dto";
+import { FindByUserIdDto } from "#be/apis/v1/users/dto/find-by-user-id.dto";
 
 @Controller("apis/v1/users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get("me")
-  getMe(@Req() req: Request) {
-    return req.user;
+  async getMe(@Req() req: Request) {
+    return {
+      payload: req.user,
+    };
   }
 
   @UseGuards(IsLoggedOut)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return {
+      toast: {
+        title: "회원가입 완료",
+        description: `회원가입을 축하드립니다.\n메인 페이지로 이동합니다!`,
+      },
+      payload: await this.usersService.create(createUserDto),
+    };
   }
 
   /** FIXME: 미사용 */

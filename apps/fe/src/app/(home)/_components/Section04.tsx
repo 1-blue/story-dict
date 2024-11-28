@@ -12,7 +12,7 @@ import { Marquee } from "@sd/ui/magics";
 
 import type { Post } from "#be/types";
 import { routes } from "#fe/constants";
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
+import { postCategoryToKoreanMap } from "@sd/utils";
 
 const posts: Pick<Post, "title" | "summary" | "category">[] = [
   {

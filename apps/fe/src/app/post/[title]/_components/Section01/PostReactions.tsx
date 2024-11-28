@@ -3,19 +3,16 @@
 import { PostReaction, ReactionType } from "#be/types";
 import useMe from "#fe/hooks/queries/users/useMe";
 import usePostReactionMutations from "#fe/hooks/mutations/posts/reactions/usePostReactionMutations";
-import { handleError } from "#fe/libs/handleError";
-import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
+import { reactionTypeToEmojiMap } from "@sd/utils";
 import { toast } from "@sd/ui";
 import { cn } from "@sd/ui/libs";
 
 interface IProps {
   reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-  // FIXME: refetch 없애고 mutation에서 처리하도록 수정
-  refetch: () => void;
   postId: string;
 }
 
-const PostReactions: React.FC<IProps> = ({ reactions, refetch, postId }) => {
+const PostReactions: React.FC<IProps> = ({ reactions, postId }) => {
   const { me } = useMe();
 
   const reactionCounts = reactions.reduce(
@@ -36,9 +33,9 @@ const PostReactions: React.FC<IProps> = ({ reactions, refetch, postId }) => {
   )?.type;
 
   const {
-    createPostReactionMutate,
-    patchPostReactionMutate,
-    deletePostReactionMutate,
+    createPostReactionMutateAsync,
+    patchPostReactionMutateAsync,
+    deletePostReactionMutateAsync,
   } = usePostReactionMutations();
   const onClickReaction: React.MouseEventHandler<HTMLElement> = async (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
@@ -49,46 +46,25 @@ const PostReactions: React.FC<IProps> = ({ reactions, refetch, postId }) => {
 
     const exReaction = reactions.find((reaction) => reaction.userId === me.id);
 
-    try {
-      // 리액션 생성
-      if (!exReaction) {
-        await createPostReactionMutate({
-          params: { postId },
-          body: {
-            type,
-          },
-        });
-
-        refetch();
-        return toast.success("게시글 리액션 생성", {
-          description: `게시글의 "${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
-        });
-      }
-
-      // 리액션 교체
-      if (exReaction.type !== type) {
-        await patchPostReactionMutate({
-          params: { postId, reactionId: exReaction.id },
-          body: { type },
-        });
-
-        refetch();
-        return toast.info("게시글 리액션 교체", {
-          description: `게시글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 "${reactionTypeToEmojiMap[type]}"로 교체했습니다.`,
-        });
-      }
-
-      // 리액션 제거
-      await deletePostReactionMutate({
+    // 리액션 생성
+    if (!exReaction) {
+      createPostReactionMutateAsync({
+        params: { postId },
+        body: { type },
+      });
+    }
+    // 리액션 교체
+    else if (exReaction.type !== type) {
+      patchPostReactionMutateAsync({
+        params: { postId, reactionId: exReaction.id },
+        body: { type },
+      });
+    }
+    // 리액션 제거
+    else {
+      deletePostReactionMutateAsync({
         params: { postId, reactionId: exReaction.id },
       });
-
-      refetch();
-      return toast.info("게시글 리액션 제거", {
-        description: `게시글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
-      });
-    } catch (error) {
-      handleError({ error, title: "게시글 리액션 실패" });
     }
   };
 

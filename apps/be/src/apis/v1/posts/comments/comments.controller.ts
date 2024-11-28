@@ -29,36 +29,58 @@ export class PostsCommentsController {
   @UseGuards(IsLoggedIn)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(
+  async create(
     @Req() req: Request,
     @Param() findByIdDto: FindByPostIdDto,
     @Body() createCommentDto: CreateCommentDto,
   ) {
-    return this.postsCommentsService.create(
-      req.user!.id,
-      findByIdDto,
-      createCommentDto,
-    );
+    return {
+      toast: {
+        title: "댓글 작성 완료",
+        description: `댓글을 작성했습니다.`,
+      },
+      payload: await this.postsCommentsService.create(
+        req.user!.id,
+        findByIdDto,
+        createCommentDto,
+      ),
+    };
   }
 
   @Get()
-  findMany(@Param() findByIdDto: FindByPostIdDto) {
-    return this.postsCommentsService.findMany(findByIdDto);
+  async findMany(@Param() findByIdDto: FindByPostIdDto) {
+    return {
+      payload: await this.postsCommentsService.findMany(findByIdDto),
+    };
   }
 
   @UseGuards(IsLoggedIn)
   @Patch(":commentId")
-  update(
+  async update(
     @Param() findByIdDto: FindByPostIdAndCommentIdDto,
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
-    return this.postsCommentsService.update(findByIdDto, updateCommentDto);
+    return {
+      toast: {
+        title: "댓글 수정 완료",
+        description: `댓글을 수정했습니다.`,
+      },
+      payload: await this.postsCommentsService.update(
+        findByIdDto,
+        updateCommentDto,
+      ),
+    };
   }
 
   @UseGuards(IsLoggedIn)
   @Delete(":commentId")
-  @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param() findByIdDto: FindByPostIdAndCommentIdDto) {
-    return this.postsCommentsService.delete(findByIdDto);
+  async delete(@Param() findByIdDto: FindByPostIdAndCommentIdDto) {
+    return {
+      toast: {
+        title: "댓글 삭제 완료",
+        description: `댓글을 삭제했습니다.`,
+      },
+      payload: await this.postsCommentsService.delete(findByIdDto),
+    };
   }
 }

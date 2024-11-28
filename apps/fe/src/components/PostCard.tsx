@@ -17,11 +17,11 @@ import {
 } from "@sd/ui";
 
 import { routes } from "#fe/constants";
-import { TGetAllPostAPIResponse } from "#fe/apis";
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
+import { IGetAllPostAPIResponse } from "#fe/apis";
+import { postCategoryToKoreanMap } from "@sd/utils";
 
 interface IProps {
-  post: TGetAllPostAPIResponse[number];
+  post: IGetAllPostAPIResponse["payload"][number];
 }
 
 const PostCard: React.FC<IProps> = ({ post }) => {

@@ -9,7 +9,7 @@ import { z } from "zod";
 import CategoryCombobox from "./CategoryCombobox";
 import { useRouter } from "next/navigation";
 import { PostCategory } from "#be/types";
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
+import { postCategoryToKoreanMap } from "@sd/utils";
 import { routes } from "#fe/constants";
 
 const formSchema = z.object({

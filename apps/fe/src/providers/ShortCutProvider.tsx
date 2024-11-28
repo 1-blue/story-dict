@@ -10,19 +10,19 @@ import { routes } from "#fe/constants";
 
 const ShortCutProvider: React.FC = () => {
   const router = useRouter();
-  const { me, logOutMutate } = useMe();
+  const { me, logOutMutateAsync } = useMe();
 
   useHotkeys("shift+mod+0", async () => {
     if (!me) return;
 
     try {
-      await logOutMutate({});
+      await logOutMutateAsync({});
 
       toast.success("로그아웃 되었습니다.", {
         description: "다음에 또 만나요!",
       });
     } catch (error) {
-      handleError({ error, title: "로그아웃 실패" });
+      handleError({ error });
     }
   });
   useHotkeys("shift+mod+1", () => router.push(routes.home.url));

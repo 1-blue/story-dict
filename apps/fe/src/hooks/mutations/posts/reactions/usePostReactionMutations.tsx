@@ -1,4 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   apis,
   ICreatePostReactionAPIRequest,
@@ -10,34 +11,52 @@ import {
 } from "#fe/apis";
 
 const usePostReactionMutations = () => {
-  const { mutateAsync: createPostReactionMutate } = useMutation<
+  const queryClient = useQueryClient();
+  const params = useParams<{ title: string }>();
+
+  const { mutateAsync: createPostReactionMutateAsync } = useMutation<
     ICreatePostReactionAPIResponse,
     Error,
     ICreatePostReactionAPIRequest
   >({
     mutationFn: ({ params, body }) =>
       apis.posts.reactions.create.fn({ params, body }),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.getOneByTitle.key({ params }),
+      });
+    },
   });
-  const { mutateAsync: patchPostReactionMutate } = useMutation<
+  const { mutateAsync: patchPostReactionMutateAsync } = useMutation<
     IPatchPostReactionAPIResponse,
     Error,
     IPatchPostReactionAPIRequest
   >({
     mutationFn: ({ params, body }) =>
       apis.posts.reactions.patch.fn({ params, body }),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.getOneByTitle.key({ params }),
+      });
+    },
   });
-  const { mutateAsync: deletePostReactionMutate } = useMutation<
+  const { mutateAsync: deletePostReactionMutateAsync } = useMutation<
     IDeletePostReactionAPIResponse,
     Error,
     IDeletePostReactionAPIRequest
   >({
     mutationFn: ({ params }) => apis.posts.reactions.delete.fn({ params }),
+    onSuccess() {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.getOneByTitle.key({ params }),
+      });
+    },
   });
 
   return {
-    createPostReactionMutate,
-    patchPostReactionMutate,
-    deletePostReactionMutate,
+    createPostReactionMutateAsync,
+    patchPostReactionMutateAsync,
+    deletePostReactionMutateAsync,
   };
 };
 

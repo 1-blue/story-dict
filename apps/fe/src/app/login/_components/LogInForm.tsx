@@ -29,7 +29,7 @@ const formSchema = z.object({
 
 const LogInForm: React.FC = () => {
   const router = useRouter();
-  const { me, logInMutate } = useMe();
+  const { me, logInMutateAsync } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEV_DEFAULT_VALUES,
@@ -40,7 +40,7 @@ const LogInForm: React.FC = () => {
       if (me) return;
 
       try {
-        await logInMutate({ body });
+        await logInMutateAsync({ body });
 
         router.replace(routes.post.url);
 
@@ -48,7 +48,7 @@ const LogInForm: React.FC = () => {
           description: "메인페이지로 이동합니다.",
         });
       } catch (error) {
-        handleError({ error, title: "로그인 실패" });
+        handleError({ error });
       }
     },
   );

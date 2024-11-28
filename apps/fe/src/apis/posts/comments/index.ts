@@ -4,6 +4,7 @@ import {
   fetchInstanceHandleError,
   fetchInstanceHandleResponse,
 } from "#fe/apis/fetchInstance";
+import type { IAPIResponse } from "#fe/types/api";
 
 // ============================== 게시글의 댓글 생성 ==============================
 /** 게시글의 댓글 생성 요청 타입 */
@@ -13,12 +14,15 @@ export interface ICreatePostCommentAPIRequest {
 }
 
 /** 게시글의 댓글 생성 응답 타입 */
-export interface ICreatePostCommentAPIResponse extends Comment {
-  user: Pick<User, "id" | "nickname"> & {
-    image: Pick<Image, "id" | "url">;
-  };
-  reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
-}
+export interface ICreatePostCommentAPIResponse
+  extends IAPIResponse<
+    Comment & {
+      user: Pick<User, "id" | "nickname"> & {
+        image: Pick<Image, "id" | "url">;
+      };
+      reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
+    }
+  > {}
 /** 게시글의 댓글 생성 함수 */
 export const createPostCommentAPI = async ({
   params,
@@ -38,16 +42,19 @@ export interface IGetAllPostCommentAPIRequest {
   params: { postId: Post["id"] };
 }
 /** 게시글의 모든 댓글 요청 응답 타입 */
-export type TGetAllPostCommentAPIResponse = (Comment & {
-  user: Pick<User, "id" | "nickname"> & {
-    image: Pick<Image, "id" | "url">;
-  };
-  reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
-})[];
+export interface IGetAllPostCommentAPIResponse
+  extends IAPIResponse<
+    (Comment & {
+      user: Pick<User, "id" | "nickname"> & {
+        image: Pick<Image, "id" | "url">;
+      };
+      reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
+    })[]
+  > {}
 /** 게시글의 모든 댓글 요청 함수 */
 export const getAllPostCommentAPI = async ({
   params,
-}: IGetAllPostCommentAPIRequest): Promise<TGetAllPostCommentAPIResponse> => {
+}: IGetAllPostCommentAPIRequest): Promise<IGetAllPostCommentAPIResponse> => {
   return fetchInstance(postCommentApis.getAll.endPoint({ params }), {
     method: "GET",
   })
@@ -62,12 +69,15 @@ export interface IPatchPostCommentAPIRequest {
   body: Partial<ICreatePostCommentAPIRequest["body"]>;
 }
 /** 게시글의 댓글 수정 응답 타입 */
-export type IPatchPostCommentAPIResponse = (Comment & {
-  user: Pick<User, "id" | "nickname"> & {
-    image: Pick<Image, "id" | "url">;
-  };
-  reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
-})[];
+export interface IPatchPostCommentAPIResponse
+  extends IAPIResponse<
+    (Comment & {
+      user: Pick<User, "id" | "nickname"> & {
+        image: Pick<Image, "id" | "url">;
+      };
+      reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
+    })[]
+  > {}
 /** 게시글의 댓글 수정 함수 */
 export const patchPostCommentAPI = async ({
   body,
@@ -87,7 +97,7 @@ export interface IDeletePostCommentAPIRequest {
   params: { postId: Post["id"]; commentId: Comment["id"] };
 }
 /** 게시글의 댓글 삭제 응답 타입 */
-export interface IDeletePostCommentAPIResponse extends Comment {}
+export interface IDeletePostCommentAPIResponse extends IAPIResponse<Comment> {}
 /** 게시글의 댓글 삭제 함수 */
 export const deletePostCommentAPI = async ({
   params,

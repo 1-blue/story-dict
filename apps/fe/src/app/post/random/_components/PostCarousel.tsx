@@ -15,14 +15,14 @@ import {
   CarouselPrevious,
 } from "@sd/ui";
 
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
-import { TGetManyRandomPostAPIResponse } from "#fe/apis";
+import { postCategoryToKoreanMap } from "@sd/utils";
+import { IGetManyRandomPostAPIResponse } from "#fe/apis";
 import { routes } from "#fe/constants";
 
 import Reactions from "#fe/app/post/random/_components/Reactions";
 
 interface IProps {
-  posts: TGetManyRandomPostAPIResponse;
+  posts: IGetManyRandomPostAPIResponse["payload"];
   randomPostRefatch: () => void;
   existingIdsRef: React.MutableRefObject<string[]>;
   hasMore: boolean;

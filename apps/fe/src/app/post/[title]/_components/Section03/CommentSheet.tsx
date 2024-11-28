@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import {
@@ -17,7 +17,6 @@ import {
 import { schemas } from "@sd/utils";
 
 import { apis } from "#fe/apis";
-import { handleError } from "#fe/libs/handleError";
 import useMe from "#fe/hooks/queries/users/useMe";
 import usePostCommentMutations from "#fe/hooks/mutations/posts/comments/usePostCommentMutations";
 
@@ -42,27 +41,22 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
     },
   });
 
-  const { createPostCommentMutate } = usePostCommentMutations();
-  const { data: comments, refetch: commentRefetch } = useQuery({
+  const { createPostCommentMutateAsync } = usePostCommentMutations({ postId });
+  const { data: comments } = useSuspenseQuery({
     queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
     queryFn: () => apis.posts.comments.getAll.fn({ params: { postId } }),
+    select: (data) => data.payload,
   });
 
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me) return toast.warning("로그인 후 이용해주세요.");
 
-    try {
-      await createPostCommentMutate({
-        params: { postId },
-        body: { content: body.content },
-      });
+    createPostCommentMutateAsync({
+      params: { postId },
+      body: { content: body.content },
+    });
 
-      toast.success("댓글 작성 완료");
-      commentRefetch();
-      form.reset();
-    } catch (error) {
-      handleError({ error, title: "댓글 작성 실패" });
-    }
+    form.reset();
   });
 
   return (
@@ -75,7 +69,7 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
       <SheetContent className="!max-w-sm overflow-auto" hideClose>
         <SheetHeader className="mb-1 line-clamp-1">{title}</SheetHeader>
         <SheetDescription className="mb-4">
-          댓글({comments?.length || 0}개)
+          댓글({comments.length || 0}개)
         </SheetDescription>
         <Form {...form}>
           <form onSubmit={onSubmit} className="flex flex-col gap-2">
@@ -92,11 +86,7 @@ const CommentSheet: React.FC<IProps> = ({ title, postId }) => {
         </Form>
         <ul className="mt-6 flex flex-col gap-2">
           {comments?.map((comment) => (
-            <Comment
-              key={comment.id}
-              comment={comment}
-              commentRefetch={commentRefetch}
-            />
+            <Comment key={comment.id} comment={comment} />
           ))}
         </ul>
       </SheetContent>

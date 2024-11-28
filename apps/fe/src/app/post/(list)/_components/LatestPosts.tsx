@@ -8,6 +8,7 @@ const LatestPosts: React.FC = () => {
   const { data: posts } = useSuspenseQuery({
     queryKey: apis.posts.getAll.key(),
     queryFn: apis.posts.getAll.fn,
+    select: (data) => data.payload,
   });
 
   return (

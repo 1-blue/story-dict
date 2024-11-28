@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { apis, TGetManyRandomPostAPIResponse } from "#fe/apis";
+import { apis, IGetManyRandomPostAPIResponse } from "#fe/apis";
 import PostCarousel from "#fe/app/post/random/_components/PostCarousel";
 
 const PostCarouselWrapper: React.FC = () => {
-  const [posts, setPosts] = useState<TGetManyRandomPostAPIResponse>([]);
+  const [posts, setPosts] = useState<IGetManyRandomPostAPIResponse["payload"]>(
+    [],
+  );
   const existingIdsRef = useRef<string[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const { data, refetch } = useSuspenseQuery({
@@ -18,6 +20,7 @@ const PostCarouselWrapper: React.FC = () => {
       apis.posts.getManyRandom.fn({
         queries: { existingIds: existingIdsRef.current.join(",") },
       }),
+    select: (data) => data.payload,
   });
 
   useEffect(() => {

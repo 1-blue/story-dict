@@ -4,15 +4,18 @@ import {
   fetchInstanceHandleError,
   fetchInstanceHandleResponse,
 } from "#fe/apis/fetchInstance";
+import type { IAPIResponse } from "#fe/types/api";
 
 // ============================== 로그인된 유저 정보 ==============================
 /** 로그인된 유저 정보 요청 타입 */
 export interface IGetMeAPIRequest {}
 /** 로그인된 유저 정보 응답 타입 */
 export interface IGetMeAPIResponse
-  extends Pick<User, "id" | "nickname" | "role" | "email"> {
-  image?: Pick<Image, "id" | "url">;
-}
+  extends IAPIResponse<
+    Pick<User, "id" | "nickname" | "role" | "email"> & {
+      image?: Pick<Image, "id" | "url">;
+    }
+  > {}
 /** 로그인된 유저 정보 가져오기 함수 */
 export const getMeAPI = async (): Promise<IGetMeAPIResponse> => {
   return fetchInstance(userApis.getMe.endPoint(), {
@@ -40,9 +43,10 @@ export interface ICreateUserAPIRequest {
     >;
 }
 /** 유저 생성 응답 타입 */
-export interface ICreateUserAPIResponse extends Omit<User, "password"> {
-  image?: Pick<Image, "id" | "url">;
-}
+export interface ICreateUserAPIResponse
+  extends IAPIResponse<
+    Omit<User, "password"> & { image?: Pick<Image, "id" | "url"> }
+  > {}
 /** 유저 생성 함수 */
 export const createUserAPI = async ({
   body,

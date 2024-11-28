@@ -26,7 +26,7 @@ const getSearchedPosts = cache(({ params }: IProps) =>
 );
 
 export const generateMetadata = async ({ params }: IProps) => {
-  const posts = await getSearchedPosts({ params });
+  const { payload: posts } = await getSearchedPosts({ params });
   const post = posts[0];
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
   const hasThumbnailPost = posts.find((post) => !!post.thumbnail);

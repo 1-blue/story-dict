@@ -10,21 +10,21 @@ import {
 } from "#fe/apis";
 
 const useImageMutations = () => {
-  const { mutateAsync: createImageMutate } = useMutation<
+  const { mutateAsync: createImageMutateAsync } = useMutation<
     ICreateImageAPIResponse,
     Error,
     ICreateImageAPIRequest
   >({
     mutationFn: ({ body }) => apis.images.create.fn({ body }),
   });
-  const { mutateAsync: patchImageMutate } = useMutation<
+  const { mutateAsync: patchImageMutateAsync } = useMutation<
     IPatchImageAPIResponse,
     Error,
     IPatchImageAPIRequest
   >({
     mutationFn: ({ body, params }) => apis.images.patch.fn({ body, params }),
   });
-  const { mutateAsync: createPresignedURLMutate } = useMutation<
+  const { mutateAsync: createPresignedURLMutateAsync } = useMutation<
     ICreatePresignedURLAPIResponse,
     Error,
     ICreatePresignedURLAPIRequest
@@ -32,7 +32,11 @@ const useImageMutations = () => {
     mutationFn: ({ body }) => apis.images.createPresignedURL.fn({ body }),
   });
 
-  return { createImageMutate, patchImageMutate, createPresignedURLMutate };
+  return {
+    createImageMutateAsync,
+    patchImageMutateAsync,
+    createPresignedURLMutateAsync,
+  };
 };
 
 export default useImageMutations;

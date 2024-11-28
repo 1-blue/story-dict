@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   apis,
   ICreatePostCommentAPIRequest,
@@ -9,35 +9,56 @@ import {
   IPatchPostCommentAPIResponse,
 } from "#fe/apis";
 
-const usePostCommentMutations = () => {
-  const { mutateAsync: createPostCommentMutate } = useMutation<
+interface IArgs {
+  postId: string;
+}
+
+const usePostCommentMutations = ({ postId }: IArgs) => {
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: createPostCommentMutateAsync } = useMutation<
     ICreatePostCommentAPIResponse,
     Error,
     ICreatePostCommentAPIRequest
   >({
     mutationFn: ({ params, body }) =>
       apis.posts.comments.create.fn({ params, body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+      });
+    },
   });
-  const { mutateAsync: patchPostCommentMutate } = useMutation<
+  const { mutateAsync: patchPostCommentMutateAsync } = useMutation<
     IPatchPostCommentAPIResponse,
     Error,
     IPatchPostCommentAPIRequest
   >({
     mutationFn: ({ params, body }) =>
       apis.posts.comments.patch.fn({ params, body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+      });
+    },
   });
-  const { mutateAsync: deletePostCommentMutate } = useMutation<
+  const { mutateAsync: deletePostCommentMutateAsync } = useMutation<
     IDeletePostCommentAPIResponse,
     Error,
     IDeletePostCommentAPIRequest
   >({
     mutationFn: ({ params }) => apis.posts.comments.delete.fn({ params }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+      });
+    },
   });
 
   return {
-    createPostCommentMutate,
-    patchPostCommentMutate,
-    deletePostCommentMutate,
+    createPostCommentMutateAsync,
+    patchPostCommentMutateAsync,
+    deletePostCommentMutateAsync,
   };
 };
 

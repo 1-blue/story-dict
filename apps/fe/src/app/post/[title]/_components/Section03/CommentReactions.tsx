@@ -1,23 +1,21 @@
 "use client";
 
-import { PostReaction, ReactionType } from "#be/types";
-import useMe from "#fe/hooks/queries/users/useMe";
-import usePostCommentReactionMutations from "#fe/hooks/mutations/posts/comments/reactions/usePostCommentReactionMutations";
-import { handleError } from "#fe/libs/handleError";
-import { reactionTypeToEmojiMap } from "#fe/libs/mappings";
 import { toast } from "@sd/ui";
 import { cn } from "@sd/ui/libs";
 
+import type { PostReaction, ReactionType } from "#be/types";
+import useMe from "#fe/hooks/queries/users/useMe";
+import usePostCommentReactionMutations from "#fe/hooks/mutations/posts/comments/reactions/usePostCommentReactionMutations";
+import { reactionTypeToEmojiMap } from "@sd/utils";
+
 interface IProps {
   reactions: Pick<PostReaction, "id" | "type" | "userId">[];
-  refetch: () => void;
   postId: string;
   commentId: string;
 }
 
 const CommentReactions: React.FC<IProps> = ({
   reactions,
-  refetch,
   postId,
   commentId,
 }) => {
@@ -41,11 +39,11 @@ const CommentReactions: React.FC<IProps> = ({
   )?.type;
 
   const {
-    createPostCommentReactionMutate,
-    patchPostCommentReactionMutate,
-    deletePostCommentReactionMutate,
-  } = usePostCommentReactionMutations();
-  const onClickReaction: React.MouseEventHandler<HTMLElement> = async (e) => {
+    createPostCommentReactionMutateAsync,
+    patchPostCommentReactionMutateAsync,
+    deletePostCommentReactionMutateAsync,
+  } = usePostCommentReactionMutations({ postId });
+  const onClickReaction: React.MouseEventHandler<HTMLElement> = (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
     const type = e.target.dataset.type as ReactionType;
     if (!type) return;
@@ -54,44 +52,25 @@ const CommentReactions: React.FC<IProps> = ({
 
     const exReaction = reactions.find((reaction) => reaction.userId === me.id);
 
-    try {
-      // 리액션 생성
-      if (!exReaction) {
-        await createPostCommentReactionMutate({
-          params: { postId, commentId },
-          body: { type },
-        });
-
-        refetch();
-        return toast.info("댓글 리액션 생성", {
-          description: `댓글의 "${reactionTypeToEmojiMap[type]}" 리액션을 생성했습니다.`,
-        });
-      }
-
-      // 리액션 교체
-      if (exReaction.type !== type) {
-        await patchPostCommentReactionMutate({
-          params: { postId, commentId, reactionId: exReaction.id },
-          body: { type },
-        });
-
-        refetch();
-        return toast.info("댓글 리액션 교체", {
-          description: `댓글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 "${reactionTypeToEmojiMap[type]}"로 교체했습니다.`,
-        });
-      }
-
-      // 리액션 제거
-      await deletePostCommentReactionMutate({
+    // 리액션 생성
+    if (!exReaction) {
+      createPostCommentReactionMutateAsync({
+        params: { postId, commentId },
+        body: { type },
+      });
+    }
+    // 리액션 교체
+    else if (exReaction.type !== type) {
+      patchPostCommentReactionMutateAsync({
+        params: { postId, commentId, reactionId: exReaction.id },
+        body: { type },
+      });
+    }
+    // 리액션 제거
+    else {
+      deletePostCommentReactionMutateAsync({
         params: { postId, commentId, reactionId: exReaction.id },
       });
-
-      refetch();
-      return toast.info("댓글 리액션 제거", {
-        description: `댓글의 "${reactionTypeToEmojiMap[exReaction.type]}" 리액션을 제거했습니다.`,
-      });
-    } catch (error) {
-      handleError({ error, title: "댓글 리액션 실패" });
     }
   };
 

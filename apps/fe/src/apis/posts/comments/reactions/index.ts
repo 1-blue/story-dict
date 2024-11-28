@@ -4,6 +4,7 @@ import {
   fetchInstanceHandleResponse,
   fetchInstanceHandleError,
 } from "#fe/apis/fetchInstance";
+import type { IAPIResponse } from "#fe/types/api";
 
 // ============================== 게시글의 댓글 리액션 생성 ==============================
 /** 게시글의 댓글 리액션 생성 요청 타입 */
@@ -13,7 +14,7 @@ export interface ICreatePostCommentReactionAPIRequest {
 }
 /** 게시글의 댓글 리액션 생성 응답 타입 */
 export interface ICreatePostCommentReactionAPIResponse
-  extends CommentReaction {}
+  extends IAPIResponse<CommentReaction> {}
 /** 게시글의 댓글 리액션 생성 함수 */
 export const createPostCommentReactionAPI = async ({
   params,
@@ -36,7 +37,8 @@ export interface IPatchPostCommentReactionAPIRequest {
   body: Partial<ICreatePostCommentReactionAPIRequest["body"]>;
 }
 /** 게시글의 댓글 리액션 수정 응답 타입 */
-export interface IPatchPostCommentReactionAPIResponse extends CommentReaction {}
+export interface IPatchPostCommentReactionAPIResponse
+  extends IAPIResponse<CommentReaction> {}
 /** 게시글의 댓글 리액션 수정 함수 */
 export const patchPostCommentReactionAPI = async ({
   params,
@@ -59,7 +61,7 @@ export interface IDeletePostCommentReactionAPIRequest {
 }
 /** 게시글의 댓글 리액션 삭제 응답 타입 */
 export interface IDeletePostCommentReactionAPIResponse
-  extends CommentReaction {}
+  extends IAPIResponse<CommentReaction> {}
 /** 게시글의 댓글 리액션 삭제 함수 */
 export const deletePostCommentReactionAPI = async ({
   params,

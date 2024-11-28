@@ -3,18 +3,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@sd/ui";
 import { format } from "date-fns";
 
-import { TGetAllPostCommentAPIResponse } from "#fe/apis";
+import { IGetAllPostCommentAPIResponse } from "#fe/apis";
 
 import CommentReactions from "#fe/app/post/[title]/_components/Section03/CommentReactions";
 import CommentReactionPopover from "#fe/app/post/[title]/_components/Section03/CommentReactionPopover";
 import CommentReactionPanelPopover from "#fe/app/post/[title]/_components/Section03/CommentReactionPanelPopover";
 
 interface IProps {
-  comment: TGetAllPostCommentAPIResponse[number];
-  // FIXME: refetch 없애고 mutation에서 처리하도록 수정
-  commentRefetch: () => void;
+  comment: IGetAllPostCommentAPIResponse["payload"][number];
 }
-const Comment: React.FC<IProps> = ({ comment, commentRefetch }) => {
+const Comment: React.FC<IProps> = ({ comment }) => {
   return (
     <li
       key={comment.id}
@@ -37,7 +35,6 @@ const Comment: React.FC<IProps> = ({ comment, commentRefetch }) => {
         <CommentReactionPanelPopover
           postId={comment.postId}
           commentId={comment.id}
-          refetch={commentRefetch}
         />
       </div>
       <p className="whitespace-pre-wrap break-words rounded-md bg-muted/40 px-3 py-2 text-sm">
@@ -48,13 +45,11 @@ const Comment: React.FC<IProps> = ({ comment, commentRefetch }) => {
           reactions={comment.reactions}
           postId={comment.postId}
           commentId={comment.id}
-          refetch={commentRefetch}
         />
         <CommentReactions
           reactions={comment.reactions}
           postId={comment.postId}
           commentId={comment.id}
-          refetch={commentRefetch}
         />
       </div>
     </li>

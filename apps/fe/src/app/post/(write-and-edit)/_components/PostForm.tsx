@@ -4,17 +4,15 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
 import { routes } from "#fe/constants";
-import { apis } from "#fe/apis";
 import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
 import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
 import usePostMutations from "#fe/hooks/mutations/posts/usePostMutations";
-import { revalidateTagForServer } from "#fe/actions/revalidateForServer";
 
 import Metadata from "#fe/app/post/(write-and-edit)/_components/Metadata";
 import Editor from "#fe/app/post/(write-and-edit)/_components/Editor";
@@ -48,7 +46,6 @@ interface IProps {
 }
 
 const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
-  const router = useRouter();
   const { me } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -81,9 +78,12 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
 
   const isEdit = !!postId;
 
-  const { patchImageMutate } = useImageMutations();
-  const { createPostMutate, checkUniqueTitleMutate, patchPostMutate } =
-    usePostMutations();
+  const { patchImageMutateAsync } = useImageMutations();
+  const {
+    createPostMutateAsync,
+    checkUniqueTitleMutateAsync,
+    patchPostMutateAsync,
+  } = usePostMutations();
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me?.id) return;
 
@@ -91,7 +91,9 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
 
     if (!isTitleUnchanged) {
       try {
-        const { isUnique } = await checkUniqueTitleMutate({
+        const {
+          payload: { isUnique },
+        } = await checkUniqueTitleMutateAsync({
           body: { title: body.title.trim() },
         });
 
@@ -103,49 +105,41 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
           return;
         }
       } catch (error) {
-        handleError({ error, title: "이미 존재하는 제목" });
+        handleError({ error });
       }
     }
 
-    try {
-      if (imageData) {
-        await patchImageMutate({
+    if (imageData) {
+      try {
+        await patchImageMutateAsync({
           params: { imageId: imageData.id },
           body: {
             beforeStatus: "TEMP",
             afterStatus: "USE",
           },
         });
+      } catch (error) {
+        handleError({ error });
       }
+    }
 
-      if (isEdit) {
-        await patchPostMutate({
-          params: { postId },
-          body: {
-            ...body,
-            title: body.title.trim(),
-            thumbnailId: imageData?.id,
-          },
-        });
-      } else {
-        await createPostMutate({
-          body: {
-            ...body,
-            title: body.title.trim(),
-            thumbnailId: imageData?.id,
-          },
-        });
-      }
-
-      revalidateTagForServer(apis.posts.getAll.key());
-
-      router.replace(routes.post.url);
-
-      toast.success("게시글 생성 성공", {
-        description: `게시글이 성공적으로 생성되었습니다.\n메인 페이지로 이동됩니다!`,
+    if (isEdit) {
+      patchPostMutateAsync({
+        params: { postId },
+        body: {
+          ...body,
+          title: body.title.trim(),
+          thumbnailId: imageData?.id,
+        },
       });
-    } catch (error) {
-      handleError({ error, title: "게시글 생성 실패" });
+    } else {
+      createPostMutateAsync({
+        body: {
+          ...body,
+          title: body.title.trim(),
+          thumbnailId: imageData?.id,
+        },
+      });
     }
   });
 

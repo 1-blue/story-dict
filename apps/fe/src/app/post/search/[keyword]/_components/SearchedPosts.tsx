@@ -14,6 +14,7 @@ const SearchedPosts: React.FC<IProps> = ({ keyword }) => {
   const { data: posts } = useSuspenseQuery({
     queryKey: apis.posts.getManyKeyword.key({ params: { keyword } }),
     queryFn: () => apis.posts.getManyKeyword.fn({ params: { keyword } }),
+    select: (data) => data.payload,
   });
 
   return (

@@ -32,58 +32,94 @@ export class PostsController {
   @UseGuards(IsLoggedIn)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Req() req: Request, @Body() createPostDto: CreatePostDto) {
-    return this.postsService.create(req.user!.id, createPostDto);
+  async create(@Req() req: Request, @Body() createPostDto: CreatePostDto) {
+    return {
+      payload: await this.postsService.create(req.user!.id, createPostDto),
+    };
   }
 
   @Get()
-  getAll() {
-    return this.postsService.getAll();
+  async getAll() {
+    return {
+      toast: {
+        title: "게시글들 조회 완료",
+        description: `게시글들을 조회했습니다.`,
+      },
+      payload: await this.postsService.getAll(),
+    };
   }
 
   @Get("/random")
-  getManyRandom(@Query() getManyRandomPostDto: GetManyRandomPostDto) {
-    return this.postsService.getManyRandom(getManyRandomPostDto);
+  async getManyRandom(@Query() getManyRandomPostDto: GetManyRandomPostDto) {
+    return {
+      payload: await this.postsService.getManyRandom(getManyRandomPostDto),
+    };
   }
 
   @Get(":postId")
-  getOne(@Param() findByIdDto: FindByPostIdDto) {
-    return this.postsService.getOne(findByIdDto);
+  async getOne(@Param() findByIdDto: FindByPostIdDto) {
+    return {
+      payload: await this.postsService.getOne(findByIdDto),
+    };
   }
 
   @Get("/title/:title")
-  getOneByTitle(@Param() findByTitleDto: GetOnePostByTitleDto) {
-    return this.postsService.getOneByTitle(findByTitleDto);
+  async getOneByTitle(@Param() findByTitleDto: GetOnePostByTitleDto) {
+    return {
+      payload: await this.postsService.getOneByTitle(findByTitleDto),
+    };
   }
 
   @Get("/search/:keyword")
-  getManyKeyword(@Param() findSearchPostDto: FindKeywordPostDto) {
-    return this.postsService.getManyKeyword(findSearchPostDto);
+  async getManyKeyword(@Param() findSearchPostDto: FindKeywordPostDto) {
+    return {
+      payload: await this.postsService.getManyKeyword(findSearchPostDto),
+    };
   }
 
   @Get("/category/:category")
-  getAllCategory(@Param() getAllCategoryPostDto: GetAllCategoryPostDto) {
-    return this.postsService.getAllCategory(getAllCategoryPostDto);
+  async getAllCategory(@Param() getAllCategoryPostDto: GetAllCategoryPostDto) {
+    return {
+      payload: await this.postsService.getAllCategory(getAllCategoryPostDto),
+    };
   }
 
   @UseGuards(IsLoggedIn)
   @Patch(":postId")
-  update(
+  async update(
     @Param() findByIdDto: FindByPostIdDto,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.postsService.update(findByIdDto, updatePostDto);
+    return {
+      toast: {
+        title: "게시글 수정 완료",
+        description: `게시글을 수정했습니다.\n메인 페이지로 이동합니다!`,
+      },
+      payload: await this.postsService.update(findByIdDto, updatePostDto),
+    };
   }
 
   @UseGuards(IsLoggedIn)
   @Delete(":postId")
-  @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@Param() findByIdDto: FindByPostIdDto) {
-    return this.postsService.delete(findByIdDto);
+  @HttpCode(HttpStatus.OK)
+  async delete(@Param() findByIdDto: FindByPostIdDto) {
+    return {
+      toast: {
+        title: "게시글 삭제 완료",
+        description: `게시글을 삭제했습니다.\n메인 페이지로 이동합니다!`,
+      },
+      payload: await this.postsService.delete(findByIdDto),
+    };
   }
 
   @Post("/check-unique-title")
-  checkUniqueTitle(@Body() checkUniqueTitleDto: CheckUniqueTitleDto) {
-    return this.postsService.checkUniqueTitle(checkUniqueTitleDto);
+  async checkUniqueTitle(@Body() checkUniqueTitleDto: CheckUniqueTitleDto) {
+    return {
+      toast: {
+        title: "게시글 제목 중복 체크 완료",
+        description: `게시글 제목 중복 체크를 완료했습니다.`,
+      },
+      payload: await this.postsService.checkUniqueTitle(checkUniqueTitleDto),
+    };
   }
 }

@@ -20,7 +20,7 @@ const getRandomPosts = cache(() =>
 );
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const posts = await getRandomPosts();
+  const { payload: posts } = await getRandomPosts();
   const post = posts[0];
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
   const hasThumbnailPost = posts.find((post) => !!post.thumbnail);

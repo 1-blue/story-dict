@@ -29,7 +29,7 @@ const getOneByTitle = cache(({ params }: IProps) =>
 export const generateMetadata = async ({
   params,
 }: IProps): Promise<Metadata> => {
-  const post = await getOneByTitle({ params });
+  const { payload: post } = await getOneByTitle({ params });
 
   return getSharedMetadata({
     title: post.title,

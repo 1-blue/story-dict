@@ -27,16 +27,16 @@ import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
 
 const SidebarBottom: React.FC = () => {
-  const { me, logOutMutate } = useMe();
+  const { me, logOutMutateAsync } = useMe();
 
   const onLogOut = async () => {
     try {
-      await logOutMutate({});
+      await logOutMutateAsync({});
       toast.success("로그아웃 되었습니다..🥲", {
         description: "다음에 또 이용해주세요!",
       });
     } catch (error) {
-      handleError({ error, title: "로그아웃 실패" });
+      handleError({ error });
     }
   };
 

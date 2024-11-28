@@ -7,7 +7,7 @@ import { CalendarIcon, PersonIcon } from "@radix-ui/react-icons";
 
 import "#fe/css/github-markdown.css";
 import { apis } from "#fe/apis";
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
+import { postCategoryToKoreanMap } from "@sd/utils";
 
 import PostReactions from "#fe/app/post/[title]/_components/Section01/PostReactions";
 import PostReactionPopover from "#fe/app/post/[title]/_components/Section01/PostReactionPopover";
@@ -20,10 +20,11 @@ interface IProps {
 }
 
 const PostDetail: React.FC<IProps> = ({ postTitle }) => {
-  const { data: post, refetch: postRefetch } = useSuspenseQuery({
+  const { data: post } = useSuspenseQuery({
     queryKey: apis.posts.getOneByTitle.key({ params: { title: postTitle } }),
     queryFn: () =>
       apis.posts.getOneByTitle.fn({ params: { title: postTitle } }),
+    select: (data) => data.payload,
   });
 
   if (!post) return null;
@@ -61,17 +62,9 @@ const PostDetail: React.FC<IProps> = ({ postTitle }) => {
           <CommentSheet title={post.title} postId={post.id} />
         </div>
         <div className="flex gap-2 self-start">
-          <PostReactionPopover
-            reactions={post.reactions}
-            postId={post.id}
-            refetch={postRefetch}
-          />
+          <PostReactionPopover reactions={post.reactions} postId={post.id} />
 
-          <PostReactions
-            reactions={post.reactions}
-            postId={post.id}
-            refetch={postRefetch}
-          />
+          <PostReactions reactions={post.reactions} postId={post.id} />
         </div>
       </section>
 

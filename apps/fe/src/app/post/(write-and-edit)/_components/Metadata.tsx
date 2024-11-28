@@ -34,7 +34,8 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { createPresignedURLMutate, createImageMutate } = useImageMutations();
+  const { createPresignedURLMutateAsync, createImageMutateAsync } =
+    useImageMutations();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -43,11 +44,13 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
     if (!file) return;
 
     try {
-      const { url, fields } = await createPresignedURLMutate({
+      const { url, fields } = await createPresignedURLMutateAsync({
         body: { filename: file.name },
       });
       await postUploadImageByPresignedURL({ fields, imageFile: file });
-      const { id: imageId, url: imageURL } = await createImageMutate({
+      const {
+        payload: { id: imageId, url: imageURL },
+      } = await createImageMutateAsync({
         body: {
           name: file.name,
           url: url + fields.key,
@@ -57,7 +60,7 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
 
       setImageData({ id: imageId, url: imageURL });
     } catch (error) {
-      handleError({ error, title: "이미지 업로드 실패" });
+      handleError({ error });
     }
   };
 

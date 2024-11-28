@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -20,30 +22,53 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Post()
-  create(@Body() createDto: CreateImageDto) {
-    return this.imagesService.create(createDto);
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createDto: CreateImageDto) {
+    return {
+      toast: {
+        title: "이미지 생성 완료",
+        description: `이미지를 생성했습니다.`,
+      },
+      payload: await this.imagesService.create(createDto),
+    };
   }
 
   @Get(":imageId")
-  getOne(@Param() fineByIdDto: FindByImageIdDto) {
-    return this.imagesService.getOne(fineByIdDto);
+  async getOne(@Param() fineByIdDto: FindByImageIdDto) {
+    return {
+      payload: await this.imagesService.getOne(fineByIdDto),
+    };
   }
 
   @Patch(":imageId")
-  move(@Param() findByIdDto: FindByImageIdDto, @Body() moveDto: MoveImageDto) {
-    return this.imagesService.move(findByIdDto, moveDto);
+  async move(
+    @Param() findByIdDto: FindByImageIdDto,
+    @Body() moveDto: MoveImageDto,
+  ) {
+    return {
+      payload: await this.imagesService.move(findByIdDto, moveDto),
+    };
   }
 
   @Delete(":imageId")
-  delete(
+  async delete(
     @Param() findByIdDto: FindByImageIdDto,
     @Body() deleteS3Dto: DeleteImageDto,
   ) {
-    return this.imagesService.delete(findByIdDto, deleteS3Dto);
+    return {
+      payload: await this.imagesService.delete(findByIdDto, deleteS3Dto),
+    };
   }
 
   @Post("/presigned-url")
-  createPresignedURL(@Body() createPresignedURLDto: CreatePresignedURLDto) {
-    return this.imagesService.createPresignedURL(createPresignedURLDto);
+  @HttpCode(HttpStatus.CREATED)
+  async createPresignedURL(
+    @Body() createPresignedURLDto: CreatePresignedURLDto,
+  ) {
+    return {
+      payload: await this.imagesService.createPresignedURL(
+        createPresignedURLDto,
+      ),
+    };
   }
 }

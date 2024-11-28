@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import type { PostCategory } from "#be/types";
-import { postCategoryToKoreanMap } from "#fe/libs/mappings";
+import { postCategoryToKoreanMap } from "@sd/utils";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { apis } from "#fe/apis";
 import { CATEGORIES } from "#fe/constants";
@@ -30,7 +30,7 @@ const getManyCategoryPost = cache(({ params }: IProps) =>
 export const generateMetadata = async ({
   params,
 }: IProps): Promise<Metadata> => {
-  const posts = await getManyCategoryPost({ params });
+  const { payload: posts } = await getManyCategoryPost({ params });
   const post = posts[0];
 
   if (!post) {

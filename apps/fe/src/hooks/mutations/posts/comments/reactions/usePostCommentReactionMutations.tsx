@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   apis,
   ICreatePostCommentReactionAPIRequest,
@@ -9,36 +9,56 @@ import {
   IPatchPostCommentReactionAPIResponse,
 } from "#fe/apis";
 
-const usePostCommentReactionMutations = () => {
-  const { mutateAsync: createPostCommentReactionMutate } = useMutation<
+interface IArgs {
+  postId: string;
+}
+const usePostCommentReactionMutations = ({ postId }: IArgs) => {
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: createPostCommentReactionMutateAsync } = useMutation<
     ICreatePostCommentReactionAPIResponse,
     Error,
     ICreatePostCommentReactionAPIRequest
   >({
     mutationFn: ({ params, body }) =>
       apis.posts.comments.reactions.create.fn({ params, body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+      });
+    },
   });
-  const { mutateAsync: patchPostCommentReactionMutate } = useMutation<
+  const { mutateAsync: patchPostCommentReactionMutateAsync } = useMutation<
     IPatchPostCommentReactionAPIResponse,
     Error,
     IPatchPostCommentReactionAPIRequest
   >({
     mutationFn: ({ params, body }) =>
       apis.posts.comments.reactions.patch.fn({ params, body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+      });
+    },
   });
-  const { mutateAsync: deletePostCommentReactionMutate } = useMutation<
+  const { mutateAsync: deletePostCommentReactionMutateAsync } = useMutation<
     IDeletePostCommentReactionAPIResponse,
     Error,
     IDeletePostCommentReactionAPIRequest
   >({
     mutationFn: ({ params }) =>
       apis.posts.comments.reactions.delete.fn({ params }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.comments.getAll.key({ params: { postId } }),
+      });
+    },
   });
 
   return {
-    createPostCommentReactionMutate,
-    patchPostCommentReactionMutate,
-    deletePostCommentReactionMutate,
+    createPostCommentReactionMutateAsync,
+    patchPostCommentReactionMutateAsync,
+    deletePostCommentReactionMutateAsync,
   };
 };
 

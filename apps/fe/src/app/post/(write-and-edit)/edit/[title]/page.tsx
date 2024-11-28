@@ -15,7 +15,7 @@ interface IProps {
 const Page: NextPage<IProps> = async ({ params }) => {
   const title = decodeURIComponent(params.title);
 
-  const post = await queryClient.fetchQuery({
+  const { payload: post } = await queryClient.fetchQuery({
     queryKey: apis.posts.getOneByTitle.key({ params: { title } }),
     queryFn: () => apis.posts.getOneByTitle.fn({ params: { title } }),
   });

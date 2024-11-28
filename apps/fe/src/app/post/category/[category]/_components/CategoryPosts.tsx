@@ -16,6 +16,7 @@ const CategoryPosts: React.FC<IProps> = ({ category }) => {
   const { data: posts } = useSuspenseQuery({
     queryKey: apis.posts.getManyCategory.key({ params: { category } }),
     queryFn: () => apis.posts.getManyCategory.fn({ params: { category } }),
+    select: (data) => data.payload,
   });
 
   return (

@@ -1,4 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   apis,
   ICheckUniqueTitleAPIRequest,
@@ -10,30 +11,60 @@ import {
   IPatchPostAPIRequest,
   IPatchPostAPIResponse,
 } from "#fe/apis";
+import { routes } from "#fe/constants";
+import { revalidateTagForServer } from "#fe/actions/revalidateForServer";
 
 const usePostMutations = () => {
-  const { mutateAsync: createPostMutate } = useMutation<
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { mutateAsync: createPostMutateAsync } = useMutation<
     ICreatePostAPIResponse,
     Error,
     ICreatePostAPIRequest
   >({
     mutationFn: ({ body }) => apis.posts.create.fn({ body }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.getAll.key(),
+      });
+
+      revalidateTagForServer(apis.posts.getAll.key());
+
+      router.replace(routes.post.url);
+    },
   });
-  const { mutateAsync: patchPostMutate } = useMutation<
+  const { mutateAsync: patchPostMutateAsync } = useMutation<
     IPatchPostAPIResponse,
     Error,
     IPatchPostAPIRequest
   >({
     mutationFn: ({ body, params }) => apis.posts.patch.fn({ body, params }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.getAll.key(),
+      });
+
+      revalidateTagForServer(apis.posts.getAll.key());
+
+      router.replace(routes.post.url);
+    },
   });
-  const { mutateAsync: deletePostMutate } = useMutation<
+  const { mutateAsync: deletePostMutateAsync } = useMutation<
     IDeletePostAPIResponse,
     Error,
     IDeletePostAPIRequest
   >({
     mutationFn: ({ params }) => apis.posts.delete.fn({ params }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: apis.posts.getAll.key(),
+      });
+
+      router.replace(routes.post.url);
+    },
   });
-  const { mutateAsync: checkUniqueTitleMutate } = useMutation<
+  const { mutateAsync: checkUniqueTitleMutateAsync } = useMutation<
     ICheckUniqueTitleAPIResponse,
     Error,
     ICheckUniqueTitleAPIRequest
@@ -42,10 +73,10 @@ const usePostMutations = () => {
   });
 
   return {
-    createPostMutate,
-    patchPostMutate,
-    deletePostMutate,
-    checkUniqueTitleMutate,
+    createPostMutateAsync,
+    patchPostMutateAsync,
+    deletePostMutateAsync,
+    checkUniqueTitleMutateAsync,
   };
 };
 

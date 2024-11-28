@@ -1,4 +1,4 @@
-import { CustomError } from "#fe/libs/error";
+import { APIResponseError } from "#fe/libs/error";
 
 export const fetchInstance = (url: string, options: RequestInit) =>
   fetch(url, {
@@ -17,21 +17,19 @@ export const fetchInstanceHandleResponse = async (res: Response) => {
   if (res.ok) return data;
 
   // 실패한 경우 (NestJS 에러 응답 형식 처리)
-  throw new CustomError({
-    message: data.message || "알 수 없는 에러가 발생했습니다",
-    statusCode: data.statusCode || res.status.toString(),
-    error: data.error || "CustomError",
+  throw new APIResponseError({
+    title: data.title,
+    description: data.description,
   });
 };
 
 /** API 에러 처리를 위한 공통 유틸리티 함수 */
 export const fetchInstanceHandleError = (err: unknown) => {
-  if (err instanceof CustomError) {
-    throw new CustomError(err);
+  if (err instanceof APIResponseError) {
+    throw new APIResponseError(err);
   }
-  if (err instanceof Error) {
-    console.log("🚀 err >> ", err);
-    throw new Error(err?.message || "알 수 없는 에러");
-  }
-  throw new Error("알 수 없는 에러");
+  throw new APIResponseError({
+    title: "알 수 없는 문제",
+    description: `알 수 없는 문제가 발생했습니다 😥\n잠시후에 다시 시도해주세요!`,
+  });
 };
