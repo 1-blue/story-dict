@@ -9,8 +9,8 @@ import { NAV_ROUTES } from "#fe/constants";
 import SidebarCenterGroup from "#fe/components/layouts/Sidebar/_components/SidebarCenterGroup";
 import SidebarInfoGroup from "#fe/components/layouts/Sidebar/_components/SidebarInfoGroup";
 import SidebarBottom from "#fe/components/layouts/Sidebar/_components/SidebarBottom";
-import SidebarSearchGroup from "#fe/components/layouts/Sidebar/_components/SidebarSearchGroup";
 import SidebarTop from "#fe/components/layouts/Sidebar/_components/SidebarTop";
+import SearchDialogButton from "#fe/components/SearchDialogButton";
 
 const MySidebar: React.FC = () => {
   const { isLoggedIn, isLoggedOut } = useMe();
@@ -47,7 +47,7 @@ const MySidebar: React.FC = () => {
       <SidebarTop />
 
       <SidebarContent>
-        <SidebarSearchGroup />
+        <SearchDialogButton />
         <SidebarCenterGroup label="게시글" routes={filteredPostRoutes} />
         <SidebarCenterGroup label="인증" routes={filteredAuthRoutes} />
         <SidebarInfoGroup routes={NAV_ROUTES.information} />
