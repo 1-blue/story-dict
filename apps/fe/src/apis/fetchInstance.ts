@@ -18,15 +18,17 @@ export const fetchInstanceHandleResponse = async (res: Response) => {
 
   // 실패한 경우 (NestJS 에러 응답 형식 처리)
   throw new APIResponseError({
-    title: data.title,
-    description: data.description,
+    title: data?.title ?? "서버측 응답 형식 오류",
+    description:
+      data?.description ??
+      "서버측의 응답 형식이 올바르지 않습니다.\n개발자에게 문의해주세요!",
   });
 };
 
 /** API 에러 처리를 위한 공통 유틸리티 함수 */
 export const fetchInstanceHandleError = (err: unknown) => {
   if (err instanceof APIResponseError) {
-    throw new APIResponseError(err);
+    throw err;
   }
   throw new APIResponseError({
     title: "알 수 없는 문제",
