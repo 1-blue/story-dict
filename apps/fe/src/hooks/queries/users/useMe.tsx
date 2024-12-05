@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   apis,
+  IGetMeAPIResponse,
   IPostLogInAPIRequest,
   IPostLogInAPIResponse,
   IPostLogOutAPIRequest,
@@ -27,10 +28,13 @@ const useMe = () => {
   >({
     mutationFn: ({ body }) => apis.auth.login.fn({ body }),
     onSuccess(user) {
-      queryClient.setQueryData(apis.users.getMe.key(), user);
+      queryClient.setQueryData<null, string[], IGetMeAPIResponse>(
+        apis.users.getMe.key(),
+        { payload: user },
+      );
 
-      toast.success("로그인 성공", {
-        description: "로그인 되었습니다.",
+      toast.success("로그인 성공 👋", {
+        description: "저희 서비스를 이용해주셔서 감사합니다.",
       });
     },
   });
@@ -41,10 +45,10 @@ const useMe = () => {
   >({
     mutationFn: apis.auth.logout.fn,
     onSuccess() {
-      queryClient.setQueryData(apis.users.getMe.key(), null);
+      queryClient.setQueryData(apis.users.getMe.key(), {});
 
-      toast.success("로그아웃 성공", {
-        description: "로그아웃 되었습니다.",
+      toast.success("로그아웃 되었습니다..🥲", {
+        description: "다음에 또 이용해주세요!",
       });
     },
   });

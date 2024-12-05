@@ -34,6 +34,10 @@ export class PostsController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Req() req: Request, @Body() createPostDto: CreatePostDto) {
     return {
+      toast: {
+        title: "게시글 작성 완료",
+        description: `게시글을 작성했습니다.\n메인 페이지로 이동합니다!`,
+      },
       payload: await this.postsService.create(req.user!.id, createPostDto),
     };
   }
@@ -41,10 +45,6 @@ export class PostsController {
   @Get()
   async getAll() {
     return {
-      toast: {
-        title: "게시글들 조회 완료",
-        description: `게시글들을 조회했습니다.`,
-      },
       payload: await this.postsService.getAll(),
     };
   }
@@ -115,10 +115,6 @@ export class PostsController {
   @Post("/check-unique-title")
   async checkUniqueTitle(@Body() checkUniqueTitleDto: CheckUniqueTitleDto) {
     return {
-      toast: {
-        title: "게시글 제목 중복 체크 완료",
-        description: `게시글 제목 중복 체크를 완료했습니다.`,
-      },
       payload: await this.postsService.checkUniqueTitle(checkUniqueTitleDto),
     };
   }

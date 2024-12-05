@@ -20,7 +20,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  toast,
 } from "@sd/ui";
 
 import useMe from "#fe/hooks/queries/users/useMe";
@@ -32,9 +31,6 @@ const SidebarBottom: React.FC = () => {
   const onLogOut = async () => {
     try {
       await logOutMutateAsync({});
-      toast.success("로그아웃 되었습니다..🥲", {
-        description: "다음에 또 이용해주세요!",
-      });
     } catch (error) {
       handleError({ error });
     }

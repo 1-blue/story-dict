@@ -4,7 +4,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LockOpen1Icon } from "@radix-ui/react-icons";
-import { Button, Form, RFHInput, toast } from "@sd/ui";
+import { Button, Form, RFHInput } from "@sd/ui";
 import { schemas } from "@sd/utils";
 import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
@@ -43,10 +43,6 @@ const LogInForm: React.FC = () => {
         await logInMutateAsync({ body });
 
         router.replace(routes.post.url);
-
-        toast.success("로그인 성공", {
-          description: "메인페이지로 이동합니다.",
-        });
       } catch (error) {
         handleError({ error });
       }

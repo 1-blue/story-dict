@@ -6,7 +6,6 @@ interface IHandleSuccessArgs {
 
 /** 공용 성공 처리 함수 */
 export const handleSuccess = ({ data }: IHandleSuccessArgs) => {
-  console.log("🚀 >> data", data);
   if (!data) return;
   if (typeof data !== "object") return;
   if (!("toast" in data)) return;
