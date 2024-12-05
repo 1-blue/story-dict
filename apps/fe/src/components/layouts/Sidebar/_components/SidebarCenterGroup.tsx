@@ -53,10 +53,10 @@ const SidebarCenterGroup: React.FC<IProps> = ({
                       <div
                         className={cn(
                           "cursor-pointer transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(route.path) && "!text-primary",
+                          pathname.includes(route.url) && "!text-primary",
                         )}
                       >
-                        {pathname.includes(route.path) ? (
+                        {pathname.includes(route.url) ? (
                           <route.SIcon />
                         ) : (
                           <route.OIcon />
@@ -65,13 +65,13 @@ const SidebarCenterGroup: React.FC<IProps> = ({
                       </div>
                     ) : (
                       <Link
-                        href={route.path}
+                        href={route.url}
                         className={cn(
                           "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(route.path) && "!text-primary",
+                          pathname.includes(route.url) && "!text-primary",
                         )}
                       >
-                        {pathname.includes(route.path) ? (
+                        {pathname.includes(route.url) ? (
                           <route.SIcon />
                         ) : (
                           <route.OIcon />
@@ -95,14 +95,14 @@ const SidebarCenterGroup: React.FC<IProps> = ({
                           <SidebarMenuSubItem key={subRoute.label}>
                             <SidebarMenuSubButton asChild>
                               <Link
-                                href={subRoute.path}
+                                href={subRoute.url}
                                 className={cn(
                                   "transition-colors hover:bg-muted-foreground/20",
-                                  pathname.includes(subRoute.path) &&
+                                  pathname.includes(subRoute.url) &&
                                     "bg-primary/10 *:!text-primary",
                                 )}
                               >
-                                {pathname.includes(subRoute.path) ? (
+                                {pathname.includes(subRoute.url) ? (
                                   <subRoute.SIcon />
                                 ) : (
                                   <subRoute.OIcon />

@@ -30,10 +30,10 @@ const SidebarInfoGroup: React.FC<IProps> = ({ routes }) => {
                 <SidebarMenuButton asChild size="sm">
                   <Link
                     target="_blank"
-                    href={route.path}
+                    href={route.url}
                     className={cn(
                       "transition-colors hover:bg-muted-foreground/20",
-                      pathname.includes(route.path) && "!text-primary",
+                      pathname.includes(route.url) && "!text-primary",
                     )}
                   >
                     <route.OIcon />

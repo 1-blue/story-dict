@@ -6,7 +6,7 @@ export interface IRoute {
   /** 경로를 표현할 텍스트 */
   label: string;
   /** 실제 경로 */
-  path: string;
+  url: string;
   /** (`outline`) 경로 아이콘 */
   OIcon: typeof HomeIcon;
   /** (`solid`) 경로 아이콘 */

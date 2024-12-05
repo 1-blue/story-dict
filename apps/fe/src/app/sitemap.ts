@@ -6,9 +6,9 @@ import { getAllPostAPI } from "#fe/apis";
 
 /** 재귀적으로 돌아서 `sitemap` 생성 */
 const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {
-  return routes.flatMap(({ path, sitemap, subRoutes }) => [
+  return routes.flatMap(({ url, sitemap, subRoutes }) => [
     {
-      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}${path}`,
+      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}${url}`,
       priority: sitemap?.priority,
       lastModified: sitemap?.lastmod,
       changeFrequency: sitemap?.changefreq,
