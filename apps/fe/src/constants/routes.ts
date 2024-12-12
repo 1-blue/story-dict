@@ -1,4 +1,4 @@
-import type { PostCategory } from "#be/types";
+import type { PostCategory } from "@sd/db";
 import {
   LockOpenIcon as OLockOpenIcon,
   KeyIcon as OKeyIcon,

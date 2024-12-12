@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@sd/ui";
 
-import type { Post } from "#be/types";
+import type { Post } from "@sd/db";
 import usePostMutations from "#fe/hooks/mutations/posts/usePostMutations";
 
 interface IProps {

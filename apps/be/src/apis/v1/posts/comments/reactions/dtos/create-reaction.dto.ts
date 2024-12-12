@@ -1,5 +1,5 @@
 import { IsOptional, IsNotEmpty, IsUUID, IsEnum } from "class-validator";
-import { ReactionType } from "@prisma/client";
+import { ReactionType } from "@sd/db";
 
 export class CreateReactionDto {
   @IsOptional()

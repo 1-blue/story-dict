@@ -4,12 +4,21 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
+import { FindByImageIdDto } from "#be/apis/v1/images/dto/find-by-id.dto";
 import { CreateImageDto } from "#be/apis/v1/images/dto/create-image.dto";
 import { MoveImageDto } from "#be/apis/v1/images/dto/move-image.dto";
 import { DeleteImageDto } from "#be/apis/v1/images/dto/delete-image.dto";
 import { CreatePresignedURLDto } from "#be/apis/v1/images/dto/create-presinged-url.dto";
-import { ImageStatus } from "@prisma/client";
-import { FindByImageIdDto } from "./dto/find-by-id.dto";
+import type { ImageStatus } from "@sd/db";
+
+/**
+ * TODO:
+ * 1. 이미지 대소문자 처리하기
+ * 2. postman 동작하도록 처리하기
+ * 3. 이미지 유효성 검사 실시
+ *   3.1 같은 위치로 이동 X
+ *   3.2 S3에 없는 이미지 이동 X
+ */
 
 @Injectable()
 export class ImagesService {
@@ -46,6 +55,8 @@ export class ImagesService {
     status = "TEMP",
     purpose = "USER_PROFILE",
   }: CreateImageDto) {
+    // TODO: S3에 저장된 이미지인지 확인 로직 필요
+
     return await this.prismaService.image.create({
       data: { id, name, url, status, purpose },
     });
@@ -60,14 +71,15 @@ export class ImagesService {
       throw new NotFoundException("DB에 존재하지 않는 이미지입니다.");
     }
 
-    /** S3에 저장된 이미지인지 확인 */
-    const exImageToS3 = await this.s3
-      .headObject({
-        Bucket: process.env.AWS_S3_BUCKET,
-        Key: exImageToDB.url.slice(exImageToDB.url.indexOf("images/")),
-      })
-      .promise();
-    if (!exImageToS3) {
+    try {
+      /** S3에 저장된 이미지인지 확인 */
+      await this.s3
+        .headObject({
+          Bucket: process.env.AWS_S3_BUCKET,
+          Key: exImageToDB.url.slice(exImageToDB.url.indexOf("images/")),
+        })
+        .promise();
+    } catch (error) {
       throw new NotFoundException("S3에 존재하지 않는 이미지입니다.");
     }
 
@@ -160,7 +172,7 @@ export class ImagesService {
     // 4. images/development/use/avatar_1709961663461.jpg
     const sourceKey = key;
     // 5. images/development/deleted/avatar_1709961663461.jpg
-    const destinationKey = key.replace(beforeStatus, "deleted");
+    const destinationKey = key.replace(beforeStatus, "DELETED");
 
     const copyParams = {
       Bucket: process.env.AWS_S3_BUCKET,

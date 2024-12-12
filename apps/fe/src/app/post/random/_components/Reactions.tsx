@@ -1,6 +1,6 @@
 "use client";
 
-import { PostReaction, ReactionType } from "#be/types";
+import { PostReaction, ReactionType } from "@sd/db";
 import useMe from "#fe/hooks/queries/users/useMe";
 import { reactionTypeToEmojiMap } from "@sd/utils";
 import { cn } from "@sd/ui/libs";

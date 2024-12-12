@@ -3,7 +3,7 @@
 import { toast } from "@sd/ui";
 import { cn } from "@sd/ui/libs";
 
-import type { PostReaction, ReactionType } from "#be/types";
+import type { PostReaction, ReactionType } from "@sd/db";
 import useMe from "#fe/hooks/queries/users/useMe";
 import usePostCommentReactionMutations from "#fe/hooks/mutations/posts/comments/reactions/usePostCommentReactionMutations";
 import { reactionTypeToEmojiMap } from "@sd/utils";

@@ -6,7 +6,7 @@ import {
   IsUUID,
   IsUrl,
 } from "class-validator";
-import { ImagePurpose, ImageStatus } from "@prisma/client";
+import { ImagePurpose, ImageStatus } from "@sd/db";
 
 export class CreateImageDto {
   @IsOptional()

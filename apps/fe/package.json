@@ -17,6 +17,7 @@
     "@sd/eslint-config": "workspace:*",
     "@sd/tailwind-config": "workspace:*",
     "@sd/typescript-config": "workspace:*",
+    "@sd/db": "workspace:*",
     "@sd/ui": "workspace:*",
     "@sd/utils": "workspace:*",
     "@tanstack/react-query": "^5.59.0",

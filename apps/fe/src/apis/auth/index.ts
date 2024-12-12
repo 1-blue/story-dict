@@ -1,4 +1,4 @@
-import type { User } from "#be/types";
+import type { User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,
@@ -11,7 +11,13 @@ export interface IPostLogInAPIRequest {
   body: Pick<User, "email" | "password">;
 }
 /** 로그인 응답 타입 */
-export interface IPostLogInAPIResponse extends Omit<User, "password"> {}
+export interface IPostLogInAPIResponse {
+  toast: {
+    title: string;
+    description: string;
+  };
+  payload: Omit<User, "password">;
+}
 /** 로그인 함수 */
 const postLogInAPI = async ({
   body,

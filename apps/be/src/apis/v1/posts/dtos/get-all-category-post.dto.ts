@@ -1,5 +1,5 @@
 import { IsEnum } from "class-validator";
-import { PostCategory } from "@prisma/client";
+import { PostCategory } from "@sd/db";
 
 export class GetAllCategoryPostDto {
   @IsEnum(Object.values(PostCategory), {

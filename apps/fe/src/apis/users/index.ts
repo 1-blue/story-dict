@@ -1,4 +1,4 @@
-import type { Image, User } from "#be/types";
+import type { Image, User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,

@@ -1,5 +1,5 @@
 import type { Request } from "express";
-import type { User } from "@prisma/client";
+import type { User } from "@sd/db";
 
 /** OAuth로 로그인한 유저의 중간 타입 ( 실제 로그인 이전 `passport`를 이용해서 사용하는 타입 ) */
 export interface IOAuthUser

@@ -2,17 +2,15 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
     "dev": {
+      "dependsOn": ["@sd/utils#build", "@sd/db#build", "^db:generate"],
       "cache": false,
       "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build", "^db:generate"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "start": {
       "cache": false,
@@ -21,6 +19,13 @@
     "start:prod": {
       "cache": false,
       "persistent": true
+    },
+
+    "db:generate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
     }
   },
   "globalEnv": ["NODE_ENV"]

@@ -1,3 +1,18 @@
+## API 문서
+[postman](https://documenter.getpostman.com/view/40278654/2sAYBd67XD)
+
+## 기술
+
+## 프로젝트 목적
+
+## 코딩 컨벤션
+[Notion]()
+
+
+
+
+
+
 ## 여러가지 기술을 이용한 사이드 프로젝트
 1. Next.js
 2. Nest.js
@@ -33,3 +48,5 @@ TODO:
 2. body
 3. query
 세가지 타입으로 받도록 API 함수 수정하기
+
+

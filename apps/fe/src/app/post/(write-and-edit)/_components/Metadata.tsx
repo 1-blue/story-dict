@@ -44,7 +44,9 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
     if (!file) return;
 
     try {
-      const { url, fields } = await createPresignedURLMutateAsync({
+      const {
+        payload: { url, fields },
+      } = await createPresignedURLMutateAsync({
         body: { filename: file.name },
       });
       await postUploadImageByPresignedURL({ fields, imageFile: file });

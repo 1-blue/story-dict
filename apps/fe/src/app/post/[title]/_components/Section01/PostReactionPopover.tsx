@@ -1,4 +1,4 @@
-import { CommentReaction, ReactionType } from "#be/types";
+import { CommentReaction, ReactionType } from "@sd/db";
 import useMe from "#fe/hooks/queries/users/useMe";
 import usePostReactionMutations from "#fe/hooks/mutations/posts/reactions/usePostReactionMutations";
 import { reactionTypeToEmojiMap } from "@sd/utils";

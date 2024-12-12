@@ -7,6 +7,8 @@ interface IHandleErrorArgs {
 
 /** 공용 에러 처리 함수 */
 export const handleError = ({ error }: IHandleErrorArgs) => {
+  console.error("🚫 Error error >> ", error);
+
   if (error instanceof APIResponseError) {
     toast.error(error.title, { description: error.description });
   } else {

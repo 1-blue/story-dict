@@ -1,4 +1,4 @@
-import type { PostReaction } from "#be/types";
+import type { PostReaction } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,

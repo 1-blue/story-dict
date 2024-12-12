@@ -1,4 +1,4 @@
-import type { Image, Post, PostCategory, PostReaction, User } from "#be/types";
+import type { Image, Post, PostCategory, PostReaction, User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleResponse,

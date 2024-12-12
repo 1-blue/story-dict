@@ -1,7 +1,7 @@
 import { FaceIcon } from "@radix-ui/react-icons";
 import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
-import type { PostReaction, ReactionType } from "#be/types";
+import type { PostReaction, ReactionType } from "@sd/db";
 import useMe from "#fe/hooks/queries/users/useMe";
 import usePostCommentReactionMutations from "#fe/hooks/mutations/posts/comments/reactions/usePostCommentReactionMutations";
 import { reactionTypeToEmojiMap } from "@sd/utils";

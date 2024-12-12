@@ -1,4 +1,4 @@
-import { Prisma, UserProvider, UserRole } from "@prisma/client";
+import { Prisma, UserProvider, UserRole } from "@sd/db";
 
 /** 기본 유저들 */
 export const seedUsers: Prisma.UserCreateManyInput[] = [

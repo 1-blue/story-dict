@@ -26,8 +26,8 @@ export class ImagesController {
   async create(@Body() createDto: CreateImageDto) {
     return {
       toast: {
-        title: "이미지 생성 완료",
-        description: `이미지를 생성했습니다.`,
+        title: "이미지 등록 완료",
+        description: `이미지를 등록했습니다.`,
       },
       payload: await this.imagesService.create(createDto),
     };

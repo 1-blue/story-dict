@@ -10,7 +10,7 @@ import {
 } from "@sd/ui";
 import { Marquee } from "@sd/ui/magics";
 
-import type { Post } from "#be/types";
+import type { Post } from "@sd/db";
 import { routes } from "#fe/constants";
 import { postCategoryToKoreanMap } from "@sd/utils";
 

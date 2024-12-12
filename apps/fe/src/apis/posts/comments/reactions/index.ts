@@ -1,4 +1,4 @@
-import type { CommentReaction } from "#be/types";
+import type { CommentReaction } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleResponse,

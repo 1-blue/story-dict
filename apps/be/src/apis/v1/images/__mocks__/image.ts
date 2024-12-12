@@ -1,4 +1,4 @@
-import { Image } from "@prisma/client";
+import { Image } from "@sd/db";
 
 /** 이미지 목데이터 */
 export const mockImage: Omit<Image, "createdAt" | "updatedAt" | "deletedAt"> = {

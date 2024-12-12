@@ -29,7 +29,9 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
-    "@prisma/client": "^5.20.0",
+    "@sd/db": "workspace:*",
+    "@sd/typescript-config": "workspace:*",
+    "@sd/utils": "workspace:*",
     "@types/express-session": "^1.18.0",
     "aws-sdk": "^2.1691.0",
     "bcrypt": "^5.1.1",
@@ -41,13 +43,10 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-kakao": "^1.0.1",
     "passport-local": "^1.0.0",
-    "prisma": "^5.20.0",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "uuid": "^10.0.0",
-    "zod": "^3.23.8",
-    "@sd/typescript-config": "workspace:*",
-    "@sd/utils": "workspace:*"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

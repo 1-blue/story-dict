@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@sd/db";
 import { etymologyPosts } from "./etymology";
 import { generalKnowledgePosts } from "./generalKnowledge";
 import { informationPosts } from "./information";
@@ -22,5 +22,5 @@ export const seedPosts: Prisma.PostCreateManyInput[] = datas.map(
     ...data,
     id: `00000000-0000-0000-0000-${index}00000000000`.slice(0, 36),
     userId: `00000000-0000-0000-0000-000000000000`,
-  }),
+  })
 );

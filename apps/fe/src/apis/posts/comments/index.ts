@@ -1,4 +1,4 @@
-import type { Comment, Image, Post, CommentReaction, User } from "#be/types";
+import type { Comment, Image, Post, CommentReaction, User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,

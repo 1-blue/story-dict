@@ -2,7 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { PostCategory } from "#be/types";
+import { PostCategory } from "@sd/db";
 import { apis } from "#fe/apis";
 import PostCard from "#fe/components/PostCard";
 import EmptyAlert from "#fe/components/EmptyAlert";

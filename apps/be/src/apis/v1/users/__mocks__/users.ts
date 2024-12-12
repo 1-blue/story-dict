@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { User } from "@prisma/client";
+import { User } from "@sd/db";
 
 /** 유저들 목데이터 */
 export const mockUsers: Omit<User, "createdAt" | "updatedAt" | "deletedAt">[] =

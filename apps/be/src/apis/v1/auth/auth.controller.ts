@@ -29,7 +29,13 @@ export class AuthController {
   async logIn(@Req() req: Request, @Res() res: Response) {
     res.cookie("sd_logged_in", "로그인");
 
-    return res.json(req.user);
+    return res.json({
+      toast: {
+        title: "로그인 완료",
+        description: "로그인에 성공했습니다.",
+      },
+      payload: req.user,
+    });
   }
 
   // ==================== kakao login ====================
@@ -119,7 +125,13 @@ export class AuthController {
         console.error("[Error] req.session.destroy() >> ", error);
       });
 
-      res.json({});
+      res.json({
+        toast: {
+          title: "로그아웃 완료",
+          description: "로그아웃에 성공했습니다.",
+        },
+        payload: null,
+      });
     });
   }
 }

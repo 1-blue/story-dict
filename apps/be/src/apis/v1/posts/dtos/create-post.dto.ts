@@ -5,7 +5,7 @@ import {
   IsString,
   IsEnum,
 } from "class-validator";
-import { PostCategory } from "@prisma/client";
+import { PostCategory } from "@sd/db";
 
 export class CreatePostDto {
   @IsOptional()

@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import CategoryCombobox from "./CategoryCombobox";
 import { useRouter } from "next/navigation";
-import { PostCategory } from "#be/types";
+import { PostCategory } from "@sd/db";
 import { postCategoryToKoreanMap } from "@sd/utils";
 import { routes } from "#fe/constants";
 

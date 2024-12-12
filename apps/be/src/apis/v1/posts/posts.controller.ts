@@ -113,6 +113,7 @@ export class PostsController {
   }
 
   @Post("/check-unique-title")
+  @HttpCode(HttpStatus.OK)
   async checkUniqueTitle(@Body() checkUniqueTitleDto: CheckUniqueTitleDto) {
     return {
       payload: await this.postsService.checkUniqueTitle(checkUniqueTitleDto),

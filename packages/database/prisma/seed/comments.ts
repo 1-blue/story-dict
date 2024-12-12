@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@sd/db";
 
 /** 기본 댓글들  */
 export const seedComments: Prisma.CommentCreateManyInput[] = Array.from({

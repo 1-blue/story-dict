@@ -30,7 +30,7 @@ const useMe = () => {
     onSuccess(user) {
       queryClient.setQueryData<null, string[], IGetMeAPIResponse>(
         apis.users.getMe.key(),
-        { payload: user },
+        { payload: user.payload },
       );
 
       toast.success("로그인 성공 👋", {

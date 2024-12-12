@@ -1,4 +1,4 @@
-import { PostCategory } from "#be/types";
+import { PostCategory } from "@sd/db";
 import { postCategoryToKoreanMap } from "@sd/utils";
 
 export const CATEGORIES: { label: string; value: PostCategory }[] =

@@ -19,6 +19,9 @@
 
     "storybook": "pnpm --filter storybook storybook",
 
+    "db:generate": "pnpm --filter db db:generate",
+    "db:push": "pnpm --filter db db:push",
+
     "ui:add": "pnpm --filter ui ui:add",
 
     "clean": "rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install",

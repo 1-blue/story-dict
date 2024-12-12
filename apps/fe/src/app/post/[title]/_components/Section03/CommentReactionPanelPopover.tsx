@@ -3,7 +3,7 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@sd/ui";
 
-import type { Comment, Post } from "#be/types";
+import type { Comment, Post } from "@sd/db";
 import usePostCommentMutations from "#fe/hooks/mutations/posts/comments/usePostCommentMutations";
 
 interface IProps {

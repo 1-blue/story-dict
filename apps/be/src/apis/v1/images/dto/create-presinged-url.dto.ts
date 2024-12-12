@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional, Matches } from "class-validator";
-import { ImageStatus } from "@prisma/client";
+import { ImageStatus } from "@sd/db";
 
 export class CreatePresignedURLDto {
   @IsNotEmpty({ message: "파일명은 필수값입니다." })

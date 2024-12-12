@@ -3,7 +3,7 @@ import type { Metadata, NextPage } from "next";
 import { redirect } from "next/navigation";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import type { PostCategory } from "#be/types";
+import type { PostCategory } from "@sd/db";
 import { postCategoryToKoreanMap } from "@sd/utils";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { apis } from "#fe/apis";

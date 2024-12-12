@@ -1,4 +1,4 @@
-import { Image, ImageStatus } from "#be/types";
+import { Image, ImageStatus } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,
@@ -85,15 +85,17 @@ export interface ICreatePresignedURLAPIRequest {
 }
 /** presignedURL 생성 응답 타입 */
 export interface ICreatePresignedURLAPIResponse {
-  url: string;
-  fields: {
-    bucket: string;
-    "X-Amz-Algorithm": string;
-    "X-Amz-Credential": string;
-    "X-Amz-Date": string;
-    key: string;
-    Policy: string;
-    "X-Amz-Signature": string;
+  payload: {
+    url: string;
+    fields: {
+      bucket: string;
+      "X-Amz-Algorithm": string;
+      "X-Amz-Credential": string;
+      "X-Amz-Date": string;
+      key: string;
+      Policy: string;
+      "X-Amz-Signature": string;
+    };
   };
 }
 /** presignedURL 생성 함수 */

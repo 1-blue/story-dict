@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@sd/db";
 
 /** 테스트용 데이터인 고양이들 */
 export const seedCats: Prisma.CatCreateManyInput[] = [

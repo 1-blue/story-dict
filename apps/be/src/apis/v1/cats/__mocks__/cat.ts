@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { Cat } from "@prisma/client";
+import { Cat } from "@sd/db";
 
 /** 고양이들 목데이터 */
 export const mockCats: Pick<Cat, "id" | "name" | "age" | "gender">[] = [

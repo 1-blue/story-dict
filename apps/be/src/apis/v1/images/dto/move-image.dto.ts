@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty } from "class-validator";
-import { ImageStatus } from "@prisma/client";
+import { ImageStatus } from "@sd/db";
 
 export class MoveImageDto {
   @IsNotEmpty({ message: "변경전 상태는 필수값입니다." })

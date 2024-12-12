@@ -1,4 +1,4 @@
-import { Prisma, ReactionType } from "@prisma/client";
+import { Prisma, ReactionType } from "@sd/db";
 
 const reactionTypes: ReactionType[] = [
   "ANGRY",

@@ -1,5 +1,5 @@
 {
-  "name": "@sd/utils",
+  "name": "@sd/db",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -10,11 +10,15 @@
     }
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate"
   },
   "dependencies": {
-    "@sd/eslint-config": "workspace:*",
     "@sd/typescript-config": "workspace:*",
-    "zod": "^3.23.8"
+    "@prisma/client": "^5.20.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.20.0"
   }
 }

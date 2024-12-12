@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@sd/db";
 
 /** 어원 mock 게시글들 */
 export const etymologyPosts: Pick<
