@@ -7,7 +7,7 @@ import { ImagesService } from "#be/apis/v1/images/images.service";
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private readonly usersService: UsersService,
     private readonly imagesService: ImagesService,
   ) {}
 

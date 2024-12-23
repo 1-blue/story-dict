@@ -3,7 +3,11 @@
   "ui": "tui",
   "tasks": {
     "dev": {
-      "dependsOn": ["@sd/utils#build", "@sd/db#build", "^db:generate"],
+      "dependsOn": [
+        "@sd/utils#build",
+        "@sd/db#build",
+        "@sd/db#db:generate"
+      ],
       "cache": false,
       "persistent": true
     },

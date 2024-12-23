@@ -28,5 +28,6 @@ import { PostsCommentsReactionsModule } from "#be/apis/v1/posts/comments/reactio
   ],
   controllers: [],
   providers: [PrismaService],
+  exports: [PrismaService],
 })
 export class AppModule {}
