@@ -6,20 +6,21 @@ services:
     build: 
       context: .
       dockerfile: ./apps/fe/Dockerfile
+    image: 1blue/storydict-fe:v2.0.0
     restart: always
     env_file:
-      - ./envs/fe/.env.development
+      - ./envs/fe/.env.production
     ports:
       - 9000:9000
+
   be:
     container_name: be
     build:
       context: .
       dockerfile: ./apps/be/Dockerfile
     env_file:
-      - ./envs/be/.env.development
+      - ./envs/be/.env.production
+    image: 1blue/storydict-be:v2.0.0
     restart: always
     ports:
       - 9050:9050
-  # db 추가하기
-

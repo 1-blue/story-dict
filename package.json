@@ -21,11 +21,15 @@
 
     "db:generate": "pnpm --filter db db:generate",
     "db:push": "pnpm --filter db db:push",
-
+    "db:studio": "pnpm --filter db db:studio",
+    
     "ui:add": "pnpm --filter ui ui:add",
 
     "clean": "rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install",
-    "docker:clean": "docker system prune -af --volumes"
+    
+    "docker:clean": "docker system prune -af --volumes",
+    "docker:start": "docker-compose build && docker-compose up",
+    "docker:deploy": "docker-compose build && docker-compose push"
   },
   "dependencies": {
     "turbo": "^2.1.3"

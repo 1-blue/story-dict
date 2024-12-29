@@ -13,6 +13,13 @@ const nextConfig = {
     config.resolve.alias["#"] = path.resolve(__dirname, "../../packages/ui");
     return config;
   },
+
+  // [docker로 빌드 시 최적화를 위함](https://github.com/vercel/turborepo/blob/main/examples/with-docker/apps/web/next.config.js)
+  transpilePackages: ["@sd/fe"],
+  output: "standalone",
+  experimental: {
+    outputFileTracingRoot: path.join(__dirname, "../../"),
+  },
 };
 
 export default nextConfig;

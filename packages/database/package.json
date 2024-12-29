@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push --skip-generate"
+    "db:push": "prisma db push --skip-generate",
+    "db:studio": "prisma studio"
   },
   "dependencies": {
     "@sd/typescript-config": "workspace:*",

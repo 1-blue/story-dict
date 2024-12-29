@@ -1,9 +1,0 @@
-services:
-  monorepo:
-    image: 1blue/story-dict:latest
-    environment:
-      - NODE_OPTIONS="--max-old-space-size=4096"
-    container_name: monorepo
-    ports:
-      - "9000:9000"
-      - "9050:9050"

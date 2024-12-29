@@ -5,8 +5,8 @@
     "dev": {
       "dependsOn": [
         "@sd/utils#build",
-        "@sd/db#build",
-        "@sd/db#db:generate"
+        "@sd/db#db:generate",
+        "@sd/db#build"
       ],
       "cache": false,
       "persistent": true
