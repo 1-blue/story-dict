@@ -1,52 +1,20 @@
-## API 문서
-[postman](https://documenter.getpostman.com/view/40278654/2sAYBd67XD)
-
-## 기술
-
 ## 프로젝트 목적
+자주 사용하지만 정확한 의미나 어원을 몰랐던 단어들, 나만 알고있는 특이한 이야기를 찾아볼 수 있는 서비스
+( 추가로 사용해보고 싶은 기술들을 써보기 위한 프로젝트 )
 
-## 코딩 컨벤션
-[Notion]()
+## API 문서
+[Postman](https://documenter.getpostman.com/view/40278654/2sAYBd67XD)을 참고
 
+## 문서
+프로젝트 구조, 코딩 컨벤션, 폴더 구조 등 프로젝트에 대한 전반적인 내용을 정리해둔 [노션 문서](https://thrilling-mapusaurus-f24.notion.site/story-dict-13ab6aeed401808eb6fccd9ee6f8f0ae?pvs=4)
 
-
-
-
-
-## 여러가지 기술을 이용한 사이드 프로젝트
-1. Next.js
-2. Nest.js
-3. Prisma
-4. Docker & Docker Compose
-5. TRPC
-6. turborepo ( with pnpm )
-7. storybook
-8. unit test
-
-TODO:
-1. tailwind config 변경 ( https://github.com/vercel/turborepo/blob/main/examples/with-tailwind/apps/web/tailwind.config.ts )
-
-
-1. 예외처리 ( 존재하지 않는 게시글 접근 시 에러 처리가 안됨 )
-
-
-1. 답글
-1. 카테고리별 분리
-~~ 1. 검색 ~~
-~~ 1. 랜덤 ( 케루셀 ) ~~
-1. 오픈 카톡방
-1. 구글 설문 -> 구글 시트 등록
-
-+ 다음 버전 기능
-3. 북마크 
-4. 유저 프로필 .. 이건 힘들듯
-1. 게시글 상세 이미지 클릭 시 확대
-
-
-
-1. params
-2. body
-3. query
-세가지 타입으로 받도록 API 함수 수정하기
-
-
+## 사용 기술
+1. `docker`, `docker-compose`
+2. `monorepo` ( `turborepo` )
+3. `typescript`, `next.js`, `nest.js`
+4. `prisma`
+5. `shadcn/ui`
+6. `tailwindcss`
+7. `tanstack-query`
+8. `react-hook-form` + `zod`
+9. `AWS-S3` + `presignedurl`
