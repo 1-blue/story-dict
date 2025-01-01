@@ -68,12 +68,17 @@ jobs:
           --port 22 \
           --cidr $RUNNER_IP/32
 
-    # EC2 배포
-    - name: Deploy to EC2
-      run: |
-        sudo docker stop $(sudo docker ps -aq)
-        sudo docker system prune -a --volumes
-        sudo docker-compose up -d
+    - name: Deploy Backend Code
+      uses: appleboy/ssh-action@v0.1.6
+      with:
+        host: ${{ secrets.AWS_EC2_SSH_DNS }} # EC2 IP 주소
+        username: ${{ secrets.AWS_EC2_SSH_USER_NAME }} # EC2 사용자 이름
+        key: ${{ secrets.AWS_EC2_SSH_PEM_KEY }} # EC2의 .pem 키
+        port: ${{ secrets.AWS_EC2_SSH_PORT }} # EC2 포트
+        script: |
+          sudo docker stop $(sudo docker ps -aq) || true &&
+          sudo docker system prune -a --volumes -f &&
+          sudo docker-compose up -d
 
     # 보안 그룹에서 인바운드 규칙 제거
     - name: Remove GitHub Actions IP from Security Group

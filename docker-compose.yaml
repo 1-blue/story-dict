@@ -6,7 +6,7 @@ services:
     build: 
       context: .
       dockerfile: ./apps/fe/Dockerfile
-    image: 1blue/storydict-fe:v2.0.0
+    image: 1blue/storydict-fe:latest
     restart: always
     env_file:
       - ./envs/fe/.env.production
@@ -20,7 +20,7 @@ services:
       dockerfile: ./apps/be/Dockerfile
     env_file:
       - ./envs/be/.env.production
-    image: 1blue/storydict-be:v2.0.0
+    image: 1blue/storydict-be:latest
     restart: always
     ports:
       - 9050:9050
