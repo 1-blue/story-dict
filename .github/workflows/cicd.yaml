@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  Docker_Build_And_Push:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -45,3 +45,43 @@ jobs:
     - name: Docker Push
       run: |
         docker-compose push
+
+    # AWS 인증
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+
+    # 보안 그룹에 인바운드 규칙 추가
+    - name: Add GitHub Actions IP to Security Group
+      run: |
+        # GitHub Actions 러너의 공인 IP 주소 가져오기
+        RUNNER_IP=$(curl -s https://api.ipify.org)
+        echo "Runner IP: $RUNNER_IP"
+        
+        # 보안 그룹에 인바운드 규칙 추가
+        aws ec2 authorize-security-group-ingress \
+          --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+          --protocol tcp \
+          --port 22 \
+          --cidr $RUNNER_IP/32
+
+    # EC2 배포
+    - name: Deploy to EC2
+      run: |
+        docker stop $(docker ps -aq)
+        docker system prune -a --volumes
+        docker-compose up -d
+
+    # 보안 그룹에서 인바운드 규칙 제거
+    - name: Remove GitHub Actions IP from Security Group
+      if: always()  # 이전 단계가 실패하더라도 항상 실행
+      run: |
+        RUNNER_IP=$(curl -s https://api.ipify.org)
+        aws ec2 revoke-security-group-ingress \
+          --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+          --protocol tcp \
+          --port 22 \
+          --cidr $RUNNER_IP/32
