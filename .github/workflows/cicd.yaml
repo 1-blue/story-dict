@@ -71,9 +71,9 @@ jobs:
     # EC2 배포
     - name: Deploy to EC2
       run: |
-        docker stop $(docker ps -aq)
-        docker system prune -a --volumes
-        docker-compose up -d
+        sudo docker stop $(sudo docker ps -aq)
+        sudo docker system prune -a --volumes
+        sudo docker-compose up -d
 
     # 보안 그룹에서 인바운드 규칙 제거
     - name: Remove GitHub Actions IP from Security Group
