@@ -41,7 +41,7 @@ jobs:
     - name: Docker Build
       run: |
         docker buildx create --use
-        docker-compose build --platform linux/arm64
+        DOCKER_DEFAULT_PLATFORM=linux/arm64 docker-compose build
 
     - name: Docker Push
       run: |
