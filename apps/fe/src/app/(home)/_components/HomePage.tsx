@@ -9,6 +9,11 @@ const HomePage: React.FC = () => {
   return (
     <article className="mt-8 flex flex-col gap-8">
       <Section01 />
+
+      <h1 className="text-2xl font-bold text-indigo-500">
+        GitHub Actions 배포 테스트 @!#@
+      </h1>
+
       <div className="flex flex-col gap-3">
         <Section02 />
         <Section03 />
