@@ -3,6 +3,7 @@ version: "3"
 services:
   fe:
     container_name: fe
+    platform: linux/arm64
     build: 
       context: .
       dockerfile: ./apps/fe/Dockerfile
@@ -15,6 +16,7 @@ services:
 
   be:
     container_name: be
+    platform: linux/arm64
     build:
       context: .
       dockerfile: ./apps/be/Dockerfile

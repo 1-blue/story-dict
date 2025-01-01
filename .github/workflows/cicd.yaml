@@ -40,7 +40,8 @@ jobs:
 
     - name: Docker Build
       run: |
-        docker-compose build
+        docker buildx create --use
+        docker-compose build --platform linux/arm64
 
     - name: Docker Push
       run: |
