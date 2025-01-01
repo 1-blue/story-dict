@@ -15,8 +15,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Docker build & push to Docker Hub
+    - name: Install Docker Compose
       run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker-compose build
-          docker-compose push
+        sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+
+    - name: Docker Build & Push to Docker Hub
+      run: |
+        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        docker-compose build
+        docker-compose push
