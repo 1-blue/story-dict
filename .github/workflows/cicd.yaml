@@ -15,13 +15,33 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Create Frontend env files
+      run: |
+        mkdir -p ./envs/fe
+        mkdir -p ./apps/fe
+        echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./envs/fe/.env.production
+        echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./apps/fe/.env.production
+
+    - name: Create Backend env files
+      run: |
+        mkdir -p ./envs/be
+        mkdir -p ./apps/be
+        echo "${{ secrets.BACKEND_ENV_FILE }}" > ./envs/be/.env.production
+        echo "${{ secrets.BACKEND_ENV_FILE }}" > ./apps/be/.env.production
+
     - name: Install Docker Compose
       run: |
         sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
 
-    - name: Docker Build & Push to Docker Hub
+    - name: Docker LogIn
       run: |
         docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Docker Build
+      run: |
         docker-compose build
+
+    - name: Docker Push
+      run: |
         docker-compose push
