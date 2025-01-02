@@ -9,11 +9,58 @@ on:
 permissions:
   contents: read
 
+env:
+  SLACK_START_COLOR: "#6366f1" # indigo
+  SLACK_SUCCESS_COLOR: "#22c55e" # green
+  SLACK_FAILURE_COLOR: "#ef4444" # red
+  SLACK_COMMON_FIELDS: |
+    {
+      "title": "커밋 메시지",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
+      "short": true
+    },
+    {
+      "title": "워크플로우",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
+      "short": true
+    },
+    {
+      "title": "액션작업",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
+      "short": true
+    },
+    {
+      "title": "레포지토리",
+      "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
+      "short": true
+    },
+    {
+      "title": "브랜치",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
+      "short": true
+    }
+
 jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+
+    # 시작 시간 설정
+    - name: Set start time
+      run: |
+        echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+        echo "START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
+
+    # 액션 총 소요시간 계산
+    - name: Calculate duration
+      if: always()
+      run: |
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - START_TIME))
+        MINUTES=$((DURATION / 60))
+        SECONDS=$((DURATION % 60))
+        echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
 
     # 배포 시작 알림
     - name: Notify Slack on Start
@@ -24,42 +71,16 @@ jobs:
           {
             "attachments": [
               {
-                "color": "#9B59B6",
+                "color": ${{ env.SLACK_START_COLOR }},
                 "title": "🚀 배포 시작 🚀",
-                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                "text": "Commit: \"${{ github.event.head_commit.message }}\"",
                 "fields": [
                   {
-                    "title": "Repository",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
+                    "title": "시작시간",
+                    "value": "${{ env.START_TIME_FORMATTED }}",
                     "short": true
                   },
-                  {
-                    "title": "Branch",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
-                    "short": true
-                  },
-                  {
-                    "title": "Action",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
-                    "short": true
-                  },
-                  {
-                    "title": "Job",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
-                    "short": true
-                  },
-                  {
-                    "title": "Time",
-                    "value": "${{ github.event.head_commit.timestamp }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Commit Message",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
-                    "short": true
-                  }
-                ]      
+                  ${{ env.SLACK_COMMON_FIELDS }}
+                ]
               }
             ]
           }
@@ -148,49 +169,22 @@ jobs:
     # 배포 성공 알림
     - name: Notify Slack on Success
       if: success()
-      id: slack-success
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: |
           {
             "attachments": [
               {
-                "color": "#2ECC71",
+                "color": ${{ env.SLACK_SUCCESS_COLOR }},
                 "title": "⭕️ 배포 성공 ⭕️",
-                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                "text": "Commit: \"${{ github.event.head_commit.message }}\"",
                 "fields": [
                   {
-                    "title": "Repository",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
+                    "title": "소요시간",
+                    "value": "${{ env.DURATION }}",
                     "short": true
                   },
-                  {
-                    "title": "Branch",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
-                    "short": true
-                  },
-                  {
-                    "title": "Action",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
-                    "short": true
-                  },
-                  {
-                    "title": "Job",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
-                    "short": true
-                  },
-                  {
-                    "title": "Time",
-                    "value": "${{ github.event.head_commit.timestamp }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Commit Message",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
-                    "short": true
-                  }
-                ]      
+                  ${{ env.SLACK_COMMON_FIELDS }}
+                ]
               }
             ]
           }
@@ -208,42 +202,16 @@ jobs:
           {
             "attachments": [
               {
-                "color": "#E74C3C",
+                "color": ${{ env.SLACK_FAILURE_COLOR }},
                 "title": "❌ 배포 실패 ❌",
-                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                "text": "Commit: \"${{ github.event.head_commit.message }}\"",
                 "fields": [
                   {
-                    "title": "Repository",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
+                    "title": "소요시간",
+                    "value": "${{ env.DURATION }}",
                     "short": true
                   },
-                  {
-                    "title": "Branch",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
-                    "short": true
-                  },
-                  {
-                    "title": "Action",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
-                    "short": true
-                  },
-                  {
-                    "title": "Job",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
-                    "short": true
-                  },
-                  {
-                    "title": "Time",
-                    "value": "${{ github.event.head_commit.timestamp }}",
-                    "short": true
-                  },
-                  {
-                    "title": "Commit Message",
-                    "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
-                    "short": true
-                  }
-                ]      
+                  ${{ env.SLACK_COMMON_FIELDS }}
+                ]
               }
             ]
           }
