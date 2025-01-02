@@ -16,7 +16,7 @@ env:
   SLACK_COMMON_FIELDS: |
     {
       "title": "커밋 메시지",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }} ( ${{ github.sha.slice(0, 6) }} )>",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
       "short": true
     },
     {
@@ -74,6 +74,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_START_COLOR }}",
                 "title": "🚀 배포 시작 🚀",
+                "text": "${{ github.sha }}",
                 "fields": [
                   {
                     "title": "시작시간",
@@ -178,6 +179,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_SUCCESS_COLOR }}",
                 "title": "⭕️ 배포 성공 ⭕️",
+                "text": "${{ github.sha }}",
                 "fields": [
                   {
                     "title": "소요시간",
@@ -205,6 +207,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_FAILURE_COLOR }}",
                 "title": "❌ 배포 실패 ❌",
+                "text": "${{ github.sha }}",
                 "fields": [
                   {
                     "title": "소요시간",
