@@ -15,7 +15,7 @@ env:
   SLACK_FAILURE_COLOR: "#ef4444"
   SLACK_COMMON_FIELDS: |
     {
-      "title": "${{ github.event_name == 'pull_request' ? 'PR 제목' : '커밋 메시지' }}",
+      "title": "${{ if eq(github.event_name, 'pull_request') }}PR 제목${{ else }}커밋 메시지${{ endif }}",
       "value": "${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message }}",
       "short": true
     },
