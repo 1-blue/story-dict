@@ -16,7 +16,7 @@ env:
   SLACK_COMMON_FIELDS: |
     {
       "title": "커밋 메시지",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }} ( ${{ github.sha::6 }} )>",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }} ( ${{ github.sha.substring(0,6) }} )>",
       "short": true
     },
     {
