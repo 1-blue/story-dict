@@ -18,3 +18,5 @@
 7. `tanstack-query`
 8. `react-hook-form` + `zod`
 9. `AWS-S3` + `presignedurl`
+
+slack test
