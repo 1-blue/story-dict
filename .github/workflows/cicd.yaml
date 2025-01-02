@@ -71,7 +71,7 @@ jobs:
           {
             "attachments": [
               {
-                "color": ${{ env.SLACK_START_COLOR }},
+                "color": "${{ env.SLACK_START_COLOR }}",
                 "title": "🚀 배포 시작 🚀",
                 "fields": [
                   {
@@ -175,7 +175,7 @@ jobs:
           {
             "attachments": [
               {
-                "color": ${{ env.SLACK_SUCCESS_COLOR }},
+                "color": "${{ env.SLACK_SUCCESS_COLOR }}",
                 "title": "⭕️ 배포 성공 ⭕️",
                 "fields": [
                   {
@@ -202,7 +202,7 @@ jobs:
           {
             "attachments": [
               {
-                "color": ${{ env.SLACK_FAILURE_COLOR }},
+                "color": "${{ env.SLACK_FAILURE_COLOR }}",
                 "title": "❌ 배포 실패 ❌",
                 "fields": [
                   {
