@@ -30,12 +30,32 @@ jobs:
                 "fields": [
                   {
                     "title": "Repository",
-                    "value": "${{ github.server_url }}/${{ github.repository }}",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
                     "short": true
                   },
                   {
                     "title": "Branch",
-                    "value": "${{ github.ref_name }}",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
+                    "short": true
+                  },
+                  {
+                    "title": "Action",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
+                    "short": true
+                  },
+                  {
+                    "title": "Job",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
+                    "short": true
+                  },
+                  {
+                    "title": "Time",
+                    "value": "${{ github.event.head_commit.timestamp }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Commit Message",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
                     "short": true
                   }
                 ]      
@@ -140,12 +160,32 @@ jobs:
                 "fields": [
                   {
                     "title": "Repository",
-                    "value": "${{ github.server_url }}/${{ github.repository }}",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
                     "short": true
                   },
                   {
                     "title": "Branch",
-                    "value": "${{ github.ref_name }}",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
+                    "short": true
+                  },
+                  {
+                    "title": "Action",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
+                    "short": true
+                  },
+                  {
+                    "title": "Job",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
+                    "short": true
+                  },
+                  {
+                    "title": "Time",
+                    "value": "${{ github.event.head_commit.timestamp }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Commit Message",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
                     "short": true
                   }
                 ]      
@@ -172,12 +212,32 @@ jobs:
                 "fields": [
                   {
                     "title": "Repository",
-                    "value": "${{ github.server_url }}/${{ github.repository }}",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>",
                     "short": true
                   },
                   {
                     "title": "Branch",
-                    "value": "${{ github.ref_name }}",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
+                    "short": true
+                  },
+                  {
+                    "title": "Action",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
+                    "short": true
+                  },
+                  {
+                    "title": "Job",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
+                    "short": true
+                  },
+                  {
+                    "title": "Time",
+                    "value": "${{ github.event.head_commit.timestamp }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Commit Message",
+                    "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
                     "short": true
                   }
                 ]      
