@@ -35,7 +35,7 @@ env:
       "short": true
     },
     {
-      "title": "${{ github.event_name == 'pull_request' ? 'PR 브랜치' : '브랜치' }}",
+      "title": "${{ github.event_name == 'pull_request' && 'PR 브랜치' || '브랜치' }}",
       "value": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
       "short": true
     }
