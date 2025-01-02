@@ -24,9 +24,9 @@ jobs:
             "channel": "채널 ID",
             "attachments": [
               {
-                "color": "#36a64f", # 성공시 연두색
-                "title": "${{ github.repository }}", # 제목은 깃헙 레포지토리
-                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", # GitHub Action 실행 링크
+                "color": "#36a64f",
+                "title": "${{ github.repository }}",
+                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                 "text": "실행중인 Commit: ${{ github.event.head_commit.message }}",
                 "fields": [
                   {
