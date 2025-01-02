@@ -10,13 +10,13 @@ permissions:
   contents: read
 
 env:
-  SLACK_START_COLOR: "#6366f1" # indigo
-  SLACK_SUCCESS_COLOR: "#22c55e" # green
-  SLACK_FAILURE_COLOR: "#ef4444" # red
+  SLACK_START_COLOR: "#6366f1"
+  SLACK_SUCCESS_COLOR: "#22c55e"
+  SLACK_FAILURE_COLOR: "#ef4444"
   SLACK_COMMON_FIELDS: |
     {
-      "title": "커밋 메시지",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
+      "title": "${{ github.event_name == 'pull_request' ? 'PR 제목' : '커밋 메시지' }}",
+      "value": "${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message }}",
       "short": true
     },
     {
@@ -35,8 +35,8 @@ env:
       "short": true
     },
     {
-      "title": "브랜치",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>",
+      "title": "${{ github.event_name == 'pull_request' ? 'PR 브랜치' : '브랜치' }}",
+      "value": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
       "short": true
     }
 
@@ -74,7 +74,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_START_COLOR }}",
                 "title": "🚀 배포 시작 🚀",
-                "text": "${{ github.sha }}",
+                "text": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
                 "fields": [
                   {
                     "title": "시작시간",
@@ -179,7 +179,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_SUCCESS_COLOR }}",
                 "title": "⭕️ 배포 성공 ⭕️",
-                "text": "${{ github.sha }}",
+                "text": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
                 "fields": [
                   {
                     "title": "소요시간",
@@ -207,7 +207,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_FAILURE_COLOR }}",
                 "title": "❌ 배포 실패 ❌",
-                "text": "${{ github.sha }}",
+                "text": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
                 "fields": [
                   {
                     "title": "소요시간",
