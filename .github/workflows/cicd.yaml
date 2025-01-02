@@ -15,27 +15,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # 배포 시작 알림
     - name: Notify Slack on Start
       id: slack-start
       uses: slackapi/slack-github-action@v1.24.0
       with:
         payload: |
           {
-            "channel": "채널 ID",
             "attachments": [
               {
-                "color": "#36a64f",
-                "title": "${{ github.repository }}",
+                "title": "🚀 배포 시작 🚀",
                 "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
-                "text": "실행중인 Commit: ${{ github.event.head_commit.message }}",
+                "text": "Commit: \"${{ github.event.head_commit.message }}\"",
                 "fields": [
                   {
                     "title": "Repository",
-                    "value": "${{ github.repository }}",
+                    "value": "${{ github.server_url }}/${{ github.repository }}",
                     "short": true
                   },
                   {
-                    "title": "Tag",
+                    "title": "Branch",
                     "value": "${{ github.ref_name }}",
                     "short": true
                   }
@@ -124,3 +123,67 @@ jobs:
           --protocol tcp \
           --port 22 \
           --cidr $RUNNER_IP/32
+
+    # 배포 성공 알림
+    - name: Notify Slack on Success
+      if: success()
+      id: slack-success
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "attachments": [
+              {
+                "title": "⭕️ 배포 성공 ⭕️",
+                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "text": "Commit: \"${{ github.event.head_commit.message }}\"",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "${{ github.server_url }}/${{ github.repository }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "${{ github.ref_name }}",
+                    "short": true
+                  }
+                ]      
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+    # 배포 실패 알림
+    - name: Notify Slack on Failure
+      if: failure()
+      id: slack-failure
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "attachments": [
+              {
+                "title": "❌ 배포 실패 ❌",
+                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "text": "Commit: \"${{ github.event.head_commit.message }}\"",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "${{ github.server_url }}/${{ github.repository }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Branch",
+                    "value": "${{ github.ref_name }}",
+                    "short": true
+                  }
+                ]      
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
