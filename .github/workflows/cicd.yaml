@@ -24,6 +24,7 @@ jobs:
           {
             "attachments": [
               {
+                "color": "#9B59B6",
                 "title": "🚀 배포 시작 🚀",
                 "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                 "text": "Commit: \"${{ github.event.head_commit.message }}\"",
@@ -154,6 +155,7 @@ jobs:
           {
             "attachments": [
               {
+                "color": "#2ECC71",
                 "title": "⭕️ 배포 성공 ⭕️",
                 "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                 "text": "Commit: \"${{ github.event.head_commit.message }}\"",
@@ -206,6 +208,7 @@ jobs:
           {
             "attachments": [
               {
+                "color": "#E74C3C",
                 "title": "❌ 배포 실패 ❌",
                 "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                 "text": "Commit: \"${{ github.event.head_commit.message }}\"",
