@@ -4,6 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
+    types: [closed]
     branches: [ "master" ]
 
 permissions:
@@ -36,12 +37,13 @@ env:
     },
     {
       "title": "${{ github.event_name == 'pull_request' && 'PR 브랜치' || '브랜치' }}",
-      "value": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+      "value": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
       "short": true
     }
 
 jobs:
   Deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -74,7 +76,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_START_COLOR }}",
                 "title": "🚀 배포 시작 🚀",
-                "text": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+                "text": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
                 "fields": [
                   {
                     "title": "시작시간",
@@ -179,7 +181,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_SUCCESS_COLOR }}",
                 "title": "⭕️ 배포 성공 ⭕️",
-                "text": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+                "text": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
                 "fields": [
                   {
                     "title": "소요시간",
@@ -207,7 +209,7 @@ jobs:
               {
                 "color": "${{ env.SLACK_FAILURE_COLOR }}",
                 "title": "❌ 배포 실패 ❌",
-                "text": "${{ github.event_name == 'pull_request' && format('{0} -> {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+                "text": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
                 "fields": [
                   {
                     "title": "소요시간",
