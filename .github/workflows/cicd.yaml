@@ -16,17 +16,17 @@ env:
   SLACK_COMMON_FIELDS: |
     {
       "title": "커밋 메시지",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }}>",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.event.head_commit.message }} (${{ github.sha | slice: 0, 7 }})>",
       "short": true
     },
     {
       "title": "워크플로우",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|CI/CD Pipeline>",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|${{ github.workflow }} 워크플로우>",
       "short": true
     },
     {
       "title": "액션작업",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Deploy>",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }} 작업>",
       "short": true
     },
     {
@@ -49,8 +49,9 @@ jobs:
     # 시작 시간 설정
     - name: Set start time
       run: |
-        echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
-        echo "START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
+        echo "TZ='Asia/Seoul'" >> $GITHUB_ENV
+        echo "START_TIME=$(TZ='Asia/Seoul' date +%s)" >> $GITHUB_ENV
+        echo "START_TIME_FORMATTED=$(TZ='Asia/Seoul' date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
 
     # 액션 총 소요시간 계산
     - name: Calculate duration
