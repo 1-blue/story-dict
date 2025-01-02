@@ -15,6 +15,38 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Notify Slack on Start
+      id: slack-start
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        payload: |
+          {
+            "channel": "채널 ID",
+            "attachments": [
+              {
+                "color": "#36a64f", # 성공시 연두색
+                "title": "${{ github.repository }}", # 제목은 깃헙 레포지토리
+                "title_link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", # GitHub Action 실행 링크
+                "text": "실행중인 Commit: ${{ github.event.head_commit.message }}",
+                "fields": [
+                  {
+                    "title": "Repository",
+                    "value": "${{ github.repository }}",
+                    "short": true
+                  },
+                  {
+                    "title": "Tag",
+                    "value": "${{ github.ref_name }}",
+                    "short": true
+                  }
+                ]      
+              }
+            ]
+          }
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
     - name: Create Frontend env files
       run: |
         mkdir -p ./envs/fe
