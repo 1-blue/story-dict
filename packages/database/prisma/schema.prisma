@@ -90,25 +90,6 @@ enum ReactionType {
   QUESTION
 }
 
-/// [테스트용] 고양이 모델
-model Cat {
-  /// 고양이 식별자
-  id        String    @id @default(uuid())
-  /// 생성 일자
-  createdAt DateTime  @default(now())
-  /// 수정 일자
-  updatedAt DateTime  @updatedAt
-  /// 삭제 일자
-  deletedAt DateTime?
-
-  /// 고양이 이름
-  name   String  @unique
-  /// 고양이 나이
-  age    Int
-  /// 고양이 성별
-  gender Boolean @default(true)
-}
-
 /// 이미지 모델
 model Image {
   /// 이미지 식별자

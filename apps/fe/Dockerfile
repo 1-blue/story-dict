@@ -1,6 +1,6 @@
 FROM node:20-alpine AS base
 
-# 빌드 전용 실행 스테이지
+# ======================================== 설치 전용 실행 스테이지 ========================================
 FROM base AS installer
 
 # `node:20-alpine`라서 누락된 공유 라이브러리 설치
@@ -19,7 +19,7 @@ COPY . .
 # fe 의존성만 도커 최적화 모드로 설치
 RUN turbo prune fe --docker
 
-# 설치 전용 실행 스테이지
+# ======================================== 빌드 전용 실행 스테이지 ========================================
 FROM base AS builder
 
 # 누락된 공유 라이브러리 설치
@@ -42,7 +42,7 @@ COPY --from=installer /app/out/full/ .
 # turbo 빌드
 RUN pnpm turbo build
 
-# 실행 전용 실행 스테이지
+# ======================================== 실행 전용 실행 스테이지 ========================================
 FROM base AS runner
 
 RUN ln -s /usr/lib/libssl.so.3 /lib/libssl.so.3

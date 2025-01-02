@@ -26,7 +26,7 @@ export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
       subRoutes: CATEGORIES.map((category) => ({
         ...routes.post.category.detail,
         label: category.label,
-        url: `/post/category/${category.value}`,
+        url: `/posts/category/${category.value}`,
       })),
     },
   ],

@@ -46,41 +46,41 @@ export const routes = {
     SIcon: SKeyIcon,
   },
   post: {
-    url: "/post",
+    url: "/posts",
     accessLevel: "public",
     OIcon: OHomeIcon,
     SIcon: SHomeIcon,
     detail: {
-      url: (title: string) => `/post/${title}`,
+      url: (title: string) => `/posts/${title}`,
       accessLevel: "public",
       OIcon: OCupChipIcon,
       SIcon: SCupChipIcon,
     },
     write: {
-      url: "/post/write",
+      url: "/posts/write",
       accessLevel: "authenticated",
       OIcon: OBookOpenIcon,
       SIcon: SBookOpenIcon,
     },
     edit: {
-      url: (title: string) => `/post/edit/${title}`,
+      url: (title: string) => `/posts/edit/${title}`,
       accessLevel: "authenticated",
       OIcon: OPencilSquareIcon,
       SIcon: SPencilSquareIcon,
     },
     random: {
-      url: "/post/random",
+      url: "/posts/random",
       accessLevel: "public",
       OIcon: OCubeIcon,
       SIcon: SCubeIcon,
     },
     category: {
-      url: "/post/category",
+      url: "/posts/category",
       accessLevel: "public",
       OIcon: ORectangleStackIcon,
       SIcon: SRectangleStackIcon,
       detail: {
-        url: (category: PostCategory) => `/post/category/${category}`,
+        url: (category: PostCategory) => `/posts/category/${category}`,
         accessLevel: "public",
         OIcon: OTagIcon,
         SIcon: STagIcon,
@@ -88,7 +88,7 @@ export const routes = {
     },
     search: {
       detail: {
-        url: (keyword: string) => `/post/search/${keyword}`,
+        url: (keyword: string) => `/posts/search/${keyword}`,
         accessLevel: "public",
         OIcon: OMagnifyingGlassIcon,
         SIcon: SMagnifyingGlassIcon,
