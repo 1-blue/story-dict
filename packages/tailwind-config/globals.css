@@ -77,4 +77,19 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%
   }
+
+
+  /* markdown-body 특수처리 */
+  .markdown-body ol {
+    list-style-type: decimal;
+    padding-left: 2em;
+  }
+  .markdown-body ul {
+    list-style-type: disc;
+    padding-left: 2em;
+
+    ul {
+      list-style-type: circle;
+    }
+  }
 }

@@ -6,3 +6,15 @@
     list-style: disc;
   }
 }
+
+p {
+  white-space: pre-wrap;
+}
+
+li > p {
+  margin: 0;
+}
+
+ul > li > p {
+  margin: 0 !important;
+}
