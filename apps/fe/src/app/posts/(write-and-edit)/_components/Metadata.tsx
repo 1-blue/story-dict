@@ -1,7 +1,10 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import { useFormContext } from "react-hook-form";
+import { CameraIcon } from "@radix-ui/react-icons";
+
 import {
   AspectRatio,
   Button,
@@ -18,11 +21,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@sd/ui";
-import { useRef } from "react";
+import { postCategoryToKoreanMap } from "@sd/utils";
+
 import { handleError } from "#fe/libs/handleError";
 import { postUploadImageByPresignedURL } from "#fe/apis";
-import { CameraIcon } from "@radix-ui/react-icons";
 import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
+
+const CATEGORY_OPTIONS = Object.entries(postCategoryToKoreanMap).map(
+  ([key, value]) => ({
+    label: value,
+    value: key,
+  }),
+);
 
 interface IProps {
   imageData: { id: string; url: string } | null;
@@ -99,10 +109,11 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="GENERAL_KNOWLEDGE">상식</SelectItem>
-                    <SelectItem value="ETYMOLOGY">어원</SelectItem>
-                    <SelectItem value="PURE_KOREAN">순우리말</SelectItem>
-                    <SelectItem value="QUOTATION">명대사</SelectItem>
+                    {CATEGORY_OPTIONS.map(({ label, value }) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FormMessage />

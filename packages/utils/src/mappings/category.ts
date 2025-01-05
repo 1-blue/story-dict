@@ -1,13 +1,7 @@
-type TPostCategory =
-  | "GENERAL_KNOWLEDGE"
-  | "ETYMOLOGY"
-  | "PURE_KOREAN"
-  | "QUOTATION"
-  | "INFORMATION"
-  | "NONSENSE";
+import type { PostCategory } from "@sd/db";
 
-/** 게시글 카테고리와 한글을 맵핑 */
-export const postCategoryToKoreanMap: Record<TPostCategory, string> = {
+/** 게시글 카테고리를 한글로 맵핑 */
+export const postCategoryToKoreanMap: Record<PostCategory, string> = {
   GENERAL_KNOWLEDGE: "상식",
   ETYMOLOGY: "어원",
   PURE_KOREAN: "순우리말",

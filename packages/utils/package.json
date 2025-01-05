@@ -15,6 +15,7 @@
   "dependencies": {
     "@sd/eslint-config": "workspace:*",
     "@sd/typescript-config": "workspace:*",
+    "@sd/db": "workspace:*",
     "zod": "^3.23.8"
   }
 }
