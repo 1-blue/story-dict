@@ -21,7 +21,7 @@ const Comment: React.FC<IProps> = ({ comment }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar>
-            <AvatarImage src={comment.user.image?.url} />
+            <AvatarImage src={comment.user.imagePath ?? ""} />
             <AvatarFallback>{comment.user.nickname.slice(0, 2)}</AvatarFallback>
           </Avatar>
           <div className="flex flex-col gap-0.5">

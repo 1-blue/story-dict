@@ -34,12 +34,6 @@ export class PostsCommentsService {
           select: {
             id: true,
             nickname: true,
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
           },
         },
         reactions: {
@@ -65,12 +59,6 @@ export class PostsCommentsService {
           select: {
             id: true,
             nickname: true,
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
           },
         },
         reactions: {
@@ -98,12 +86,6 @@ export class PostsCommentsService {
           select: {
             id: true,
             nickname: true,
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
           },
         },
         reactions: {

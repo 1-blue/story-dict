@@ -35,7 +35,7 @@ export const generateMetadata = async ({
     title: post.title,
     description: post.summary.replace(/\n/g, " "),
     keywords: [post.title],
-    ...(post.thumbnail && { images: [post.thumbnail.url] }),
+    ...(post.thumbnailPath && { images: [post.thumbnailPath] }),
   });
 };
 

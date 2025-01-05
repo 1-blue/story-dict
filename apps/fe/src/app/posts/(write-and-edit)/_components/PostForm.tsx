@@ -11,7 +11,6 @@ import { schemas } from "@sd/utils";
 import { routes } from "#fe/constants";
 import useMe from "#fe/hooks/queries/users/useMe";
 import { handleError } from "#fe/libs/handleError";
-import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
 import usePostMutations from "#fe/hooks/mutations/posts/usePostMutations";
 
 import Metadata from "#fe/app/posts/(write-and-edit)/_components/Metadata";
@@ -22,6 +21,7 @@ const formSchema = z.object({
   content: schemas.content,
   summary: schemas.summary,
   category: schemas.category,
+  thumbnailPath: z.string().nullable(),
 });
 
 const DEV_DEFAULT_VALUES =
@@ -31,12 +31,14 @@ const DEV_DEFAULT_VALUES =
         summary: "게시글 요약 " + Date.now(),
         content: "## 제목\n대충 내용 아무거나 작성" + Date.now(),
         category: "GENERAL_KNOWLEDGE",
+        thumbnailPath: null,
       } as const)
     : ({
         title: "",
         summary: "",
         content: "",
         category: "GENERAL_KNOWLEDGE",
+        thumbnailPath: null,
       } as const);
 
 interface IProps {
@@ -71,14 +73,8 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
     }
   }, [form.formState.errors]);
 
-  const [imageData, setImageData] = useState<{
-    id: string;
-    url: string;
-  } | null>(null);
-
   const isEdit = !!postId;
 
-  const { patchImageMutateAsync } = useImageMutations();
   const {
     createPostMutateAsync,
     checkUniqueTitleMutateAsync,
@@ -109,27 +105,12 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
       }
     }
 
-    if (imageData) {
-      try {
-        await patchImageMutateAsync({
-          params: { imageId: imageData.id },
-          body: {
-            beforeStatus: "TEMP",
-            afterStatus: "USE",
-          },
-        });
-      } catch (error) {
-        handleError({ error });
-      }
-    }
-
     if (isEdit) {
       patchPostMutateAsync({
         params: { postId },
         body: {
           ...body,
           title: body.title.trim(),
-          thumbnailId: imageData?.id,
         },
       });
     } else {
@@ -137,7 +118,6 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
         body: {
           ...body,
           title: body.title.trim(),
-          thumbnailId: imageData?.id,
         },
       });
     }
@@ -161,7 +141,7 @@ const PostForm: React.FC<IProps> = ({ ownerId, postId, defaultValues }) => {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="metadata">
-            <Metadata imageData={imageData} setImageData={setImageData} />
+            <Metadata />
           </TabsContent>
           <TabsContent value="editor">
             <Editor

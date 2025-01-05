@@ -14,7 +14,7 @@ const PostPanelPopover: React.FC<IProps> = ({ postId }) => {
   const { title } = useParams<{ title: string }>();
   const router = useRouter();
 
-  const onClickEditButton = () => router.replace(`/post/edit/${title}`);
+  const onClickEditButton = () => router.replace(`/posts/edit/${title}`);
 
   const { deletePostMutateAsync } = usePostMutations();
   const onClickDeleteButton = () => {

@@ -1,5 +1,4 @@
-import { IsEnum, IsNotEmpty, IsOptional, Matches } from "class-validator";
-import { ImageStatus } from "@sd/db";
+import { IsNotEmpty, IsOptional, IsString, Matches } from "class-validator";
 
 export class CreatePresignedURLDto {
   @IsNotEmpty({ message: "파일명은 필수값입니다." })
@@ -9,8 +8,6 @@ export class CreatePresignedURLDto {
   filename: string;
 
   @IsOptional()
-  @IsEnum(Object.values(ImageStatus), {
-    message: "유효하지 않은 이미지 상태입니다.",
-  })
-  status?: ImageStatus = "TEMP";
+  @IsString({ message: "이미지의 상태는 문자열이어야 합니다." })
+  status?: string;
 }

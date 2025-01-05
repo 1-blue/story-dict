@@ -29,6 +29,7 @@ const Page: NextPage<IProps> = async ({ params }) => {
         summary: post.summary,
         content: post.content,
         category: post.category,
+        thumbnailPath: post.thumbnailPath,
       }}
     />
   );

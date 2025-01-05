@@ -68,11 +68,11 @@ const PostDetail: React.FC<IProps> = ({ postTitle }) => {
         </div>
       </section>
 
-      {post.thumbnail && (
+      {post.thumbnailPath && (
         <section className="mx-auto w-full max-w-md">
           <AspectRatio ratio={16 / 9} className="w-full">
             <Image
-              src={post.thumbnail.url}
+              src={post.thumbnailPath}
               alt={post.title}
               fill
               className="rounded-md object-cover"

@@ -29,7 +29,7 @@ export const generateMetadata = async ({ params }: IProps) => {
   const { payload: posts } = await getSearchedPosts({ params });
   const post = posts[0];
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
-  const hasThumbnailPost = posts.find((post) => !!post.thumbnail);
+  const hasThumbnailPost = posts.find((post) => !!post.thumbnailPath);
 
   const decodedKeyword = decodeURIComponent(params.keyword);
 
@@ -38,7 +38,7 @@ export const generateMetadata = async ({ params }: IProps) => {
   return getSharedMetadata({
     title: `${decodedKeyword} (게시글)`,
     description: `[${decodedKeyword}] ${post.title}: ${post.summary}`,
-    ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnail!.url] }),
+    ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnailPath!] }),
   });
 };
 

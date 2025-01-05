@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
+import { ImagesService } from "#be/apis/v1/images/images.service";
 import { CreatePostDto } from "#be/apis/v1/posts/dtos/create-post.dto";
 import { UpdatePostDto } from "#be/apis/v1/posts/dtos/update-post.dto";
 import { FindByPostIdDto } from "#be/apis/v1/posts/dtos/find-by-id.dto";
@@ -16,7 +17,10 @@ import { GetOnePostByTitleDto } from "#be/apis/v1/posts/dtos/get-one-by-post-tit
 
 @Injectable()
 export class PostsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly imagesService: ImagesService,
+  ) {}
 
   /** 게시글 생성 */
   async create(userId: string, { ...post }: CreatePostDto) {
@@ -24,9 +28,21 @@ export class PostsService {
 
     if (!isUnique) throw new ConflictException("이미 존재하는 제목입니다.");
 
+    let thumbnailPath = post.thumbnailPath;
+    // 썸네일이 존재한다면 이미지 이동
+    if (post.thumbnailPath) {
+      const { imagePath } = await this.imagesService.move({
+        imagePath: post.thumbnailPath,
+        beforeStatus: "temp",
+        afterStatus: "use",
+      });
+      thumbnailPath = imagePath;
+    }
+
     return await this.prismaService.post.create({
       data: {
         ...post,
+        thumbnailPath,
         userId,
       },
     });
@@ -38,13 +54,6 @@ export class PostsService {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
-        thumbnail: {
-          select: {
-            url: true,
-          },
-        },
-      },
     });
   }
 
@@ -53,22 +62,10 @@ export class PostsService {
     const exPost = await this.prismaService.post.findUnique({
       where: { id: postId },
       include: {
-        thumbnail: {
-          select: {
-            id: true,
-            url: true,
-          },
-        },
         user: {
           select: {
             id: true,
             nickname: true,
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
           },
         },
         reactions: {
@@ -93,22 +90,10 @@ export class PostsService {
     const exPost = await this.prismaService.post.findUnique({
       where: { title },
       include: {
-        thumbnail: {
-          select: {
-            id: true,
-            url: true,
-          },
-        },
         user: {
           select: {
             id: true,
             nickname: true,
-            image: {
-              select: {
-                id: true,
-                url: true,
-              },
-            },
           },
         },
         reactions: {
@@ -175,11 +160,6 @@ export class PostsService {
         ],
       },
       include: {
-        thumbnail: {
-          select: {
-            url: true,
-          },
-        },
         reactions: {
           select: {
             id: true,
@@ -200,11 +180,6 @@ export class PostsService {
         category,
       },
       include: {
-        thumbnail: {
-          select: {
-            url: true,
-          },
-        },
         reactions: {
           select: {
             id: true,
@@ -232,17 +207,49 @@ export class PostsService {
       }
     }
 
+    let thumbnailPath = originalPost.thumbnailPath;
+    // 썸네일 업로드했다면
+    if (post.thumbnailPath) {
+      // 기존 이미지가 존재하면 제거 폴더로 이동
+      if (originalPost.thumbnailPath) {
+        await this.imagesService.move({
+          imagePath: originalPost.thumbnailPath,
+          beforeStatus: "use",
+          afterStatus: "deleted",
+        });
+      }
+
+      // 새로운 이미지 사용 폴더로 이동
+      const { imagePath } = await this.imagesService.move({
+        imagePath: post.thumbnailPath,
+        beforeStatus: "temp",
+        afterStatus: "use",
+      });
+
+      thumbnailPath = imagePath;
+    }
+
     return await this.prismaService.post.update({
       where: { id: postId },
       data: {
         ...post,
+        thumbnailPath,
       },
     });
   }
 
   /** 특정 게시글 삭제 */
   async delete({ postId }: FindByPostIdDto) {
-    await this.getOne({ postId });
+    const exPost = await this.getOne({ postId });
+
+    // S3 이미지 제거 폴더로 이동
+    if (exPost.thumbnailPath) {
+      await this.imagesService.move({
+        imagePath: exPost.thumbnailPath,
+        beforeStatus: "use",
+        afterStatus: "deleted",
+      });
+    }
 
     return await this.prismaService.post.delete({
       where: { id: postId },

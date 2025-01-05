@@ -46,13 +46,13 @@ const PostCard: React.FC<IProps> = ({ post }) => {
         <Link href={routes.post.category.detail.url(post.category)}>
           <Badge>{postCategoryToKoreanMap[post.category]}</Badge>
         </Link>
-        {post.thumbnail?.url && (
+        {post.thumbnailPath && (
           <Popover>
             <PopoverTrigger asChild className="cursor-pointer">
               <figure className="w-16">
                 <AspectRatio ratio={16 / 9}>
                   <Image
-                    src={post.thumbnail.url}
+                    src={post.thumbnailPath}
                     alt={post.title}
                     fill
                     className="rounded-md object-cover"
@@ -64,7 +64,7 @@ const PostCard: React.FC<IProps> = ({ post }) => {
               <figure className="mx-auto w-80">
                 <AspectRatio ratio={16 / 9}>
                   <Image
-                    src={post.thumbnail.url}
+                    src={post.thumbnailPath!}
                     alt={post.title}
                     fill
                     className="rounded-md"

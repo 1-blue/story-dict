@@ -1,4 +1,4 @@
-import type { Image, Post, PostCategory, PostReaction, User } from "@sd/db";
+import type { Post, PostCategory, PostReaction, User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleResponse,
@@ -9,7 +9,7 @@ import type { IAPIResponse } from "#fe/types/api";
 // ============================== 게시글 생성 ==============================
 /** 게시글 생성 요청 타입 */
 export interface ICreatePostAPIRequest {
-  body: Partial<Pick<Post, "id" | "category" | "thumbnailId">> &
+  body: Partial<Pick<Post, "id" | "category" | "thumbnailPath">> &
     Pick<Post, "title" | "summary" | "content">;
 }
 /** 게시글 생성 응답 타입 */
@@ -30,12 +30,7 @@ export const createPostAPI = async ({
 /** 모든 게시글 가져오기 요청 타입 */
 export interface IGetAllPostAPIRequest {}
 /** 모든 게시글 가져오기 응답 타입 */
-export interface IGetAllPostAPIResponse
-  extends IAPIResponse<
-    (Post & {
-      thumbnail?: Pick<Image, "url">;
-    })[]
-  > {}
+export interface IGetAllPostAPIResponse extends IAPIResponse<Post[]> {}
 /** 모든 게시글 가져오기 함수 */
 export const getAllPostAPI = async (): Promise<IGetAllPostAPIResponse> => {
   return fetchInstance(postApis.getAll.endPoint(), {
@@ -56,10 +51,7 @@ export interface IGetOnePostAPIRequest {
 export interface IGetOnePostAPIResponse
   extends IAPIResponse<
     Post & {
-      user: Pick<User, "id" | "nickname"> & {
-        image?: Pick<Image, "id" | "url">;
-      };
-      thumbnail?: Pick<Image, "id" | "url">;
+      user: Pick<User, "id" | "nickname" | "imagePath">;
       reactions: Pick<PostReaction, "id" | "type" | "userId">[];
     }
   > {}
@@ -83,10 +75,7 @@ export interface IGetOnePostByTitleAPIRequest {
 export interface IGetOnePostByTitleAPIResponse
   extends IAPIResponse<
     Post & {
-      user: Pick<User, "id" | "nickname"> & {
-        image?: Pick<Image, "id" | "url">;
-      };
-      thumbnail?: Pick<Image, "id" | "url">;
+      user: Pick<User, "id" | "nickname" | "imagePath">;
       reactions: Pick<PostReaction, "id" | "type" | "userId">[];
     }
   > {}
@@ -110,7 +99,6 @@ export interface IGetManyRandomPostAPIRequest {
 export interface IGetManyRandomPostAPIResponse
   extends IAPIResponse<
     (Post & {
-      thumbnail?: Pick<Image, "url">;
       reactions: Pick<PostReaction, "id" | "type" | "userId">[];
     })[]
   > {}
@@ -134,7 +122,6 @@ export interface IGetManyCategoryPostAPIRequest {
 export interface IGetManyCategoryPostAPIResponse
   extends IAPIResponse<
     (Post & {
-      thumbnail?: Pick<Image, "url">;
       reactions: Pick<PostReaction, "id" | "type" | "userId">[];
     })[]
   > {}
@@ -158,7 +145,6 @@ export interface IGetManyKeywordPostAPIRequest {
 export interface IGetManyKeywordPostAPIResponse
   extends IAPIResponse<
     (Post & {
-      thumbnail?: Pick<Image, "url">;
       reactions: Pick<PostReaction, "id" | "type" | "userId">[];
     })[]
   > {}

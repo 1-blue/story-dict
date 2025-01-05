@@ -1,4 +1,4 @@
-import type { Image, User } from "@sd/db";
+import type { User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,
@@ -12,9 +12,7 @@ export interface IGetMeAPIRequest {}
 /** 로그인된 유저 정보 응답 타입 */
 export interface IGetMeAPIResponse
   extends IAPIResponse<
-    Pick<User, "id" | "nickname" | "role" | "email"> & {
-      image?: Pick<Image, "id" | "url">;
-    }
+    Pick<User, "id" | "nickname" | "role" | "email" | "imagePath">
   > {}
 /** 로그인된 유저 정보 가져오기 함수 */
 export const getMeAPI = async (): Promise<IGetMeAPIResponse> => {
@@ -36,17 +34,15 @@ export interface ICreateUserAPIRequest {
         | "phone"
         | "money"
         | "role"
+        | "imagePath"
         | "provider"
         | "providerId"
-        | "imageId"
       >
     >;
 }
 /** 유저 생성 응답 타입 */
 export interface ICreateUserAPIResponse
-  extends IAPIResponse<
-    Omit<User, "password"> & { image?: Pick<Image, "id" | "url"> }
-  > {}
+  extends IAPIResponse<Omit<User, "password">> {}
 /** 유저 생성 함수 */
 export const createUserAPI = async ({
   body,
