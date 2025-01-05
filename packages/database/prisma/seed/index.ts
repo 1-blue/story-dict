@@ -1,23 +1,14 @@
 import { PrismaClient } from "@sd/db";
 
-import { seedCats } from "./cats";
 import { seedUsers } from "./users";
 import { seedPosts } from "./posts";
 import { seedComments } from "./comments";
-// import { postReactions } from "./postReactions";
-// import { commentReactions } from "./commentReactions";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.group();
   console.log(`🚀 Start seeding 🚀`);
-
-  console.log(`✅ seeding to cats ...`);
-  await prisma.cat.createMany({
-    data: seedCats,
-    skipDuplicates: true,
-  });
 
   console.log(`✅ seeding to users ...`);
   await prisma.user.createMany({
@@ -37,18 +28,6 @@ async function main() {
     skipDuplicates: true,
   });
 
-  // console.log(`✅ seeding to postReactions ...`);
-  // await prisma.postReaction.createMany({
-  //   data: postReactions,
-  //   skipDuplicates: true,
-  // });
-
-  // console.log(`✅ seeding to commentReactions ...`);
-  // await prisma.commentReaction.createMany({
-  //   data: commentReactions,
-  //   skipDuplicates: true,
-  // });
-
   console.log(`🚀 Seeding finished 🚀`);
   console.groupEnd();
 }
@@ -60,5 +39,4 @@ main()
   .catch(async (e) => {
     console.error(e);
     await prisma.$disconnect();
-    process.exit(1);
   });
