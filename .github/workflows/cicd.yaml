@@ -83,6 +83,11 @@ jobs:
                     "value": "${{ env.START_TIME_FORMATTED }}",
                     "short": true
                   },
+                  {
+                    "title": "${{ github.event_name == 'pull_request' && 'PR 제목' || '커밋 메시지' }}",
+                    "value": "${{ toJSON(github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message) }}",
+                    "short": true
+                  },
                   ${{ env.SLACK_COMMON_FIELDS }}
                 ]
               }
