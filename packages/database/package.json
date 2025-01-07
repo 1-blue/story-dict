@@ -13,11 +13,17 @@
     "build": "tsc",
     "db:generate": "prisma generate",
     "db:push": "prisma db push --skip-generate",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "prisma db seed"
   },
   "dependencies": {
     "@sd/typescript-config": "workspace:*",
     "@prisma/client": "^5.20.0",
     "prisma": "^5.20.0"
+  },
+  "prisma": {
+    "seed": "pnpm dlx ts-node prisma/seed/index.ts"
   }
 }
