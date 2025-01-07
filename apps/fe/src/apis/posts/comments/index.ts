@@ -1,4 +1,4 @@
-import type { Comment, Image, Post, CommentReaction, User } from "@sd/db";
+import type { Comment, Post, CommentReaction, User } from "@sd/db";
 import {
   fetchInstance,
   fetchInstanceHandleError,
@@ -17,9 +17,7 @@ export interface ICreatePostCommentAPIRequest {
 export interface ICreatePostCommentAPIResponse
   extends IAPIResponse<
     Comment & {
-      user: Pick<User, "id" | "nickname"> & {
-        image: Pick<Image, "id" | "url">;
-      };
+      user: Pick<User, "id" | "nickname" | "imagePath">;
       reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
     }
   > {}
@@ -45,9 +43,7 @@ export interface IGetAllPostCommentAPIRequest {
 export interface IGetAllPostCommentAPIResponse
   extends IAPIResponse<
     (Comment & {
-      user: Pick<User, "id" | "nickname"> & {
-        image: Pick<Image, "id" | "url">;
-      };
+      user: Pick<User, "id" | "nickname" | "imagePath">;
       reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
     })[]
   > {}
@@ -72,9 +68,7 @@ export interface IPatchPostCommentAPIRequest {
 export interface IPatchPostCommentAPIResponse
   extends IAPIResponse<
     (Comment & {
-      user: Pick<User, "id" | "nickname"> & {
-        image: Pick<Image, "id" | "url">;
-      };
+      user: Pick<User, "id" | "nickname" | "imagePath">;
       reactions: Pick<CommentReaction, "id" | "type" | "userId">[];
     })[]
   > {}

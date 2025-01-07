@@ -29,14 +29,9 @@ export class UsersService {
     phone: true,
     money: true,
     role: true,
+    imagePath: true,
     provider: true,
     providerId: true,
-    image: {
-      select: {
-        id: true,
-        url: true,
-      },
-    },
   };
 
   constructor(private readonly prismaService: PrismaService) {}
@@ -61,7 +56,6 @@ export class UsersService {
         money: user.money || 1_000,
         role: user.role || "USER",
         provider: user.provider || "LOCAL",
-        imageId: user.imageId,
       },
       select: this.userSelectWithoutPassword,
     });
@@ -93,13 +87,8 @@ export class UsersService {
         nickname: true,
         role: true,
         email: true,
+        imagePath: true,
         provider: true,
-        image: {
-          select: {
-            id: true,
-            url: true,
-          },
-        },
       },
     });
     if (!exUser) throw new NotFoundException("찾는 유저가 존재하지 않습니다.");

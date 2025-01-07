@@ -44,8 +44,7 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { createPresignedURLMutateAsync, createImageMutateAsync } =
-    useImageMutations();
+  const { createPresignedURLMutateAsync } = useImageMutations();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -59,22 +58,20 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
       } = await createPresignedURLMutateAsync({
         body: { filename: file.name },
       });
-      await postUploadImageByPresignedURL({ fields, imageFile: file });
-      const {
-        payload: { id: imageId, url: imageURL },
-      } = await createImageMutateAsync({
-        body: {
-          name: file.name,
-          url: url + fields.key,
-          purpose: "POST_THUMBNAIL",
-        },
+      await postUploadImageByPresignedURL({
+        fields,
+        imageFile: file,
       });
 
-      setImageData({ id: imageId, url: imageURL });
+      const uploadedImagePath = url + fields.key;
+
+      setValue("thumbnailPath", uploadedImagePath);
     } catch (error) {
       handleError({ error });
     }
   };
+
+  const thumbnailPath = watch("thumbnailPath");
 
   return (
     <article className="mx-auto mt-4 flex max-w-screen-md flex-col gap-4">
@@ -134,10 +131,10 @@ const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
             className="flex min-h-72 w-full flex-1 cursor-pointer items-center justify-center overflow-hidden rounded-md bg-muted md:h-5/6 md:min-h-fit"
             onClick={() => fileInputRef.current?.click()}
           >
-            {imageData ? (
+            {thumbnailPath ? (
               <AspectRatio ratio={16 / 9}>
                 <Image
-                  src={imageData.url}
+                  src={thumbnailPath}
                   alt="게시글 썸네일"
                   className="object-fit"
                   fill

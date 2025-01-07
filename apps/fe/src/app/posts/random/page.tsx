@@ -23,14 +23,14 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const { payload: posts } = await getRandomPosts();
   const post = posts[0];
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
-  const hasThumbnailPost = posts.find((post) => !!post.thumbnail);
+  const hasThumbnailPost = posts.find((post) => !!post.thumbnailPath);
 
   if (!post) return getSharedMetadata({ title: "랜덤 게시글" });
 
   return getSharedMetadata({
     title: "랜덤 게시글",
     description: `[랜덤] ${post.title}: ${post.summary}`,
-    ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnail!.url] }),
+    ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnailPath!] }),
   });
 };
 

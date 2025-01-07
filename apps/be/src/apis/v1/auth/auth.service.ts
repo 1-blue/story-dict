@@ -2,14 +2,10 @@ import { Injectable } from "@nestjs/common";
 
 import type { IOAuthUser } from "#be/types";
 import { UsersService } from "#be/apis/v1/users/users.service";
-import { ImagesService } from "#be/apis/v1/images/images.service";
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly imagesService: ImagesService,
-  ) {}
+  constructor(private readonly usersService: UsersService) {}
 
   /** 로컬 로그인 검증 */
   async validateUser(email: string, password: string) {
@@ -26,24 +22,6 @@ export class AuthService {
     if (!exOAuthUser) {
       const { externalImageURL } = oauthUser;
 
-      /** 외부 이미지를 등록하는 경우 해당 이미지의 식별자 */
-      let imageId: string | undefined;
-
-      // OAuth의 이미지를 제공받았다면
-      if (externalImageURL) {
-        const originalName = externalImageURL.slice(
-          externalImageURL.lastIndexOf("/") + 1,
-        );
-        // 이미지 등록
-        const createdImage = await this.imagesService.create({
-          url: externalImageURL,
-          name: originalName,
-          status: "EXTERNAL",
-          purpose: "USER_PROFILE",
-        });
-        imageId = createdImage.id;
-      }
-
       return await this.usersService.create({
         id: oauthUser.id,
         email: oauthUser.email,
@@ -53,10 +31,10 @@ export class AuthService {
           "_" +
           Date.now(),
         password: process.env.OAUTH_PASSWORD,
+        imagePath: externalImageURL,
+        role: "USER",
         provider: oauthUser.provider,
         providerId: oauthUser.providerId ?? undefined,
-        role: "USER",
-        imageId,
       });
     }
 

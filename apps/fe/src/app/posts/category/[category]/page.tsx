@@ -43,7 +43,7 @@ export const generateMetadata = async ({
     title: `${postCategoryToKoreanMap[params.category]} 게시글`,
     description: `[${params.category}] ${post.title}: ${post.summary.replace(/\n/g, " ")}`,
     keywords: [params.category, ...posts.map((post) => post.title)],
-    ...(post.thumbnail && { images: [post.thumbnail.url] }),
+    ...(post.thumbnailPath && { images: [post.thumbnailPath] }),
   });
 };
 

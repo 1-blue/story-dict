@@ -11,6 +11,7 @@ import {
   IsUUID,
 } from "class-validator";
 
+import { IsS3ImagePath } from "#be/decorators";
 import { USER_PROVIDERS, USER_ROLES } from "#be/apis/v1/users/constant";
 
 export class CreateUserDto {
@@ -44,6 +45,10 @@ export class CreateUserDto {
   role?: UserRole = "USER";
 
   @IsOptional()
+  @IsS3ImagePath()
+  imagePath?: string;
+
+  @IsOptional()
   @IsEnum(USER_PROVIDERS, { message: "유효하지 않은 유저 제공자입니다." })
   @Transform(({ value }) => value.toUpperCase())
   provider?: UserProvider = "LOCAL";
@@ -51,8 +56,4 @@ export class CreateUserDto {
   @IsOptional()
   @IsString({ message: "유저 제공자의 식별자는 문자열 형태만 가능합니다." })
   providerId?: string;
-
-  @IsOptional()
-  @IsUUID("all", { message: "이미지 식별자는 UUID 형태만 입력이 가능합니다." })
-  imageId?: string;
 }

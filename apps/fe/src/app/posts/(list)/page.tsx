@@ -20,13 +20,13 @@ const getAllPosts = cache(() =>
 export const generateMetadata = async (): Promise<Metadata> => {
   const { payload: posts } = await getAllPosts();
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
-  const hasThumbnailPost = posts.find((post) => !!post.thumbnail);
+  const hasThumbnailPost = posts.find((post) => !!post.thumbnailPath);
 
   return getSharedMetadata({
     title: "이야기 일지",
     keywords: posts.map((post) => post.title),
     ...(hasThumbnailPost && {
-      images: [hasThumbnailPost.thumbnail!.url],
+      images: [hasThumbnailPost.thumbnailPath!],
     }),
   });
 };

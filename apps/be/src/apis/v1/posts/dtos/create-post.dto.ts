@@ -5,6 +5,7 @@ import {
   IsString,
   IsEnum,
 } from "class-validator";
+import { IsS3ImagePath } from "#be/decorators";
 import { PostCategory } from "@sd/db";
 
 export class CreatePostDto {
@@ -31,6 +32,6 @@ export class CreatePostDto {
   category?: PostCategory = "GENERAL_KNOWLEDGE";
 
   @IsOptional()
-  @IsUUID("all", { message: "썸네일 이미지는 UUID 형태만 입력이 가능합니다." })
-  thumbnailId?: string;
+  @IsS3ImagePath()
+  thumbnailPath?: string;
 }
