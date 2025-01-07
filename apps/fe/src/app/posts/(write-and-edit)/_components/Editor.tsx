@@ -26,13 +26,11 @@ const Editor: React.FC<IProps> = ({ content, onChange }) => {
     <div className="relative">
       <MarkdownEditor
         height="calc(100vh - 281px)"
+        className="whitespace-normal"
         value={content}
         onChange={onChange}
         enableScroll
         visible
-        previewProps={{
-          className: "whitespace-pre-wrap break-keep",
-        }}
       />
 
       <span className="absolute bottom-2 right-3 text-xs text-muted-foreground">
