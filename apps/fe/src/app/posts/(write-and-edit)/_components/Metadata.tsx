@@ -34,13 +34,8 @@ const CATEGORY_OPTIONS = Object.entries(postCategoryToKoreanMap).map(
   }),
 );
 
-interface IProps {
-  imageData: { id: string; url: string } | null;
-  setImageData: (imageData: { id: string; url: string }) => void;
-}
-
-const Metadata: React.FC<IProps> = ({ imageData, setImageData }) => {
-  const { control } = useFormContext();
+const Metadata: React.FC = () => {
+  const { control, setValue, watch } = useFormContext();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
