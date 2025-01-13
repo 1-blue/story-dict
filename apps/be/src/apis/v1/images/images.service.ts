@@ -75,7 +75,7 @@ export class ImagesService {
    *
    * @example
    * move({
-   *   id: "99999999-9999-9999-9999-999999999999",
+   *   imagePath: "https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg",
    *   beforeStatus: "temp",
    *   afterStatus: "use"
    * });
@@ -113,7 +113,9 @@ export class ImagesService {
       console.error("🚫 Error 이미지 이동 실패 error >> ", error);
       throw new NotFoundException("이동할 이미지를 찾을 수 없습니다.");
     } finally {
-      return { imagePath: basePath + destinationKey };
+      return {
+        payload: { imagePath: basePath + destinationKey },
+      };
     }
   }
 }

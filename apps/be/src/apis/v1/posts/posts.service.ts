@@ -31,7 +31,9 @@ export class PostsService {
     let thumbnailPath = post.thumbnailPath;
     // 썸네일이 존재한다면 이미지 이동
     if (post.thumbnailPath) {
-      const { imagePath } = await this.imagesService.move({
+      const {
+        payload: { imagePath },
+      } = await this.imagesService.move({
         imagePath: post.thumbnailPath,
         beforeStatus: "temp",
         afterStatus: "use",
@@ -66,6 +68,7 @@ export class PostsService {
           select: {
             id: true,
             nickname: true,
+            imagePath: true,
           },
         },
         reactions: {
@@ -94,6 +97,7 @@ export class PostsService {
           select: {
             id: true,
             nickname: true,
+            imagePath: true,
           },
         },
         reactions: {
@@ -220,7 +224,9 @@ export class PostsService {
       }
 
       // 새로운 이미지 사용 폴더로 이동
-      const { imagePath } = await this.imagesService.move({
+      const {
+        payload: { imagePath },
+      } = await this.imagesService.move({
         imagePath: post.thumbnailPath,
         beforeStatus: "temp",
         afterStatus: "use",

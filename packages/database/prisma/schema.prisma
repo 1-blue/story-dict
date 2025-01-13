@@ -45,6 +45,7 @@ enum PostCategory {
   NONSENSE
 }
 
+/// 리액션 타입
 enum ReactionType {
   /// 좋아요 👍
   GOOD
@@ -157,7 +158,7 @@ model Post {
 }
 
 model PostReaction {
-  /// 반응 식별자
+  /// 리액션 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
   createdAt DateTime  @default(now())
@@ -169,12 +170,12 @@ model PostReaction {
   /// 리액션 타입
   type ReactionType
 
-  /// 반응 유저
+  /// 리액션 유저
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 반응 게시글
+  /// [1:N] 리액션 게시글
   post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   /// [1:N] 게시글 식별자
   postId String

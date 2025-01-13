@@ -3,6 +3,7 @@ import {
   fetchInstanceHandleError,
   fetchInstanceHandleResponse,
 } from "#fe/apis/fetchInstance";
+import { IAPIResponse } from "#fe/types/api";
 
 // ============================== 이미지 업로드 ==============================
 /** `PresignedURL`를 이용해서 `AWS-S3`에 이미지 업로드 요청 타입 */
@@ -77,9 +78,8 @@ export interface IPatchImageAPIRequest {
   };
 }
 /** 이미지 이동 응답 타입 */
-export interface IPatchImageAPIResponse {
-  imagePath: string;
-}
+export interface IPatchImageAPIResponse
+  extends IAPIResponse<{ imagePath: string }> {}
 /** 이미지 이동 함수 */
 export const patchImageAPI = async ({
   body,
