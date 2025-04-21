@@ -1,4 +1,4 @@
-import { postCategoryToKoreanMap } from "@sd/utils";
+import { storyCategoryToKoreanMap } from "@sd/utils";
 
 /** 페이지 경로 한글 맵핑 */
 export const breadcrumbToKoreanMap: Record<string, string> = {
@@ -10,5 +10,5 @@ export const breadcrumbToKoreanMap: Record<string, string> = {
   write: "글쓰기",
   edit: "수정",
   search: "검색",
-  ...postCategoryToKoreanMap,
+  ...storyCategoryToKoreanMap,
 };

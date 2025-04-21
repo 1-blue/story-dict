@@ -71,15 +71,15 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
   };
   const onSelectPost = (title: string) => {
     onOpenChange(false);
-    router.push(routes.post.detail.url(title));
+    router.push(routes.story.detail.url(title));
   };
-  const { data: posts } = useQuery({
+  const { data: stories } = useQuery({
     enabled: !!debouncedKeyword,
-    queryKey: apis.posts.getManyKeyword.key({
+    queryKey: apis.stories.getManyKeyword.key({
       params: { keyword: debouncedKeyword },
     }),
     queryFn: () =>
-      apis.posts.getManyKeyword.fn({
+      apis.stories.getManyKeyword.fn({
         params: { keyword: debouncedKeyword },
       }),
     select: (data) => data.payload,
@@ -105,7 +105,7 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
       <CommandInput placeholder="ex) 윤슬" onChangeCapture={onChangeKeyword} />
       <CommandList>
         <CommandGroup heading="게시글 검색">
-          {posts?.map((post) => (
+          {stories?.map((post) => (
             <CommandItem
               key={post.title}
               onSelect={() => onSelectPost(post.title)}

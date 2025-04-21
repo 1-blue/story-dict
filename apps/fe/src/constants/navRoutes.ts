@@ -5,28 +5,28 @@ import { CATEGORIES, DEFAULT_SITEMAP, routes } from "#fe/constants";
 export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
   main: [
     {
-      ...routes.post,
+      ...routes.story,
       label: "게시글",
       sitemap: DEFAULT_SITEMAP,
     },
     {
-      ...routes.post.write,
+      ...routes.story.write,
       label: "글쓰기",
       sitemap: DEFAULT_SITEMAP,
     },
     {
-      ...routes.post.random,
+      ...routes.story.random,
       label: "랜덤",
       sitemap: DEFAULT_SITEMAP,
     },
     {
       label: "카테고리",
-      ...routes.post.category,
+      ...routes.story.category,
       sitemap: DEFAULT_SITEMAP,
       subRoutes: CATEGORIES.map((category) => ({
-        ...routes.post.category.detail,
+        ...routes.story.category.detail,
         label: category.label,
-        url: `/posts/category/${category.value}`,
+        url: `/stories/category/${category.value}`,
       })),
     },
   ],

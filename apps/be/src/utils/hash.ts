@@ -1,5 +1,5 @@
 import { InternalServerErrorException } from "@nestjs/common";
-import { hash, compare } from "bcrypt";
+import { hash, compare } from "bcryptjs";
 
 /**
  * 암호화 함수

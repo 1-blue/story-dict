@@ -1,4 +1,4 @@
-import type { PostCategory } from "@sd/db";
+import type { StoryCategory } from "@sd/db";
 import {
   LockOpenIcon as OLockOpenIcon,
   KeyIcon as OKeyIcon,
@@ -45,42 +45,42 @@ export const routes = {
     OIcon: OKeyIcon,
     SIcon: SKeyIcon,
   },
-  post: {
-    url: "/posts",
+  story: {
+    url: "/stories",
     accessLevel: "public",
     OIcon: OHomeIcon,
     SIcon: SHomeIcon,
     detail: {
-      url: (title: string) => `/posts/${title}`,
+      url: (title: string) => `/stories/${title}`,
       accessLevel: "public",
       OIcon: OCupChipIcon,
       SIcon: SCupChipIcon,
     },
     write: {
-      url: "/posts/write",
+      url: "/stories/write",
       accessLevel: "authenticated",
       OIcon: OBookOpenIcon,
       SIcon: SBookOpenIcon,
     },
     edit: {
-      url: (title: string) => `/posts/edit/${title}`,
+      url: (title: string) => `/stories/edit/${title}`,
       accessLevel: "authenticated",
       OIcon: OPencilSquareIcon,
       SIcon: SPencilSquareIcon,
     },
     random: {
-      url: "/posts/random",
+      url: "/stories/random",
       accessLevel: "public",
       OIcon: OCubeIcon,
       SIcon: SCubeIcon,
     },
     category: {
-      url: "/posts/category",
+      url: "/stories/category",
       accessLevel: "public",
       OIcon: ORectangleStackIcon,
       SIcon: SRectangleStackIcon,
       detail: {
-        url: (category: PostCategory) => `/posts/category/${category}`,
+        url: (category: StoryCategory) => `/stories/category/${category}`,
         accessLevel: "public",
         OIcon: OTagIcon,
         SIcon: STagIcon,
@@ -88,7 +88,7 @@ export const routes = {
     },
     search: {
       detail: {
-        url: (keyword: string) => `/posts/search/${keyword}`,
+        url: (keyword: string) => `/stories/search/${keyword}`,
         accessLevel: "public",
         OIcon: OMagnifyingGlassIcon,
         SIcon: SMagnifyingGlassIcon,
