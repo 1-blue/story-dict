@@ -27,8 +27,8 @@ const formSchema = z.object({
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
     ? ({
-        title: "게시글 제목 " + Date.now(),
-        summary: "게시글 요약 " + Date.now(),
+        title: "이야기 제목 " + Date.now(),
+        summary: "이야기 요약 " + Date.now(),
         content: "## 제목\n대충 내용 아무거나 작성" + Date.now(),
         category: "GENERAL_KNOWLEDGE",
         thumbnailPath: null,

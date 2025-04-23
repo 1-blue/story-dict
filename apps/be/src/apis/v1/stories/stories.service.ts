@@ -22,7 +22,7 @@ export class StoriesService {
     private readonly imagesService: ImagesService,
   ) {}
 
-  /** 게시글 생성 */
+  /** 이야기 생성 */
   async create(userId: string, { ...story }: CreateStoryDto) {
     const { isUnique } = await this.checkUniqueTitle({ title: story.title });
 
@@ -50,7 +50,7 @@ export class StoriesService {
     });
   }
 
-  /** 모든 게시글 찾기 */
+  /** 모든 이야기 찾기 */
   async getAll() {
     return await this.prismaService.story.findMany({
       orderBy: {
@@ -59,7 +59,7 @@ export class StoriesService {
     });
   }
 
-  /** 특정 게시글 찾기 */
+  /** 특정 이야기 찾기 */
   async getOne({ storyId }: FindByStoryIdDto) {
     const exStory = await this.prismaService.story.findUnique({
       where: { id: storyId },
@@ -82,13 +82,13 @@ export class StoriesService {
     });
 
     if (!exStory) {
-      throw new NotFoundException("찾는 게시글이 존재하지 않습니다.");
+      throw new NotFoundException("찾는 이야기이 존재하지 않습니다.");
     }
 
     return exStory;
   }
 
-  /** 제목으로 특정 게시글 찾기 */
+  /** 제목으로 특정 이야기 찾기 */
   async getOneByTitle({ title }: GetOneStoryByTitleDto) {
     const exStory = await this.prismaService.story.findUnique({
       where: { title },
@@ -111,17 +111,17 @@ export class StoriesService {
     });
 
     if (!exStory) {
-      throw new NotFoundException("찾는 게시글이 존재하지 않습니다.");
+      throw new NotFoundException("찾는 이야기이 존재하지 않습니다.");
     }
 
     return exStory;
   }
 
-  /** (FIXME: 비효율) 랜덤 게시글 찾기 */
+  /** (FIXME: 비효율) 랜덤 이야기 찾기 */
   async getManyRandom({ existingIds }: GetManyRandomStoryDto) {
     const existingIdsArray = existingIds.split(",").map((id) => id.trim());
 
-    // 1. 먼저 조건에 맞는 모든 게시글을 가져옵니다
+    // 1. 먼저 조건에 맞는 모든 이야기를 가져옵니다
     const availableStories = await this.prismaService.story.findMany({
       where: {
         id: {
@@ -152,7 +152,7 @@ export class StoriesService {
     return availableStories.slice(0, 4);
   }
 
-  /** 키워드 기반 게시글 찾기 */
+  /** 키워드 기반 이야기 찾기 */
   async getManyKeyword({ keyword }: FindKeywordStoryDto) {
     const decodedKeyword = decodeURIComponent(keyword);
 
@@ -177,7 +177,7 @@ export class StoriesService {
     return stories;
   }
 
-  /** 카테고리 기반 게시글 찾기 */
+  /** 카테고리 기반 이야기 찾기 */
   async getAllCategory({ category }: GetAllCategoryStoryDto) {
     const stories = await this.prismaService.story.findMany({
       where: {
@@ -197,7 +197,7 @@ export class StoriesService {
     return stories;
   }
 
-  /** 특정 게시글 수정 */
+  /** 특정 이야기 수정 */
   async update({ storyId }: FindByStoryIdDto, { ...story }: UpdateStoryDto) {
     const originalStory = await this.getOne({ storyId });
 
@@ -246,7 +246,7 @@ export class StoriesService {
     });
   }
 
-  /** 특정 게시글 삭제 */
+  /** 특정 이야기 삭제 */
   async delete({ storyId }: FindByStoryIdDto) {
     const exStory = await this.getOne({ storyId });
 

@@ -5,8 +5,8 @@ import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { CATEGORIES } from "#fe/constants";
 
 export const metadata: Metadata = getSharedMetadata({
-  title: "카테고리 게시글",
-  description: "카테고리 게시글",
+  title: "카테고리 이야기",
+  description: "카테고리 이야기",
 });
 
 const Page: NextPage = () => {

@@ -35,8 +35,8 @@ export class StoriesController {
   async create(@Req() req: Request, @Body() createStoryDto: CreateStoryDto) {
     return {
       toast: {
-        title: "게시글 작성 완료",
-        description: `게시글을 작성했습니다.\n메인 페이지로 이동합니다!`,
+        title: "이야기 작성 완료",
+        description: `이야기를 작성했습니다.\n메인 페이지로 이동합니다!`,
       },
       payload: await this.storiesService.create(req.user!.id, createStoryDto),
     };
@@ -94,8 +94,8 @@ export class StoriesController {
   ) {
     return {
       toast: {
-        title: "게시글 수정 완료",
-        description: `게시글을 수정했습니다.\n메인 페이지로 이동합니다!`,
+        title: "이야기 수정 완료",
+        description: `이야기를 수정했습니다.\n메인 페이지로 이동합니다!`,
       },
       payload: await this.storiesService.update(findByIdDto, updateStoryDto),
     };
@@ -107,8 +107,8 @@ export class StoriesController {
   async delete(@Param() findByIdDto: FindByStoryIdDto) {
     return {
       toast: {
-        title: "게시글 삭제 완료",
-        description: `게시글을 삭제했습니다.\n메인 페이지로 이동합니다!`,
+        title: "이야기 삭제 완료",
+        description: `이야기를 삭제했습니다.\n메인 페이지로 이동합니다!`,
       },
       payload: await this.storiesService.delete(findByIdDto),
     };

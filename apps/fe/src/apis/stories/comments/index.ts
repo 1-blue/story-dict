@@ -6,14 +6,14 @@ import {
 } from "#fe/apis/fetchInstance";
 import type { IAPIResponse } from "#fe/types/api";
 
-// ============================== 게시글의 댓글 생성 ==============================
-/** 게시글의 댓글 생성 요청 타입 */
+// ============================== 이야기의 댓글 생성 ==============================
+/** 이야기의 댓글 생성 요청 타입 */
 export interface ICreateStoryCommentAPIRequest {
   params: { storyId: Story["id"] };
   body: Partial<Pick<StoryComment, "id">> & Pick<StoryComment, "content">;
 }
 
-/** 게시글의 댓글 생성 응답 타입 */
+/** 이야기의 댓글 생성 응답 타입 */
 export interface ICreateStoryCommentAPIResponse
   extends IAPIResponse<
     StoryComment & {
@@ -21,7 +21,7 @@ export interface ICreateStoryCommentAPIResponse
       reactions: Pick<StoryCommentReaction, "id" | "type" | "userId">[];
     }
   > {}
-/** 게시글의 댓글 생성 함수 */
+/** 이야기의 댓글 생성 함수 */
 export const createStoryCommentAPI = async ({
   params,
   body,
@@ -34,12 +34,12 @@ export const createStoryCommentAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 모든 댓글 요청 ==============================
-/** 게시글의 모든 댓글 요청 요청 타입 */
+// ============================== 이야기의 모든 댓글 요청 ==============================
+/** 이야기의 모든 댓글 요청 요청 타입 */
 export interface IGetAllStoryCommentAPIRequest {
   params: { storyId: Story["id"] };
 }
-/** 게시글의 모든 댓글 요청 응답 타입 */
+/** 이야기의 모든 댓글 요청 응답 타입 */
 export interface IGetAllStoryCommentAPIResponse
   extends IAPIResponse<
     (StoryComment & {
@@ -47,7 +47,7 @@ export interface IGetAllStoryCommentAPIResponse
       reactions: Pick<StoryCommentReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 게시글의 모든 댓글 요청 함수 */
+/** 이야기의 모든 댓글 요청 함수 */
 export const getAllStoryCommentAPI = async ({
   params,
 }: IGetAllStoryCommentAPIRequest): Promise<IGetAllStoryCommentAPIResponse> => {
@@ -58,13 +58,13 @@ export const getAllStoryCommentAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 댓글 수정 ==============================
-/** 게시글의 댓글 수정 요청 타입 */
+// ============================== 이야기의 댓글 수정 ==============================
+/** 이야기의 댓글 수정 요청 타입 */
 export interface IPatchStoryCommentAPIRequest {
   params: { storyId: Story["id"]; commentId: StoryComment["id"] };
   body: Partial<ICreateStoryCommentAPIRequest["body"]>;
 }
-/** 게시글의 댓글 수정 응답 타입 */
+/** 이야기의 댓글 수정 응답 타입 */
 export interface IPatchStoryCommentAPIResponse
   extends IAPIResponse<
     (StoryComment & {
@@ -72,7 +72,7 @@ export interface IPatchStoryCommentAPIResponse
       reactions: Pick<StoryCommentReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 게시글의 댓글 수정 함수 */
+/** 이야기의 댓글 수정 함수 */
 export const patchStoryCommentAPI = async ({
   body,
   params,
@@ -85,15 +85,15 @@ export const patchStoryCommentAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 댓글 삭제 ==============================
-/** 게시글의 댓글 삭제 요청 타입 */
+// ============================== 이야기의 댓글 삭제 ==============================
+/** 이야기의 댓글 삭제 요청 타입 */
 export interface IDeleteStoryCommentAPIRequest {
   params: { storyId: Story["id"]; commentId: StoryComment["id"] };
 }
-/** 게시글의 댓글 삭제 응답 타입 */
+/** 이야기의 댓글 삭제 응답 타입 */
 export interface IDeleteStoryCommentAPIResponse
   extends IAPIResponse<StoryComment> {}
-/** 게시글의 댓글 삭제 함수 */
+/** 이야기의 댓글 삭제 함수 */
 export const deleteStoryCommentAPI = async ({
   params,
 }: IDeleteStoryCommentAPIRequest): Promise<IDeleteStoryCommentAPIResponse> => {

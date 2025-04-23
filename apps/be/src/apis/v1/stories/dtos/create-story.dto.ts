@@ -10,24 +10,24 @@ import { StoryCategory } from "@sd/db";
 
 export class CreateStoryDto {
   @IsOptional()
-  @IsUUID("all", { message: "게시글 식별자는 UUID 형태만 입력이 가능합니다." })
+  @IsUUID("all", { message: "이야기 식별자는 UUID 형태만 입력이 가능합니다." })
   id?: string;
 
-  @IsNotEmpty({ message: "게시글 이름은 필수값입니다." })
-  @IsString({ message: "게시글 제목은 문자열 형태만 가능합니다." })
+  @IsNotEmpty({ message: "이야기 이름은 필수값입니다." })
+  @IsString({ message: "이야기 제목은 문자열 형태만 가능합니다." })
   title: string;
 
-  @IsNotEmpty({ message: "게시글 내용은 필수값입니다." })
-  @IsString({ message: "게시글 요약은 문자열 형태만 가능합니다." })
+  @IsNotEmpty({ message: "이야기 내용은 필수값입니다." })
+  @IsString({ message: "이야기 요약은 문자열 형태만 가능합니다." })
   summary: string;
 
-  @IsNotEmpty({ message: "게시글 내용은 필수값입니다." })
-  @IsString({ message: "게시글 내용은 문자열 형태만 가능합니다." })
+  @IsNotEmpty({ message: "이야기 내용은 필수값입니다." })
+  @IsString({ message: "이야기 내용은 문자열 형태만 가능합니다." })
   content: string;
 
   @IsOptional()
   @IsEnum(Object.values(StoryCategory), {
-    message: "유효하지 않은 게시글 카테고리입니다.",
+    message: "유효하지 않은 이야기 카테고리입니다.",
   })
   category?: StoryCategory = "GENERAL_KNOWLEDGE";
 

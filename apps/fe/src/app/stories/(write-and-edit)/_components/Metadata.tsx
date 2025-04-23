@@ -75,13 +75,13 @@ const Metadata: React.FC = () => {
           <RFHInput
             name="title"
             label="제목"
-            placeholder="ex) 게시글 제목"
+            placeholder="ex) 이야기 제목"
             className="flex-1"
           />
           <RFHTextarea
             name="summary"
             label="요약"
-            placeholder="ex) 게시글 요약"
+            placeholder="ex) 이야기 요약"
             className="flex-1 resize-none"
             rows={3}
           />
@@ -130,7 +130,7 @@ const Metadata: React.FC = () => {
               <AspectRatio ratio={16 / 9}>
                 <Image
                   src={thumbnailPath}
-                  alt="게시글 썸네일"
+                  alt="이야기 썸네일"
                   className="object-fit"
                   fill
                 />

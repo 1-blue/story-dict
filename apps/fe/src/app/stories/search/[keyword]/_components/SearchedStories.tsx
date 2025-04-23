@@ -27,8 +27,8 @@ const SearchedStories: React.FC<IProps> = ({ keyword }) => {
         </ul>
       ) : (
         <EmptyAlert
-          title="게시글 없음"
-          description={`"${decodeURIComponent(keyword)}" 키워드의 게시글이 존재하지 않아요 🥲`}
+          title="이야기 없음"
+          description={`"${decodeURIComponent(keyword)}" 키워드의 이야기이 존재하지 않아요 🥲`}
         />
       )}
     </article>

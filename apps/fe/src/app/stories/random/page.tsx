@@ -25,10 +25,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
   // 커스텀 타입 가드 사용하면 가독성이 더 안좋아져서 (아래에서)타입 단언 사용
   const hasThumbnailStory = stories.find((post) => !!post.thumbnailPath);
 
-  if (!post) return getSharedMetadata({ title: "랜덤 게시글" });
+  if (!post) return getSharedMetadata({ title: "랜덤 이야기" });
 
   return getSharedMetadata({
-    title: "랜덤 게시글",
+    title: "랜덤 이야기",
     description: `[랜덤] ${post.title}: ${post.summary}`,
     ...(hasThumbnailStory && { images: [hasThumbnailStory.thumbnailPath!] }),
   });

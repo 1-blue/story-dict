@@ -6,7 +6,7 @@ export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
   main: [
     {
       ...routes.story,
-      label: "게시글",
+      label: "이야기",
       sitemap: DEFAULT_SITEMAP,
     },
     {

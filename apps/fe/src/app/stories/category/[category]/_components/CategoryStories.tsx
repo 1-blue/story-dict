@@ -31,8 +31,8 @@ const CategoryStories: React.FC<IProps> = ({ category }) => {
         </ul>
       ) : (
         <EmptyAlert
-          title="게시글 없음"
-          description="해당 카테고리의 게시글이 존재하지 않아요 🥲"
+          title="이야기 없음"
+          description="해당 카테고리의 이야기이 존재하지 않아요 🥲"
         />
       )}
     </article>

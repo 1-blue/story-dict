@@ -72,7 +72,7 @@ const StoryCarousel: React.FC<IProps> = ({
             <Card>
               <CardContent className="flex h-full flex-col items-center justify-center gap-2 p-6">
                 <Button onClick={randomStoryRefatch} disabled={!hasMore}>
-                  {hasMore ? "랜덤 게시글 가져오기" : "불러올 게시글 없음"}
+                  {hasMore ? "랜덤 이야기 가져오기" : "불러올 이야기 없음"}
                 </Button>
               </CardContent>
             </Card>

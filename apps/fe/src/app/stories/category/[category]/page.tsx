@@ -35,12 +35,12 @@ export const generateMetadata = async ({
 
   if (!post) {
     return getSharedMetadata({
-      title: `${storyCategoryToKoreanMap[params.category]} 게시글`,
+      title: `${storyCategoryToKoreanMap[params.category]} 이야기`,
     });
   }
 
   return getSharedMetadata({
-    title: `${storyCategoryToKoreanMap[params.category]} 게시글`,
+    title: `${storyCategoryToKoreanMap[params.category]} 이야기`,
     description: `[${params.category}] ${post.title}: ${post.summary.replace(/\n/g, " ")}`,
     keywords: [params.category, ...stories.map((post) => post.title)],
     ...(post.thumbnailPath && { images: [post.thumbnailPath] }),

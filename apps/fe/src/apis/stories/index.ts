@@ -6,15 +6,15 @@ import {
 } from "#fe/apis/fetchInstance";
 import type { IAPIResponse } from "#fe/types/api";
 
-// ============================== 게시글 생성 ==============================
-/** 게시글 생성 요청 타입 */
+// ============================== 이야기 생성 ==============================
+/** 이야기 생성 요청 타입 */
 export interface ICreateStoryAPIRequest {
   body: Partial<Pick<Story, "id" | "category" | "thumbnailPath">> &
     Pick<Story, "title" | "summary" | "content">;
 }
-/** 게시글 생성 응답 타입 */
+/** 이야기 생성 응답 타입 */
 export interface ICreateStoryAPIResponse extends IAPIResponse<Story> {}
-/** 게시글 생성 함수 */
+/** 이야기 생성 함수 */
 export const createStoryAPI = async ({
   body,
 }: ICreateStoryAPIRequest): Promise<ICreateStoryAPIResponse> => {
@@ -26,12 +26,12 @@ export const createStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 모든 게시글 가져오기 ==============================
-/** 모든 게시글 가져오기 요청 타입 */
+// ============================== 모든 이야기 가져오기 ==============================
+/** 모든 이야기 가져오기 요청 타입 */
 export interface IGetAllStoryAPIRequest {}
-/** 모든 게시글 가져오기 응답 타입 */
+/** 모든 이야기 가져오기 응답 타입 */
 export interface IGetAllStoryAPIResponse extends IAPIResponse<Story[]> {}
-/** 모든 게시글 가져오기 함수 */
+/** 모든 이야기 가져오기 함수 */
 export const getAllStoryAPI = async (): Promise<IGetAllStoryAPIResponse> => {
   return fetchInstance(storyApis.getAll.endPoint(), {
     method: "GET",
@@ -42,12 +42,12 @@ export const getAllStoryAPI = async (): Promise<IGetAllStoryAPIResponse> => {
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 특정 게시글 가져오기 ==============================
-/** 특정 게시글 가져오기 요청 타입 */
+// ============================== 특정 이야기 가져오기 ==============================
+/** 특정 이야기 가져오기 요청 타입 */
 export interface IGetOneStoryAPIRequest {
   params: { storyId: Story["id"] };
 }
-/** 특정 게시글 가져오기 응답 타입 */
+/** 특정 이야기 가져오기 응답 타입 */
 export interface IGetOneStoryAPIResponse
   extends IAPIResponse<
     Story & {
@@ -55,7 +55,7 @@ export interface IGetOneStoryAPIResponse
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     }
   > {}
-/** 특정 게시글 가져오기 함수 */
+/** 특정 이야기 가져오기 함수 */
 export const getOneStoryAPI = async ({
   params,
 }: IGetOneStoryAPIRequest): Promise<IGetOneStoryAPIResponse> => {
@@ -66,12 +66,12 @@ export const getOneStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 제목으로 특정 게시글 가져오기 ==============================
-/** 제목으로 특정 게시글 가져오기 요청 타입 */
+// ============================== 제목으로 특정 이야기 가져오기 ==============================
+/** 제목으로 특정 이야기 가져오기 요청 타입 */
 export interface IGetOneStoryByTitleAPIRequest {
   params: { title: Story["title"] };
 }
-/** 제목으로 특정 게시글 가져오기 응답 타입 */
+/** 제목으로 특정 이야기 가져오기 응답 타입 */
 export interface IGetOneStoryByTitleAPIResponse
   extends IAPIResponse<
     Story & {
@@ -79,7 +79,7 @@ export interface IGetOneStoryByTitleAPIResponse
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     }
   > {}
-/** 제목으로 특정 게시글 가져오기 함수 */
+/** 제목으로 특정 이야기 가져오기 함수 */
 export const getOneStoryByTitleAPI = async ({
   params,
 }: IGetOneStoryByTitleAPIRequest): Promise<IGetOneStoryByTitleAPIResponse> => {
@@ -90,19 +90,19 @@ export const getOneStoryByTitleAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 랜덤 게시글들 가져오기 ==============================
-/** 랜덤 게시글들 요청 타입 */
+// ============================== 랜덤 이야기들 가져오기 ==============================
+/** 랜덤 이야기들 요청 타입 */
 export interface IGetManyRandomStoryAPIRequest {
   queries: { existingIds?: string };
 }
-/** 랜덤 게시글들 응답 타입 */
+/** 랜덤 이야기들 응답 타입 */
 export interface IGetManyRandomStoryAPIResponse
   extends IAPIResponse<
     (Story & {
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 랜덤 게시글들 가져오기 함수 */
+/** 랜덤 이야기들 가져오기 함수 */
 export const getManyRandomStoryAPI = async ({
   queries,
 }: IGetManyRandomStoryAPIRequest): Promise<IGetManyRandomStoryAPIResponse> => {
@@ -113,19 +113,19 @@ export const getManyRandomStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 검색된 게시글들 가져오기 ==============================
-/** 검색된 게시글들 가져오기 요청 타입 */
+// ============================== 검색된 이야기들 가져오기 ==============================
+/** 검색된 이야기들 가져오기 요청 타입 */
 export interface IGetManyCategoryStoryAPIRequest {
   params: { category: StoryCategory };
 }
-/** 검색된 게시글들 가져오기 응답 타입 */
+/** 검색된 이야기들 가져오기 응답 타입 */
 export interface IGetManyCategoryStoryAPIResponse
   extends IAPIResponse<
     (Story & {
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 검색된 게시글들 가져오기  함수 */
+/** 검색된 이야기들 가져오기  함수 */
 export const getManyCategoryStoryAPI = async ({
   params,
 }: IGetManyCategoryStoryAPIRequest): Promise<IGetManyCategoryStoryAPIResponse> => {
@@ -136,19 +136,19 @@ export const getManyCategoryStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 카테고리 게시글들 가져오기 ==============================
-/** 카테고리 게시글들 가져오기 요청 타입 */
+// ============================== 카테고리 이야기들 가져오기 ==============================
+/** 카테고리 이야기들 가져오기 요청 타입 */
 export interface IGetManyKeywordStoryAPIRequest {
   params: { keyword: string };
 }
-/** 카테고리 게시글들 가져오기 응답 타입 */
+/** 카테고리 이야기들 가져오기 응답 타입 */
 export interface IGetManyKeywordStoryAPIResponse
   extends IAPIResponse<
     (Story & {
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 카테고리 게시글들 가져오기  함수 */
+/** 카테고리 이야기들 가져오기  함수 */
 export const getManyKeywordStoryAPI = async ({
   params,
 }: IGetManyKeywordStoryAPIRequest): Promise<IGetManyKeywordStoryAPIResponse> => {
@@ -163,15 +163,15 @@ export const getManyKeywordStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글 수정 ==============================
-/** 게시글 수정 요청 타입 */
+// ============================== 이야기 수정 ==============================
+/** 이야기 수정 요청 타입 */
 export interface IPatchStoryAPIRequest {
   params: { storyId: Story["id"] };
   body: Partial<ICreateStoryAPIRequest["body"]>;
 }
-/** 게시글 수정 응답 타입 */
+/** 이야기 수정 응답 타입 */
 export interface IPatchStoryAPIResponse extends IAPIResponse<Story> {}
-/** 게시글 수정 함수 */
+/** 이야기 수정 함수 */
 export const patchStoryAPI = async ({
   body,
   params,
@@ -184,14 +184,14 @@ export const patchStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글 삭제 ==============================
-/** 게시글 삭제 요청 타입 */
+// ============================== 이야기 삭제 ==============================
+/** 이야기 삭제 요청 타입 */
 export interface IDeleteStoryAPIRequest {
   params: { storyId: Story["id"] };
 }
-/** 게시글 삭제 응답 타입 */
+/** 이야기 삭제 응답 타입 */
 export interface IDeleteStoryAPIResponse extends IAPIResponse<Story> {}
-/** 게시글 삭제 함수 */
+/** 이야기 삭제 함수 */
 export const deleteStoryAPI = async ({
   params,
 }: IDeleteStoryAPIRequest): Promise<IDeleteStoryAPIResponse> => {
@@ -202,17 +202,17 @@ export const deleteStoryAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글 제목 유니크 확인 ==============================
-/** 게시글 제목 유니크 확인 요청 타입 */
+// ============================== 이야기 제목 유니크 확인 ==============================
+/** 이야기 제목 유니크 확인 요청 타입 */
 export interface ICheckUniqueTitleAPIRequest {
   body: Pick<Story, "title">;
 }
-/** 게시글 제목 유니크 확인 응답 타입 */
+/** 이야기 제목 유니크 확인 응답 타입 */
 export interface ICheckUniqueTitleAPIResponse
   extends IAPIResponse<{
     isUnique: boolean;
   }> {}
-/** 게시글 제목 유니크 확인 함수 */
+/** 이야기 제목 유니크 확인 함수 */
 export const checkUniqueTitleAPI = async ({
   body,
 }: ICheckUniqueTitleAPIRequest): Promise<ICheckUniqueTitleAPIResponse> => {

@@ -33,10 +33,10 @@ export const generateMetadata = async ({ params }: IProps) => {
 
   const decodedKeyword = decodeURIComponent(params.keyword);
 
-  if (!post) return getSharedMetadata({ title: `${decodedKeyword} (게시글)` });
+  if (!post) return getSharedMetadata({ title: `${decodedKeyword} (이야기)` });
 
   return getSharedMetadata({
-    title: `${decodedKeyword} (게시글)`,
+    title: `${decodedKeyword} (이야기)`,
     description: `[${decodedKeyword}] ${post.title}: ${post.summary}`,
     ...(hasThumbnailPost && { images: [hasThumbnailPost.thumbnailPath!] }),
   });

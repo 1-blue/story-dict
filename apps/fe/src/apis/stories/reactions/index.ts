@@ -6,16 +6,16 @@ import {
 } from "#fe/apis/fetchInstance";
 import type { IAPIResponse } from "#fe/types/api";
 
-// ============================== 게시글의 리액션 생성 ==============================
-/** 게시글의 리액션 생성 요청 타입 */
+// ============================== 이야기의 리액션 생성 ==============================
+/** 이야기의 리액션 생성 요청 타입 */
 export interface ICreateStoryReactionAPIRequest {
   params: Pick<StoryReaction, "storyId">;
   body: Partial<Pick<StoryReaction, "id">> & Pick<StoryReaction, "type">;
 }
-/** 게시글의 리액션 생성 응답 타입 */
+/** 이야기의 리액션 생성 응답 타입 */
 export interface ICreateStoryReactionAPIResponse
   extends IAPIResponse<StoryReaction> {}
-/** 게시글의 리액션 생성 함수 */
+/** 이야기의 리액션 생성 함수 */
 export const createStoryReactionAPI = async ({
   params,
   body,
@@ -28,16 +28,16 @@ export const createStoryReactionAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 리액션 수정 ==============================
-/** 게시글의 리액션 수정 요청 타입 */
+// ============================== 이야기의 리액션 수정 ==============================
+/** 이야기의 리액션 수정 요청 타입 */
 export interface IPatchStoryReactionAPIRequest {
   params: Pick<StoryReaction, "storyId"> & { reactionId: StoryReaction["id"] };
   body: Partial<ICreateStoryReactionAPIRequest["body"]>;
 }
-/** 게시글의 리액션 수정 응답 타입 */
+/** 이야기의 리액션 수정 응답 타입 */
 export interface IPatchStoryReactionAPIResponse
   extends IAPIResponse<StoryReaction> {}
-/** 게시글의 리액션 수정 함수 */
+/** 이야기의 리액션 수정 함수 */
 export const patchStoryReactionAPI = async ({
   params,
   body,
@@ -50,15 +50,15 @@ export const patchStoryReactionAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 리액션 삭제 ==============================
-/** 게시글의 리액션 삭제 요청 타입 */
+// ============================== 이야기의 리액션 삭제 ==============================
+/** 이야기의 리액션 삭제 요청 타입 */
 export interface IDeleteStoryReactionAPIRequest {
   params: Pick<StoryReaction, "storyId"> & { reactionId: StoryReaction["id"] };
 }
-/** 게시글의 리액션 삭제 응답 타입 */
+/** 이야기의 리액션 삭제 응답 타입 */
 export interface IDeleteStoryReactionAPIResponse
   extends IAPIResponse<StoryReaction> {}
-/** 게시글의 리액션 삭제 함수 */
+/** 이야기의 리액션 삭제 함수 */
 export const deleteStoryReactionAPI = async ({
   params,
 }: IDeleteStoryReactionAPIRequest): Promise<IDeleteStoryReactionAPIResponse> => {

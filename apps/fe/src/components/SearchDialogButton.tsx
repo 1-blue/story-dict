@@ -104,7 +104,7 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
     <CommandDialog open={open} onOpenChange={onOpenChange} title="정보 검색">
       <CommandInput placeholder="ex) 윤슬" onChangeCapture={onChangeKeyword} />
       <CommandList>
-        <CommandGroup heading="게시글 검색">
+        <CommandGroup heading="이야기 검색">
           {stories?.map((post) => (
             <CommandItem
               key={post.title}

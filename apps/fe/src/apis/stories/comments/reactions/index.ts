@@ -6,17 +6,17 @@ import {
 } from "#fe/apis/fetchInstance";
 import type { IAPIResponse } from "#fe/types/api";
 
-// ============================== 게시글의 댓글 리액션 생성 ==============================
-/** 게시글의 댓글 리액션 생성 요청 타입 */
+// ============================== 이야기의 댓글 리액션 생성 ==============================
+/** 이야기의 댓글 리액션 생성 요청 타입 */
 export interface ICreateStoryCommentReactionAPIRequest {
   params: Pick<StoryCommentReaction, "storyId" | "commentId">;
   body: Partial<Pick<StoryCommentReaction, "id">> &
     Pick<StoryCommentReaction, "type">;
 }
-/** 게시글의 댓글 리액션 생성 응답 타입 */
+/** 이야기의 댓글 리액션 생성 응답 타입 */
 export interface ICreateStoryCommentReactionAPIResponse
   extends IAPIResponse<StoryCommentReaction> {}
-/** 게시글의 댓글 리액션 생성 함수 */
+/** 이야기의 댓글 리액션 생성 함수 */
 export const createStoryCommentReactionAPI = async ({
   params,
   body,
@@ -29,18 +29,18 @@ export const createStoryCommentReactionAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 댓글 리액션 수정 ==============================
-/** 게시글의 댓글 리액션 수정 요청 타입 */
+// ============================== 이야기의 댓글 리액션 수정 ==============================
+/** 이야기의 댓글 리액션 수정 요청 타입 */
 export interface IPatchStoryCommentReactionAPIRequest {
   params: Pick<StoryCommentReaction, "storyId" | "commentId"> & {
     reactionId: StoryCommentReaction["id"];
   };
   body: Partial<ICreateStoryCommentReactionAPIRequest["body"]>;
 }
-/** 게시글의 댓글 리액션 수정 응답 타입 */
+/** 이야기의 댓글 리액션 수정 응답 타입 */
 export interface IPatchStoryCommentReactionAPIResponse
   extends IAPIResponse<StoryCommentReaction> {}
-/** 게시글의 댓글 리액션 수정 함수 */
+/** 이야기의 댓글 리액션 수정 함수 */
 export const patchStoryCommentReactionAPI = async ({
   params,
   body,
@@ -53,17 +53,17 @@ export const patchStoryCommentReactionAPI = async ({
     .catch(fetchInstanceHandleError);
 };
 
-// ============================== 게시글의 댓글 리액션 삭제 ==============================
-/** 게시글의 댓글 리액션 삭제 요청 타입 */
+// ============================== 이야기의 댓글 리액션 삭제 ==============================
+/** 이야기의 댓글 리액션 삭제 요청 타입 */
 export interface IDeleteStoryCommentReactionAPIRequest {
   params: Pick<StoryCommentReaction, "storyId" | "commentId"> & {
     reactionId: StoryCommentReaction["id"];
   };
 }
-/** 게시글의 댓글 리액션 삭제 응답 타입 */
+/** 이야기의 댓글 리액션 삭제 응답 타입 */
 export interface IDeleteStoryCommentReactionAPIResponse
   extends IAPIResponse<StoryCommentReaction> {}
-/** 게시글의 댓글 리액션 삭제 함수 */
+/** 이야기의 댓글 리액션 삭제 함수 */
 export const deleteStoryCommentReactionAPI = async ({
   params,
 }: IDeleteStoryCommentReactionAPIRequest): Promise<IDeleteStoryCommentReactionAPIResponse> => {

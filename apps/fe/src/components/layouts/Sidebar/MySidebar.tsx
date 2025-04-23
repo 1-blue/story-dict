@@ -48,7 +48,7 @@ const MySidebar: React.FC = () => {
 
       <SidebarContent>
         <SearchDialogButton />
-        <SidebarCenterGroup label="게시글" routes={filteredPostRoutes} />
+        <SidebarCenterGroup label="이야기" routes={filteredPostRoutes} />
         <SidebarCenterGroup label="인증" routes={filteredAuthRoutes} />
         <SidebarInfoGroup routes={NAV_ROUTES.information} />
       </SidebarContent>

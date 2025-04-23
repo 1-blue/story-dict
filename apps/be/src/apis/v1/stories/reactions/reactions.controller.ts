@@ -38,8 +38,8 @@ export class StoriesReactionsController {
   ) {
     return {
       toast: {
-        title: "게시글 리액션 생성",
-        description: `게시글의 "${reactionTypeToEmojiMap[createReactionDto.type]}" 리액션이 성공적으로 생성되었습니다.`,
+        title: "이야기 리액션 생성",
+        description: `이야기의 "${reactionTypeToEmojiMap[createReactionDto.type]}" 리액션이 성공적으로 생성되었습니다.`,
       },
       payload: await this.storiesReactionsService.create(
         req.user!.id,
@@ -57,8 +57,8 @@ export class StoriesReactionsController {
   ) {
     return {
       toast: {
-        title: "게시글 리액션 수정",
-        description: `게시글의 리액션을 "${reactionTypeToEmojiMap[updateReactionDto.type]}"로 수정했습니다.`,
+        title: "이야기 리액션 수정",
+        description: `이야기의 리액션을 "${reactionTypeToEmojiMap[updateReactionDto.type]}"로 수정했습니다.`,
       },
       payload: await this.storiesReactionsService.update(
         findByIdDto,
@@ -72,8 +72,8 @@ export class StoriesReactionsController {
   async delete(@Param() findByIdDto: FindByStoryIdAndReactionIdDto) {
     return {
       toast: {
-        title: "게시글 리액션 제거",
-        description: "게시글의 리액션을 제거했습니다.",
+        title: "이야기 리액션 제거",
+        description: "이야기의 리액션을 제거했습니다.",
       },
       payload: await this.storiesReactionsService.delete(findByIdDto),
     };
