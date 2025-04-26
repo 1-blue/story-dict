@@ -66,12 +66,7 @@ export interface IPatchStoryCommentAPIRequest {
 }
 /** 이야기의 댓글 수정 응답 타입 */
 export interface IPatchStoryCommentAPIResponse
-  extends IAPIResponse<
-    (StoryComment & {
-      user: Pick<User, "id" | "nickname" | "imagePath">;
-      reactions: Pick<StoryCommentReaction, "id" | "type" | "userId">[];
-    })[]
-  > {}
+  extends IAPIResponse<{ content: StoryComment["content"] }> {}
 /** 이야기의 댓글 수정 함수 */
 export const patchStoryCommentAPI = async ({
   body,

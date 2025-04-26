@@ -7,7 +7,7 @@ import { apis, IGetManyRandomStoryAPIResponse } from "#fe/apis";
 import StoryCarousel from "#fe/app/stories/random/_components/StoryCarousel";
 
 const StoryCarouselWrapper: React.FC = () => {
-  const [stories, setstories] = useState<
+  const [stories, setStories] = useState<
     IGetManyRandomStoryAPIResponse["payload"]
   >([]);
   const existingIdsRef = useRef<string[]>([]);
@@ -30,13 +30,13 @@ const StoryCarouselWrapper: React.FC = () => {
 
     // 개발모드에서 useEffect가 두 번 실행되기 때문에 조건 추가
     if (process.env.NODE_ENV === "development") {
-      setstories((prev) => {
-        const newStoryIds = new Set(data.map((post) => post.id));
-        const filteredPrev = prev.filter((post) => !newStoryIds.has(post.id));
+      setStories((prev) => {
+        const newStoryIds = new Set(data.map((story) => story.id));
+        const filteredPrev = prev.filter((story) => !newStoryIds.has(story.id));
         return [...filteredPrev, ...data];
       });
     } else {
-      setstories((prev) => [...prev, ...data]);
+      setStories((prev) => [...prev, ...data]);
     }
   }, [data]);
 

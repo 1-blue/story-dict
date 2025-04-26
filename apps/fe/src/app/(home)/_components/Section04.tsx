@@ -80,13 +80,13 @@ const stories: Pick<Story, "title" | "summary" | "category">[] = [
 const firstRow = stories.slice(0, stories.length / 2);
 const secondRow = stories.slice(stories.length / 2);
 
-interface IPostCardProps {
+interface IStoryCardProps {
   title: Story["title"];
   summary: Story["summary"];
   category: Story["category"];
 }
 
-const PostCard: React.FC<IPostCardProps> = ({ title, summary, category }) => {
+const StoryCard: React.FC<IStoryCardProps> = ({ title, summary, category }) => {
   return (
     <Card className="flex w-64 flex-col sm:w-80">
       <Link
@@ -118,12 +118,12 @@ const Section04: React.FC = () => {
     <div className="relative flex w-[calc(100vw-64px)] flex-col items-center justify-center overflow-hidden">
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
-          <PostCard key={review.title} {...review} />
+          <StoryCard key={review.title} {...review} />
         ))}
       </Marquee>
       <Marquee reverse pauseOnHover className="[--duration:20s]">
         {secondRow.map((post) => (
-          <PostCard key={post.title} {...post} />
+          <StoryCard key={post.title} {...post} />
         ))}
       </Marquee>
     </div>

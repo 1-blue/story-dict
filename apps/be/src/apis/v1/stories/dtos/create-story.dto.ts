@@ -17,7 +17,7 @@ export class CreateStoryDto {
   @IsString({ message: "이야기 제목은 문자열 형태만 가능합니다." })
   title: string;
 
-  @IsNotEmpty({ message: "이야기 내용은 필수값입니다." })
+  @IsNotEmpty({ message: "이야기 요약은 필수값입니다." })
   @IsString({ message: "이야기 요약은 문자열 형태만 가능합니다." })
   summary: string;
 

@@ -125,7 +125,7 @@ export interface IGetManyCategoryStoryAPIResponse
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 검색된 이야기들 가져오기  함수 */
+/** 검색된 이야기들 가져오기 함수 */
 export const getManyCategoryStoryAPI = async ({
   params,
 }: IGetManyCategoryStoryAPIRequest): Promise<IGetManyCategoryStoryAPIResponse> => {
@@ -148,17 +148,13 @@ export interface IGetManyKeywordStoryAPIResponse
       reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
     })[]
   > {}
-/** 카테고리 이야기들 가져오기  함수 */
+/** 카테고리 이야기들 가져오기 함수 */
 export const getManyKeywordStoryAPI = async ({
   params,
 }: IGetManyKeywordStoryAPIRequest): Promise<IGetManyKeywordStoryAPIResponse> => {
-  return fetchInstance(
-    process.env.NEXT_PUBLIC_SERVER_URL +
-      `/apis/v1/stories/search/${params?.keyword}`,
-    {
-      method: "GET",
-    },
-  )
+  return fetchInstance(storyApis.getManyKeyword.endPoint({ params }), {
+    method: "GET",
+  })
     .then(fetchInstanceHandleResponse)
     .catch(fetchInstanceHandleError);
 };

@@ -56,17 +56,17 @@ export class StoriesController {
     };
   }
 
-  @Get(":storyId")
-  async getOne(@Param() findByIdDto: FindByStoryIdDto) {
-    return {
-      payload: await this.storiesService.getOne(findByIdDto),
-    };
-  }
-
   @Get("/title/:title")
   async getOneByTitle(@Param() findByTitleDto: GetOneStoryByTitleDto) {
     return {
       payload: await this.storiesService.getOneByTitle(findByTitleDto),
+    };
+  }
+
+  @Get(":storyId")
+  async getOne(@Param() findByIdDto: FindByStoryIdDto) {
+    return {
+      payload: await this.storiesService.getOne(findByIdDto),
     };
   }
 

@@ -7,7 +7,7 @@ import type { StoryCategory } from "@sd/db";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { apis } from "#fe/apis";
-import { CATEGORIES } from "#fe/constants";
+import { CATEGORIES, routes } from "#fe/constants";
 import CategoryStories from "#fe/app/stories/category/[category]/_components/CategoryStories";
 import { getQueryClient } from "#fe/libs/getQueryClient";
 
@@ -49,7 +49,7 @@ export const generateMetadata = async ({
 
 const Page: NextPage<IProps> = async ({ params }) => {
   if (!Object.keys(storyCategoryToKoreanMap).includes(params.category)) {
-    return redirect(`/post/category/${CATEGORIES[0]?.value}`);
+    return redirect(routes.story.category.detail.url(CATEGORIES[0]!.value));
   }
 
   await getManyCategoryStory({ params });
