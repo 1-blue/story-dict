@@ -85,7 +85,7 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
     select: (data) => data.payload,
   });
 
-  const { isLoggedIn, isLoggedOut, logOutMutateAsync } = useMe();
+  const { isLoggedIn, isLoggedOut, logOutMutation } = useMe();
   const filteredRoutes = useMemo(
     () => getRoutesByAccessLevel({ isLoggedIn, isLoggedOut }),
     [isLoggedIn, isLoggedOut],
@@ -97,7 +97,7 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
   };
   const onSelectLogOut = () => {
     onOpenChange(false);
-    logOutMutateAsync({});
+    logOutMutation.mutate({});
   };
 
   return (

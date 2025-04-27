@@ -4,12 +4,20 @@ import type { Request } from "express";
 import { UsersService } from "#be/apis/v1/users/users.service";
 import { CreateUserDto } from "#be/apis/v1/users/dto/create-user.dto";
 import { IsLoggedOut } from "#be/guards";
+import { ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { GetMeResponseDTO } from "./dto";
 
 @Controller("apis/v1/users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get("me")
+  @ApiOperation({ summary: "내 정보 조회" })
+  @ApiResponse({
+    status: 200,
+    description: "사용자 정보 조회 성공",
+    type: GetMeResponseDTO,
+  })
   async getMe(@Req() req: Request) {
     return {
       payload: req.user ?? null,

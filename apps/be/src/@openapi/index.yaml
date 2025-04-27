@@ -1,0 +1,518 @@
+openapi: 3.0.0
+paths:
+  /apis/v0/ping:
+    get:
+      operationId: PingController_ping
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Ping
+  /apis/v1/auth/login:
+    post:
+      operationId: AuthController_logIn
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogInBodyDTO'
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInResponseDTO'
+      summary: 로그인
+      tags: &ref_0
+        - Auth
+  /apis/v1/auth/login/kakao:
+    get:
+      operationId: AuthController_oauthKakao
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/login/kakao/redirect:
+    get:
+      operationId: AuthController_oauthKakaoRedirect
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/login/google:
+    get:
+      operationId: AuthController_oauthGoogle
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/login/google/redirect:
+    get:
+      operationId: AuthController_oauthGoogleRedirect
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/logout:
+    post:
+      operationId: AuthController_logOut
+      parameters: []
+      responses:
+        '200':
+          description: 로그아웃 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogOutResponseDTO'
+      summary: 로그아웃
+      tags: *ref_0
+  /apis/v1/images/presigned-url:
+    post:
+      operationId: ImagesController_createPresignedURL
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePresignedURLDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_1
+        - Images
+  /apis/v1/images/move:
+    patch:
+      operationId: ImagesController_moveImage
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveImageDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_1
+  /apis/v1/users/me:
+    get:
+      operationId: UsersController_getMe
+      parameters: []
+      responses:
+        '200':
+          description: 사용자 정보 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMeResponseDTO'
+      summary: 내 정보 조회
+      tags: &ref_2
+        - Users
+  /apis/v1/users:
+    post:
+      operationId: UsersController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_2
+  /apis/v1/stories:
+    post:
+      operationId: StoriesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStoryDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_3
+        - Stories
+    get:
+      operationId: StoriesController_getAll
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/random:
+    get:
+      operationId: StoriesController_getManyRandom
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/title/{title}:
+    get:
+      operationId: StoriesController_getOneByTitle
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/{storyId}:
+    get:
+      operationId: StoriesController_getOne
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+    patch:
+      operationId: StoriesController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStoryDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+    delete:
+      operationId: StoriesController_delete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/search/{keyword}:
+    get:
+      operationId: StoriesController_getManyKeyword
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/category/{category}:
+    get:
+      operationId: StoriesController_getAllCategory
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/check-unique-title:
+    post:
+      operationId: StoriesController_checkUniqueTitle
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckUniqueTitleDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_3
+  /apis/v1/stories/{storyId}/reactions:
+    post:
+      operationId: StoriesReactionsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReactionDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_4
+        - StoriesReactions
+  /apis/v1/stories/{storyId}/reactions/{reactionId}:
+    patch:
+      operationId: StoriesReactionsController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReactionDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+    delete:
+      operationId: StoriesReactionsController_delete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+  /apis/v1/stories/{storyId}/comments:
+    post:
+      operationId: StoriesCommentsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_5
+        - StoriesComments
+    get:
+      operationId: StoriesCommentsController_findMany
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /apis/v1/stories/{storyId}/comments/{commentId}:
+    patch:
+      operationId: StoriesCommentsController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommentDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+    delete:
+      operationId: StoriesCommentsController_delete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /apis/v1/stories/{storyId}/comments/{commentId}/reactions:
+    post:
+      operationId: StoriesCommentsReactionsController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReactionDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_6
+        - StoriesCommentsReactions
+  /apis/v1/stories/{storyId}/comments/{commentId}/reactions/{reactionId}:
+    patch:
+      operationId: StoriesCommentsReactionsController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateReactionDto'
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+    delete:
+      operationId: StoriesCommentsReactionsController_delete
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+info:
+  title: Story Dict
+  description: Story Dict API 문서
+  version: '1.0'
+  contact: {}
+tags:
+  - name: Story Dict
+    description: ''
+servers: []
+components:
+  schemas:
+    LogInBodyDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 유저 이메일
+        password:
+          type: string
+          description: 유저 비밀번호
+      required:
+        - email
+        - password
+    ToastEntity:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 토스트 제목
+        description:
+          type: string
+          description: 토스트 내용
+      required:
+        - title
+        - description
+    UserRole:
+      type: string
+      enum:
+        - ADMIN
+        - MANAGER
+        - USER
+        - GUEST
+      description: 유저 역할
+    UserProvider:
+      type: string
+      enum:
+        - LOCAL
+        - KAKAO
+        - GOOGLE
+      description: 유저 로그인 방식
+    PayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+        createdAt:
+          format: date-time
+          type: string
+          description: 생성 일자
+        updatedAt:
+          format: date-time
+          type: string
+          description: 수정 일자
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        email:
+          type: string
+          description: 유저 이메일
+        money:
+          type: number
+          description: 유저 소지금
+          default: 1000
+        nickname:
+          type: string
+          description: 유저 닉네임
+        phone:
+          type: string
+          description: 유저 휴대폰 번호
+          nullable: true
+        role:
+          description: 유저 역할
+          allOf:
+            - $ref: '#/components/schemas/UserRole'
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+        provider:
+          description: 유저 로그인 방식
+          allOf:
+            - $ref: '#/components/schemas/UserProvider'
+        providerId:
+          type: string
+          description: 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값)
+          nullable: true
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - email
+        - money
+        - nickname
+        - phone
+        - role
+        - imagePath
+        - provider
+        - providerId
+    LogInResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 정보
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/PayloadDTO'
+      required:
+        - toast
+        - payload
+    LogOutResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 정보
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+      required:
+        - toast
+    CreatePresignedURLDto:
+      type: object
+      properties: {}
+    MoveImageDto:
+      type: object
+      properties: {}
+    GetMeResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/PayloadDTO'
+      required:
+        - payload
+    CreateUserDto:
+      type: object
+      properties: {}
+    CreateStoryDto:
+      type: object
+      properties: {}
+    UpdateStoryDto:
+      type: object
+      properties: {}
+    CheckUniqueTitleDto:
+      type: object
+      properties: {}
+    CreateReactionDto:
+      type: object
+      properties: {}
+    UpdateReactionDto:
+      type: object
+      properties: {}
+    CreateCommentDto:
+      type: object
+      properties: {}
+    UpdateCommentDto:
+      type: object
+      properties: {}

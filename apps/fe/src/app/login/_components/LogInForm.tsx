@@ -29,7 +29,7 @@ const formSchema = z.object({
 
 const LogInForm: React.FC = () => {
   const router = useRouter();
-  const { me, logInMutateAsync } = useMe();
+  const { me, logInMutation } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEV_DEFAULT_VALUES,
@@ -40,7 +40,7 @@ const LogInForm: React.FC = () => {
       if (me) return;
 
       try {
-        await logInMutateAsync({ body });
+        await logInMutation.mutateAsync({ body });
 
         router.replace(routes.story.url);
       } catch (error) {

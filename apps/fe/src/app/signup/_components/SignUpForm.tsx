@@ -33,7 +33,7 @@ const formSchema = z.object({
 });
 
 const SignUpForm: React.FC = () => {
-  const { logInMutateAsync } = useMe();
+  const { logInMutation } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEV_DEFAULT_VALUES,
@@ -43,12 +43,7 @@ const SignUpForm: React.FC = () => {
   const onSubmit = form.handleSubmit(async (body) => {
     try {
       await createUserMutateAsync({ body });
-      await logInMutateAsync({
-        body: {
-          email: body.email,
-          password: body.password,
-        },
-      });
+      await logInMutation.mutateAsync({ body });
     } catch (error) {
       handleError({ error });
     }
