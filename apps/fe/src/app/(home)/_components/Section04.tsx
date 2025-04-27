@@ -10,11 +10,11 @@ import {
 } from "@sd/ui";
 import { Marquee } from "@sd/ui/magics";
 
-import type { Post } from "@sd/db";
+import type { Story } from "@sd/db";
 import { routes } from "#fe/constants";
-import { postCategoryToKoreanMap } from "@sd/utils";
+import { storyCategoryToKoreanMap } from "@sd/utils";
 
-const posts: Pick<Post, "title" | "summary" | "category">[] = [
+const stories: Pick<Story, "title" | "summary" | "category">[] = [
   {
     title: `윤슬`,
     summary: `햇빛이나 달빛이 비치어 반짝이는 잔물결`,
@@ -77,20 +77,20 @@ const posts: Pick<Post, "title" | "summary" | "category">[] = [
   },
 ];
 
-const firstRow = posts.slice(0, posts.length / 2);
-const secondRow = posts.slice(posts.length / 2);
+const firstRow = stories.slice(0, stories.length / 2);
+const secondRow = stories.slice(stories.length / 2);
 
-interface IPostCardProps {
-  title: Post["title"];
-  summary: Post["summary"];
-  category: Post["category"];
+interface IStoryCardProps {
+  title: Story["title"];
+  summary: Story["summary"];
+  category: Story["category"];
 }
 
-const PostCard: React.FC<IPostCardProps> = ({ title, summary, category }) => {
+const StoryCard: React.FC<IStoryCardProps> = ({ title, summary, category }) => {
   return (
     <Card className="flex w-64 flex-col sm:w-80">
       <Link
-        href={routes.post.detail.url(title)}
+        href={routes.story.detail.url(title)}
         className="flex flex-1 flex-col"
       >
         <CardHeader>
@@ -105,8 +105,8 @@ const PostCard: React.FC<IPostCardProps> = ({ title, summary, category }) => {
         </CardContent>
       </Link>
       <CardFooter className="flex items-end justify-between">
-        <Link href={routes.post.category.detail.url(category)}>
-          <Badge>{postCategoryToKoreanMap[category]}</Badge>
+        <Link href={routes.story.category.detail.url(category)}>
+          <Badge>{storyCategoryToKoreanMap[category]}</Badge>
         </Link>
       </CardFooter>
     </Card>
@@ -118,12 +118,12 @@ const Section04: React.FC = () => {
     <div className="relative flex w-[calc(100vw-64px)] flex-col items-center justify-center overflow-hidden">
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
-          <PostCard key={review.title} {...review} />
+          <StoryCard key={review.title} {...review} />
         ))}
       </Marquee>
       <Marquee reverse pauseOnHover className="[--duration:20s]">
         {secondRow.map((post) => (
-          <PostCard key={post.title} {...post} />
+          <StoryCard key={post.title} {...post} />
         ))}
       </Marquee>
     </div>

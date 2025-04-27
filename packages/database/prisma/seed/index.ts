@@ -1,7 +1,7 @@
 import { PrismaClient } from "@sd/db";
 
 import { seedUsers } from "./users";
-import { seedPosts } from "./posts";
+import { seedStories } from "./stories";
 import { seedComments } from "./comments";
 
 const prisma = new PrismaClient();
@@ -16,14 +16,14 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log(`✅ seeding to posts ...`);
-  await prisma.post.createMany({
-    data: seedPosts,
+  console.log(`✅ seeding to stories ...`);
+  await prisma.story.createMany({
+    data: seedStories,
     skipDuplicates: true,
   });
 
   console.log(`✅ seeding to comments ...`);
-  await prisma.comment.createMany({
+  await prisma.storyComment.createMany({
     data: seedComments,
     skipDuplicates: true,
   });

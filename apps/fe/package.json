@@ -8,7 +8,7 @@
     "start": "next start -p 9000",
     "start:prod": "next start -p 9000",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",

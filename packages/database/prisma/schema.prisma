@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 /// 유저 역할
@@ -29,8 +30,8 @@ enum UserProvider {
   GOOGLE
 }
 
-/// 게시글 카테고리
-enum PostCategory {
+/// 스토리 카테고리
+enum StoryCategory {
   /// 상식
   GENERAL_KNOWLEDGE
   /// 어원
@@ -99,24 +100,24 @@ model User {
   /// 유저 로그인 방식 식별자 ( `OAuth`인 경우 제공받는값 )
   providerId String?      @unique
 
-  /// [1:N] 유저의 게시글
-  posts         Post[]
-  /// [1:N] 유저의 게시글 반응
-  postReactions PostReaction[]
+  /// [1:N] 유저의 스토리
+  stories        Story[]
+  /// [1:N] 유저의 스토리 반응
+  storyReactions StoryReaction[]
 
   /// [1:N] 유저의 댓글
-  comments         Comment[]
+  comments         StoryComment[]
   /// [1:N] 유저의 댓글 반응
-  commentReactions CommentReaction[]
+  commentReactions StoryCommentReaction[]
 
   /// [1:N] 유저의 대댓글
-  replies        Reply[]
+  replies        StoryCommentReply[]
   /// [1:N] 유저의 대댓글 반응
-  replyReactions ReplyReaction[]
+  replyReactions StoryCommentReplyReaction[]
 }
 
-model Post {
-  /// 게시글 식별자
+model Story {
+  /// 스토리 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
   createdAt DateTime  @default(now())
@@ -125,39 +126,39 @@ model Post {
   /// 삭제 일자
   deletedAt DateTime?
 
-  /// 게시글 제목
-  title         String       @unique
-  /// 게시글 요약
+  /// 스토리 제목
+  title         String        @unique
+  /// 스토리 요약
   summary       String
-  /// 게시글 내용
+  /// 스토리 내용
   content       String
-  /// 게시글 썸네일 이미지 경로
+  /// 스토리 썸네일 이미지 경로
   thumbnailPath String?
-  /// 게시글 카테고리
-  category      PostCategory @default(GENERAL_KNOWLEDGE)
+  /// 스토리 카테고리
+  category      StoryCategory @default(GENERAL_KNOWLEDGE)
 
-  /// [1:N] 게시글의 유저
+  /// [1:N] 스토리의 유저
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 게시글의 반응
-  reactions PostReaction[]
+  /// [1:N] 스토리의 반응
+  reactions StoryReaction[]
 
-  /// [1:N] 게시글의 댓글
-  comments Comment[]
+  /// [1:N] 스토리의 댓글
+  comments StoryComment[]
 
-  /// [1:N] 게시글의 대댓글
-  replies Reply[]
+  /// [1:N] 스토리의 대댓글
+  replies StoryCommentReply[]
 
-  /// [1:N] 게시글의 댓글 반응
-  commentReactions CommentReaction[]
+  /// [1:N] 스토리의 댓글 반응
+  commentReactions StoryCommentReaction[]
 
-  /// [1:N] 게시글의 댓글의 대댓글 반응
-  replyReactions ReplyReaction[]
+  /// [1:N] 스토리의 댓글의 대댓글 반응
+  replyReactions StoryCommentReplyReaction[]
 }
 
-model PostReaction {
+model StoryReaction {
   /// 리액션 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
@@ -175,13 +176,13 @@ model PostReaction {
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 리액션 게시글
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  /// [1:N] 게시글 식별자
-  postId String
+  /// [1:N] 리액션 스토리
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  /// [1:N] 스토리 식별자
+  storyId String
 }
 
-model Comment {
+model StoryComment {
   /// 댓글 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
@@ -199,22 +200,22 @@ model Comment {
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 댓글의 게시글
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  /// [1:N] 게시글 식별자
-  postId String
+  /// [1:N] 댓글의 스토리
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  /// [1:N] 스토리 식별자
+  storyId String
 
   /// [1:N] 댓글의 대댓글
-  replies Reply[]
+  replies StoryCommentReply[]
 
   /// [1:N] 댓글의 반응
-  reactions CommentReaction[]
+  reactions StoryCommentReaction[]
 
   /// [1:N] 댓글의 대댓글 반응
-  replyReactions ReplyReaction[]
+  replyReactions StoryCommentReplyReaction[]
 }
 
-model CommentReaction {
+model StoryCommentReaction {
   /// 반응 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
@@ -232,18 +233,18 @@ model CommentReaction {
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 반응 게시글
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  /// [1:N] 게시글 식별자
-  postId String
+  /// [1:N] 반응 스토리
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  /// [1:N] 스토리 식별자
+  storyId String
 
   /// [1:N] 반응 댓글
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   StoryComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   /// [1:N] 댓글 식별자
   commentId String
 }
 
-model Reply {
+model StoryCommentReply {
   /// 대댓글 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
@@ -261,21 +262,21 @@ model Reply {
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 대댓글의 게시글
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  /// [1:N] 게시글 식별자
-  postId String
+  /// [1:N] 대댓글의 스토리
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  /// [1:N] 스토리 식별자
+  storyId String
 
   /// [1:N] 대댓글의 댓글
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   StoryComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   /// [1:N] 댓글 식별자
   commentId String
 
   /// [1:N] 대댓글의 반응
-  reactions ReplyReaction[]
+  reactions StoryCommentReplyReaction[]
 }
 
-model ReplyReaction {
+model StoryCommentReplyReaction {
   /// 반응 식별자
   id        String    @id @default(uuid())
   /// 생성 일자
@@ -293,18 +294,18 @@ model ReplyReaction {
   /// [1:N] 유저 식별자
   userId String
 
-  /// [1:N] 반응 게시글
-  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
-  /// [1:N] 게시글 식별자
-  postId String
+  /// [1:N] 반응 스토리
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  /// [1:N] 스토리 식별자
+  storyId String
 
   /// [1:N] 반응 댓글
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   StoryComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
   /// [1:N] 댓글 식별자
   commentId String
 
   /// [1:N] 반응 대댓글
-  reply   Reply  @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  reply   StoryCommentReply @relation(fields: [replyId], references: [id], onDelete: Cascade)
   /// [1:N] 대댓글 식별자
   replyId String
 }

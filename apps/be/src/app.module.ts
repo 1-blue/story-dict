@@ -6,10 +6,10 @@ import { PingModule } from "#be/apis/v0/ping/pings.module";
 import { AuthModule } from "#be/apis/v1/auth/auth.module";
 import { ImagesModule } from "#be/apis/v1/images/images.module";
 import { UsersModule } from "#be/apis/v1/users/users.module";
-import { PostsModule } from "#be/apis/v1/posts/posts.module";
-import { PostsReactionsModule } from "#be/apis/v1/posts/reactions/reactions.module";
-import { PostsCommentsModule } from "#be/apis/v1/posts/comments/comments.module";
-import { PostsCommentsReactionsModule } from "#be/apis/v1/posts/comments/reactions/reactions.module";
+import { StoriesModule } from "#be/apis/v1/stories/stories.module";
+import { StoriesReactionsModule } from "#be/apis/v1/stories/reactions/reactions.module";
+import { StoriesCommentsModule } from "#be/apis/v1/stories/comments/comments.module";
+import { StoriesCommentsReactionsModule } from "#be/apis/v1/stories/comments/reactions/reactions.module";
 
 @Module({
   imports: [
@@ -21,10 +21,10 @@ import { PostsCommentsReactionsModule } from "#be/apis/v1/posts/comments/reactio
     AuthModule,
     ImagesModule,
     UsersModule,
-    PostsModule,
-    PostsReactionsModule,
-    PostsCommentsModule,
-    PostsCommentsReactionsModule,
+    StoriesModule,
+    StoriesReactionsModule,
+    StoriesCommentsModule,
+    StoriesCommentsReactionsModule,
   ],
   controllers: [],
   providers: [PrismaService],

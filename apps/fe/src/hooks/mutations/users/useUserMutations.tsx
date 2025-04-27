@@ -14,7 +14,7 @@ const useUserMutations = () => {
   >({
     mutationFn: ({ body }) => apis.users.create.fn({ body }),
     onSuccess() {
-      router.replace(routes.post.url);
+      router.replace(routes.story.url);
     },
   });
 

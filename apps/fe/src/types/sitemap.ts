@@ -19,7 +19,7 @@ export type TChamgefreq =
 
 /** 사이트맵 */
 export interface ISitemap {
-  /** 게시글 마지막 수정일 ( `YYYY-MM-DD` ) */
+  /** 이야기 마지막 수정일 ( `YYYY-MM-DD` ) */
   lastmod: string;
   /** 페이지 변경 빈도 */
   changefreq: TChamgefreq;

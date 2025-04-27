@@ -42,7 +42,7 @@ const LogInForm: React.FC = () => {
       try {
         await logInMutateAsync({ body });
 
-        router.replace(routes.post.url);
+        router.replace(routes.story.url);
       } catch (error) {
         handleError({ error });
       }
