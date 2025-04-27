@@ -25,6 +25,8 @@
     "db:migrate": "pnpm --filter db db:migrate",
     "db:reset": "pnpm --filter db db:reset",
     "db:seed": "pnpm --filter db db:seed",
+
+    "openapi:generate": "pnpm --filter be openapi:generate",
     
     "ui:add": "pnpm --filter ui ui:add",
 

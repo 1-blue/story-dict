@@ -3,6 +3,9 @@ import { ValidationPipe } from "@nestjs/common";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as fs from "fs";
+import { dump } from "js-yaml";
 
 import { AppModule } from "#be/app.module";
 
@@ -45,6 +48,19 @@ const bootstrap = async () => {
         },
       }),
     );
+
+    // swagger
+    const config = new DocumentBuilder()
+      .setTitle("Story Dict")
+      .setDescription("Story Dict API 문서")
+      .setVersion("1.0")
+      .addTag("Story Dict")
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("api", app, document);
+
+    // openapi/index.yaml 파일 생성
+    fs.writeFileSync("./src/@openapi/index.yaml", dump(document));
 
     await app.listen(process.env.PORT);
 
