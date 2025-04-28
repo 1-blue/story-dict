@@ -14,7 +14,7 @@ export class AuthService {
 
   /** OAuth 로그인 검증 */
   async validateOAuth(oauthUser: IOAuthUser) {
-    const exOAuthUser = await this.usersService.findOneByProviderId(
+    const exOAuthUser = await this.usersService.getOneByProviderId(
       oauthUser.providerId ?? undefined,
     );
 

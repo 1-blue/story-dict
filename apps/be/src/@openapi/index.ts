@@ -176,11 +176,14 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** 회원가입 */
     post: operations["UsersController_create"];
-    delete?: never;
+    /** 회원탈퇴 */
+    delete: operations["UsersController_delete"];
     options?: never;
     head?: never;
-    patch?: never;
+    /** 회원정보 수정 */
+    patch: operations["UsersController_update"];
     trace?: never;
   };
   "/apis/v1/stories": {
@@ -395,7 +398,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    LogInRequestDTO: {
+    LogInBodyDTO: {
       /** @description 유저 이메일 */
       email: string;
       /** @description 유저 비밀번호 */
@@ -407,18 +410,6 @@ export interface components {
       /** @description 토스트 내용 */
       description: string;
     };
-    LogInResponseDTO: {
-      /** @description 토스트 정보 */
-      toast: components["schemas"]["ToastEntity"];
-      /** @description 유저 정보 */
-      payload: Record<string, never>;
-    };
-    LogOutResponseDTO: {
-      /** @description 토스트 정보 */
-      toast: components["schemas"]["ToastEntity"];
-    };
-    CreatePresignedURLDto: Record<string, never>;
-    MoveImageDto: Record<string, never>;
     /**
      * @description 유저 역할
      * @enum {string}
@@ -429,7 +420,7 @@ export interface components {
      * @enum {string}
      */
     UserProvider: "LOCAL" | "KAKAO" | "GOOGLE";
-    GetMePayloadDTO: {
+    PayloadDTO: {
       /** @description 유저 식별자 */
       id: string;
       /**
@@ -467,11 +458,117 @@ export interface components {
       /** @description 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값) */
       providerId: string | null;
     };
-    GetMeResponseDTO: {
+    LogInResponseDTO: {
+      /** @description 토스트 정보 */
+      toast: components["schemas"]["ToastEntity"];
       /** @description 유저 정보 */
-      payload: components["schemas"]["GetMePayloadDTO"];
+      payload: components["schemas"]["PayloadDTO"];
     };
-    CreateUserDto: Record<string, never>;
+    LogOutResponseDTO: {
+      /** @description 토스트 정보 */
+      toast: components["schemas"]["ToastEntity"];
+    };
+    CreatePresignedURLDto: Record<string, never>;
+    MoveImageDto: Record<string, never>;
+    GetMeResponseDTO: {
+      /** @description 로그인한 유저 정보 */
+      payload: components["schemas"]["PayloadDTO"];
+    };
+    CreateUserBodyDTO: {
+      /**
+       * Format: uuid
+       * @description 유저 식별자
+       */
+      id?: string;
+      /**
+       * Format: email
+       * @description 이메일
+       */
+      email: string;
+      /** @description 비밀번호 */
+      password: string;
+      /** @description 닉네임 */
+      nickname: string;
+      /** @description 휴대폰 번호 */
+      phone?: string;
+      /** @description 보유 금액 */
+      money?: number;
+      /**
+       * @description 유저 역할
+       * @enum {string}
+       */
+      role?:
+        | "ADMIN"
+        | "admin"
+        | "MANAGER"
+        | "manager"
+        | "USER"
+        | "user"
+        | "GUEST"
+        | "guest";
+      /** @description 유저 이미지 경로 */
+      imagePath?: string;
+      /**
+       * @description 유저 제공자
+       * @enum {string}
+       */
+      provider?: "LOCAL" | "local" | "KAKAO" | "kakao" | "GOOGLE" | "google";
+      /** @description 유저 제공자의 식별자 */
+      providerId?: string;
+    };
+    CreateUserResponseDTO: {
+      /** @description 토스트 메시지 */
+      toast: components["schemas"]["ToastEntity"];
+      /** @description 회원가입한 유저 정보 */
+      payload: components["schemas"]["PayloadDTO"];
+    };
+    UpdateUserDTO: {
+      /**
+       * Format: email
+       * @description 이메일
+       */
+      email?: string;
+      /** @description 닉네임 */
+      nickname?: string;
+      /** @description 휴대폰 번호 */
+      phone?: string;
+      /** @description 보유 금액 */
+      money?: number;
+      /**
+       * @description 유저 역할
+       * @enum {string}
+       */
+      role?:
+        | "ADMIN"
+        | "admin"
+        | "MANAGER"
+        | "manager"
+        | "USER"
+        | "user"
+        | "GUEST"
+        | "guest";
+      /** @description 유저 이미지 경로 */
+      imagePath?: string;
+      /**
+       * @description 유저 제공자
+       * @enum {string}
+       */
+      provider?: "LOCAL" | "local" | "KAKAO" | "kakao" | "GOOGLE" | "google";
+      /** @description 유저 제공자의 식별자 */
+      providerId?: string;
+    };
+    UpdateUserResponseDTO: {
+      /** @description 토스트 메시지 */
+      toast: components["schemas"]["ToastEntity"];
+      /** @description 수정된 유저 정보 */
+      payload: components["schemas"]["PayloadDTO"];
+    };
+    DeleteUserResponseDTO: {
+      /** @description 토스트 메시지 */
+      toast: components["schemas"]["ToastEntity"];
+      /** @description 삭제된 유저 정보 */
+      payload: components["schemas"]["PayloadDTO"];
+    };
     CreateStoryDto: Record<string, never>;
     UpdateStoryDto: Record<string, never>;
     CheckUniqueTitleDto: Record<string, never>;
@@ -514,7 +611,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["LogInRequestDTO"];
+        "application/json": components["schemas"]["LogInBodyDTO"];
       };
     };
     responses: {
@@ -688,15 +785,62 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateUserDto"];
+        "application/json": components["schemas"]["CreateUserBodyDTO"];
       };
     };
     responses: {
-      201: {
+      /** @description 회원가입 성공 */
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["CreateUserResponseDTO"];
+        };
+      };
+    };
+  };
+  UsersController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description 회원탈퇴 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DeleteUserResponseDTO"];
+        };
+      };
+    };
+  };
+  UsersController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateUserDTO"];
+      };
+    };
+    responses: {
+      /** @description 회원정보 수정 성공 */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UpdateUserResponseDTO"];
+        };
       };
     };
   };

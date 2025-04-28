@@ -8,13 +8,15 @@ import { Prisma } from "@sd/db";
 
 import { compareValue, encryptionValue } from "#be/utils";
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
-import { FindByUserIdDto } from "#be/apis/v1/users/dto/find-by-user-id.dto";
-import { CreateUserDto } from "#be/apis/v1/users/dto/create-user.dto";
-import { UpdateUserDto } from "#be/apis/v1/users/dto/update-user.dto";
-import { CheckEmailDto } from "#be/apis/v1/users/dto/check-email.dto";
-import { CheckNicknameDto } from "#be/apis/v1/users/dto/check-nickname.dto";
-import { CheckPhoneDto } from "#be/apis/v1/users/dto/check-phone.dto";
-import { ValidateUserDto } from "#be/apis/v1/users/dto/validate-user.dto";
+import {
+  CheckEmailDTO,
+  CheckNicknameDTO,
+  CheckPhoneDTO,
+  CreateUserBodyDTO,
+  GetOneByIdDTO,
+  UpdateUserDTO,
+  ValidateUserDTO,
+} from "#be/apis/v1/users/dtos";
 
 @Injectable()
 export class UsersService {
@@ -36,7 +38,7 @@ export class UsersService {
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(user: CreateUserDto) {
+  async create(user: CreateUserBodyDTO) {
     // email 중복 검사
     await this.hasDuplicateEmail({ email: user.email });
 
@@ -61,13 +63,7 @@ export class UsersService {
     });
   }
 
-  async findAll() {
-    return await this.prismaService.user.findMany({
-      select: this.userSelectWithoutPassword,
-    });
-  }
-
-  async findOne({ userId }: FindByUserIdDto) {
+  async getOne({ userId }: GetOneByIdDTO) {
     // 유저 존재 여부 확인
     const exUser = await this.prismaService.user.findUnique({
       where: { id: userId },
@@ -79,7 +75,7 @@ export class UsersService {
   }
 
   /** passport의 `deserializeUser`에서 사용 */
-  async findUserBasicInfo({ userId }: FindByUserIdDto) {
+  async getUserBasicInfo({ userId }: GetOneByIdDTO) {
     const exUser = await this.prismaService.user.findUnique({
       where: { id: userId },
       select: {
@@ -96,9 +92,9 @@ export class UsersService {
     return exUser;
   }
 
-  async update({ userId }: FindByUserIdDto, user: UpdateUserDto) {
+  async update({ userId }: GetOneByIdDTO, user: UpdateUserDTO) {
     // 유저 존재 여부 확인
-    await this.findOne({ userId });
+    await this.getOne({ userId });
 
     // 기존 데이터와 수정할 데이터 중복 여부 확인
     if (user.email) {
@@ -118,9 +114,9 @@ export class UsersService {
     });
   }
 
-  async delete({ userId }: FindByUserIdDto) {
+  async delete({ userId }: GetOneByIdDTO) {
     // 유저 존재 여부 확인
-    await this.findOne({ userId });
+    await this.getOne({ userId });
 
     return await this.prismaService.user.delete({
       where: { id: userId },
@@ -129,7 +125,7 @@ export class UsersService {
   }
 
   /** 이메일 중복 검사 */
-  async hasDuplicateEmail({ email }: CheckEmailDto) {
+  async hasDuplicateEmail({ email }: CheckEmailDTO) {
     const exUser = await this.prismaService.user.findUnique({
       where: { email },
     });
@@ -138,7 +134,7 @@ export class UsersService {
   }
 
   /** 닉네임 중복 검사 */
-  async hasDuplicateNickname({ nickname }: CheckNicknameDto) {
+  async hasDuplicateNickname({ nickname }: CheckNicknameDTO) {
     const exUser = await this.prismaService.user.findUnique({
       where: { nickname },
     });
@@ -147,7 +143,7 @@ export class UsersService {
   }
 
   /** 휴대폰 번호 중복 검사 */
-  async hasDuplicatePhone({ phone }: CheckPhoneDto) {
+  async hasDuplicatePhone({ phone }: CheckPhoneDTO) {
     const exUser = await this.prismaService.user.findUnique({
       where: { phone },
     });
@@ -156,7 +152,7 @@ export class UsersService {
   }
 
   /** 이메일 & 비밀번호를 이용해서 유효한 유저인지 검증 */
-  async validate({ email, password }: ValidateUserDto) {
+  async validate({ email, password }: ValidateUserDTO) {
     const exUser = await this.prismaService.user.findUnique({
       where: { email },
     });
@@ -183,7 +179,7 @@ export class UsersService {
   }
 
   /** OAuth 로그인된 기록 기반으로 유저 정보 찾기 */
-  async findOneByProviderId(providerId?: string) {
+  async getOneByProviderId(providerId?: string) {
     const exUser = await this.prismaService.user.findUnique({
       where: { providerId },
       select: this.userSelectWithoutPassword,

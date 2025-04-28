@@ -7,7 +7,6 @@ import { LockOpen1Icon } from "@radix-ui/react-icons";
 import { Button, Form, RFHInput } from "@sd/ui";
 import { schemas } from "@sd/utils";
 import useMe from "#fe/hooks/queries/users/useMe";
-import { handleError } from "#fe/libs/handleError";
 import { useRouter } from "next/navigation";
 import { routes } from "#fe/constants";
 
@@ -39,13 +38,9 @@ const LogInForm: React.FC = () => {
     async (body: z.infer<typeof formSchema>) => {
       if (me) return;
 
-      try {
-        await logInMutation.mutateAsync({ body });
+      await logInMutation.mutateAsync({ body });
 
-        router.replace(routes.story.url);
-      } catch (error) {
-        handleError({ error });
-      }
+      router.replace(routes.story.url);
     },
   );
   const kakaoLogin = () => {

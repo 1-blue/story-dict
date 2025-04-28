@@ -1,5 +1,6 @@
 import createFetchClient from "openapi-fetch";
 import createClient from "openapi-react-query";
+
 import type { paths } from "#be/@openapi";
 
 const fetchClient = createFetchClient<paths>({

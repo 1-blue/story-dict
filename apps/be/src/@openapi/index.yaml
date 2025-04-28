@@ -126,10 +126,45 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserDto'
+              $ref: '#/components/schemas/CreateUserBodyDTO'
       responses:
-        '201':
-          description: ''
+        '200':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponseDTO'
+      summary: 회원가입
+      tags: *ref_2
+    patch:
+      operationId: UsersController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDTO'
+      responses:
+        '200':
+          description: 회원정보 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserResponseDTO'
+      summary: 회원정보 수정
+      tags: *ref_2
+    delete:
+      operationId: UsersController_delete
+      parameters: []
+      responses:
+        '200':
+          description: 회원탈퇴 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteUserResponseDTO'
+      summary: 회원탈퇴
       tags: *ref_2
   /apis/v1/stories:
     post:
@@ -487,14 +522,138 @@ components:
       type: object
       properties:
         payload:
-          description: 유저 정보
+          description: 로그인한 유저 정보
           allOf:
             - $ref: '#/components/schemas/PayloadDTO'
       required:
         - payload
-    CreateUserDto:
+    CreateUserBodyDTO:
       type: object
-      properties: {}
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        email:
+          type: string
+          description: 이메일
+          format: email
+        password:
+          type: string
+          description: 비밀번호
+        nickname:
+          type: string
+          description: 닉네임
+        phone:
+          type: string
+          description: 휴대폰 번호
+        money:
+          type: number
+          description: 보유 금액
+        role:
+          type: string
+          description: 유저 역할
+          enum: &ref_7
+            - ADMIN
+            - admin
+            - MANAGER
+            - manager
+            - USER
+            - user
+            - GUEST
+            - guest
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+        provider:
+          type: string
+          description: 유저 제공자
+          enum: &ref_8
+            - LOCAL
+            - local
+            - KAKAO
+            - kakao
+            - GOOGLE
+            - google
+        providerId:
+          type: string
+          description: 유저 제공자의 식별자
+      required:
+        - email
+        - password
+        - nickname
+    CreateUserResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 회원가입한 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/PayloadDTO'
+      required:
+        - toast
+        - payload
+    UpdateUserDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 이메일
+          format: email
+        nickname:
+          type: string
+          description: 닉네임
+        phone:
+          type: string
+          description: 휴대폰 번호
+        money:
+          type: number
+          description: 보유 금액
+        role:
+          type: string
+          description: 유저 역할
+          enum: *ref_7
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+        provider:
+          type: string
+          description: 유저 제공자
+          enum: *ref_8
+        providerId:
+          type: string
+          description: 유저 제공자의 식별자
+    UpdateUserResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 수정된 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/PayloadDTO'
+      required:
+        - toast
+        - payload
+    DeleteUserResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 삭제된 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/PayloadDTO'
+      required:
+        - toast
+        - payload
     CreateStoryDto:
       type: object
       properties: {}
