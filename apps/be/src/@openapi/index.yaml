@@ -83,10 +83,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreatePresignedURLDto'
+              $ref: '#/components/schemas/CreatePresignedURLBodyDTO'
       responses:
-        '201':
-          description: ''
+        '200':
+          description: presignedURL 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePresignedURLResponseDTO'
+      summary: presignedURL 생성
       tags: &ref_1
         - Images
   /apis/v1/images/move:
@@ -98,10 +103,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MoveImageDto'
+              $ref: '#/components/schemas/MoveImageBodyDTO'
       responses:
         '200':
-          description: ''
+          description: 이미지 이동 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoveImageResponseDTO'
+      summary: 이미지 이동
       tags: *ref_1
   /apis/v1/users/me:
     get:
@@ -512,12 +522,120 @@ components:
             - $ref: '#/components/schemas/ToastEntity'
       required:
         - toast
-    CreatePresignedURLDto:
+    CreatePresignedURLBodyDTO:
       type: object
-      properties: {}
-    MoveImageDto:
+      properties:
+        filename:
+          type: string
+          description: 파일명
+          example: image.jpg
+        status:
+          type: string
+          description: 이미지의 상태
+          example: public
+      required:
+        - filename
+    CreatePresignedURLFieldsDTO:
       type: object
-      properties: {}
+      properties:
+        bucket:
+          type: string
+          description: 버킷
+          example: storydict
+        X-Amz-Algorithm:
+          type: string
+          description: X-Amz-Algorithm
+          example: X-Amz-Algorithm
+        X-Amz-Credential:
+          type: string
+          description: X-Amz-Credential
+          example: X-Amz-Credential
+        X-Amz-Date:
+          type: string
+          description: X-Amz-Date
+          example: X-Amz-Date
+        key:
+          type: string
+          description: key
+          example: key
+        Policy:
+          type: string
+          description: Policy
+          example: Policy
+        X-Amz-Signature:
+          type: string
+          description: X-Amz-Signature
+          example: X-Amz-Signature
+      required:
+        - bucket
+        - X-Amz-Algorithm
+        - X-Amz-Credential
+        - X-Amz-Date
+        - key
+        - Policy
+        - X-Amz-Signature
+    CreatePresignedURLResponsePayloadDTO:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL
+          example: https://s3.ap-northeast-2.amazonaws.com/storydict
+        fields:
+          description: 필드 ( AWS에서 제공하는 필드 )
+          allOf:
+            - $ref: '#/components/schemas/CreatePresignedURLFieldsDTO'
+      required:
+        - url
+        - fields
+    CreatePresignedURLResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: presignedURL 생성 결과
+          allOf:
+            - $ref: '#/components/schemas/CreatePresignedURLResponsePayloadDTO'
+      required:
+        - payload
+    MoveImageBodyDTO:
+      type: object
+      properties:
+        imagePath:
+          type: string
+          description: 이미지 경로
+          example: >-
+            https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+        beforeStatus:
+          type: string
+          description: 변경전 상태
+          example: temp
+        afterStatus:
+          type: string
+          description: 변경될 상태
+          example: use
+      required:
+        - imagePath
+        - beforeStatus
+        - afterStatus
+    MoveImageResponsePayloadDTO:
+      type: object
+      properties:
+        imagePath:
+          type: string
+          description: 이동된 이미지 경로
+          example: >-
+            https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+      required:
+        - imagePath
+    MoveImageResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 이미지 이동 결과
+          allOf:
+            - $ref: '#/components/schemas/MoveImageResponsePayloadDTO'
+      required:
+        - payload
     GetMeResponseDTO:
       type: object
       properties:

@@ -127,6 +127,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** presignedURL 생성 */
     post: operations["ImagesController_createPresignedURL"];
     delete?: never;
     options?: never;
@@ -147,6 +148,7 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
+    /** 이미지 이동 */
     patch: operations["ImagesController_moveImage"];
     trace?: never;
   };
@@ -468,8 +470,99 @@ export interface components {
       /** @description 토스트 정보 */
       toast: components["schemas"]["ToastEntity"];
     };
-    CreatePresignedURLDto: Record<string, never>;
-    MoveImageDto: Record<string, never>;
+    CreatePresignedURLBodyDTO: {
+      /**
+       * @description 파일명
+       * @example image.jpg
+       */
+      filename: string;
+      /**
+       * @description 이미지의 상태
+       * @example public
+       */
+      status?: string;
+    };
+    CreatePresignedURLFieldsDTO: {
+      /**
+       * @description 버킷
+       * @example storydict
+       */
+      bucket: string;
+      /**
+       * @description X-Amz-Algorithm
+       * @example X-Amz-Algorithm
+       */
+      "X-Amz-Algorithm": string;
+      /**
+       * @description X-Amz-Credential
+       * @example X-Amz-Credential
+       */
+      "X-Amz-Credential": string;
+      /**
+       * @description X-Amz-Date
+       * @example X-Amz-Date
+       */
+      "X-Amz-Date": string;
+      /**
+       * @description key
+       * @example key
+       */
+      key: string;
+      /**
+       * @description Policy
+       * @example Policy
+       */
+      Policy: string;
+      /**
+       * @description X-Amz-Signature
+       * @example X-Amz-Signature
+       */
+      "X-Amz-Signature": string;
+    };
+    CreatePresignedURLResponsePayloadDTO: {
+      /**
+       * @description URL
+       * @example https://s3.ap-northeast-2.amazonaws.com/storydict
+       */
+      url: string;
+      /**
+       * @description 필드 ( AWS에서 제공하는 필드 )
+       * @example https://s3.ap-northeast-2.amazonaws.com/storydict
+       */
+      fields: components["schemas"]["CreatePresignedURLFieldsDTO"];
+    };
+    CreatePresignedURLResponseDTO: {
+      /** @description presignedURL 생성 결과 */
+      payload: components["schemas"]["CreatePresignedURLResponsePayloadDTO"];
+    };
+    MoveImageBodyDTO: {
+      /**
+       * @description 이미지 경로
+       * @example https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+       */
+      imagePath: string;
+      /**
+       * @description 변경전 상태
+       * @example temp
+       */
+      beforeStatus: string;
+      /**
+       * @description 변경될 상태
+       * @example use
+       */
+      afterStatus: string;
+    };
+    MoveImageResponsePayloadDTO: {
+      /**
+       * @description 이동된 이미지 경로
+       * @example https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+       */
+      imagePath: string;
+    };
+    MoveImageResponseDTO: {
+      /** @description 이미지 이동 결과 */
+      payload: components["schemas"]["MoveImageResponsePayloadDTO"];
+    };
     GetMeResponseDTO: {
       /** @description 로그인한 유저 정보 */
       payload: components["schemas"]["PayloadDTO"];
@@ -723,15 +816,18 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreatePresignedURLDto"];
+        "application/json": components["schemas"]["CreatePresignedURLBodyDTO"];
       };
     };
     responses: {
-      201: {
+      /** @description presignedURL 생성 성공 */
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["CreatePresignedURLResponseDTO"];
+        };
       };
     };
   };
@@ -744,15 +840,18 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["MoveImageDto"];
+        "application/json": components["schemas"]["MoveImageBodyDTO"];
       };
     };
     responses: {
+      /** @description 이미지 이동 성공 */
       200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["MoveImageResponseDTO"];
+        };
       };
     };
   };

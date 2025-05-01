@@ -31,9 +31,7 @@ export class StoriesService {
     let thumbnailPath = story.thumbnailPath;
     // 썸네일이 존재한다면 이미지 이동
     if (story.thumbnailPath) {
-      const {
-        payload: { imagePath },
-      } = await this.imagesService.move({
+      const { imagePath } = await this.imagesService.move({
         imagePath: story.thumbnailPath,
         beforeStatus: "temp",
         afterStatus: "use",
@@ -226,9 +224,7 @@ export class StoriesService {
       }
 
       // 새로운 이미지 사용 폴더로 이동
-      const {
-        payload: { imagePath },
-      } = await this.imagesService.move({
+      const { imagePath } = await this.imagesService.move({
         imagePath: story.thumbnailPath,
         beforeStatus: "temp",
         afterStatus: "use",
