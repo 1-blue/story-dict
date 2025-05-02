@@ -116,11 +116,11 @@ export class CreateUserBodyDTO {
   providerId?: string;
 }
 
-class PayloadDTO extends OmitType(UserEntity, ["password"]) {}
+class CreateUserResponsePayloadDTO extends OmitType(UserEntity, ["password"]) {}
 export class CreateUserResponseDTO {
   @ApiProperty({ description: "토스트 메시지" })
   toast: ToastEntity;
 
   @ApiProperty({ description: "회원가입한 유저 정보" })
-  payload: PayloadDTO;
+  payload: CreateUserResponsePayloadDTO;
 }
