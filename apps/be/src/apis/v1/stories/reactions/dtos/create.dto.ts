@@ -1,29 +1,30 @@
-import { IsEnum, IsNotEmpty, IsUUID } from "class-validator";
+import { IsOptional, IsNotEmpty, IsUUID, IsEnum } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 import { ReactionType } from "@sd/db";
 import { StoryReactionEntity, ToastEntity } from "#be/entities";
 
-export class UpdateStoryReactionParamDTO {
-  @IsNotEmpty({ message: "스토리 식별자는 필수값입니다" })
-  @IsUUID("all", { message: "스토리 식별자는 UUID 형태만 입력이 가능합니다." })
+export class CreateStoryReactionParamDTO {
+  @IsNotEmpty({ message: "이야기 식별자는 필수값입니다." })
+  @IsUUID("all", { message: "이야기 식별자는 UUID 형태만 입력이 가능합니다." })
   @ApiProperty({
-    description: "스토리 식별자",
+    description: "이야기 식별자",
     type: "string",
     format: "uuid",
   })
   storyId: string;
-
-  @IsNotEmpty({ message: "리액션 식별자는 필수값입니다" })
+}
+export class CreateStoryReactionBodyDTO {
+  @IsOptional()
   @IsUUID("all", { message: "리액션 식별자는 UUID 형태만 입력이 가능합니다." })
   @ApiProperty({
     description: "리액션 식별자",
     type: "string",
     format: "uuid",
+    required: false,
   })
-  reactionId: string;
-}
-export class UpdateStoryReactionBodyDTO {
+  id?: string;
+
   @IsNotEmpty({ message: "리액션 타입은 필수값입니다." })
   @IsEnum(Object.values(ReactionType), {
     message: "유효하지 않은 리액션 타입입니다.",
@@ -36,11 +37,11 @@ export class UpdateStoryReactionBodyDTO {
   type: ReactionType;
 }
 
-class UpdateStoryReactionResponsePayloadDTO extends StoryReactionEntity {}
-export class UpdateStoryReactionResponseDTO {
+class CreateStoryReactionResponsePayloadDTO extends StoryReactionEntity {}
+export class CreateStoryReactionResponseDTO {
   @ApiProperty({ description: "토스트 메시지" })
   toast: ToastEntity;
 
-  @ApiProperty({ description: "수정된 리액션" })
-  payload: UpdateStoryReactionResponsePayloadDTO;
+  @ApiProperty({ description: "생성된 리액션" })
+  payload: CreateStoryReactionResponsePayloadDTO;
 }
