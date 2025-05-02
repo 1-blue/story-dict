@@ -13,17 +13,39 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import type { Request } from "express";
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+} from "@nestjs/swagger";
 
 import { StoriesService } from "#be/apis/v1/stories/stories.service";
-import { CreateStoryDto } from "#be/apis/v1/stories/dtos/create-story.dto";
-import { UpdateStoryDto } from "#be/apis/v1/stories/dtos/update-story.dto";
+
 import { IsLoggedIn } from "#be/guards";
-import { GetManyRandomStoryDto } from "#be/apis/v1/stories/dtos/get-many-random-story.dto";
-import { FindKeywordStoryDto } from "#be/apis/v1/stories/dtos/find-keyword-story.dto";
-import { GetAllCategoryStoryDto } from "#be/apis/v1/stories/dtos/get-all-category-story.dto";
-import { FindByStoryIdDto } from "#be/apis/v1/stories/dtos/find-by-id.dto";
-import { CheckUniqueTitleDto } from "#be/apis/v1/stories/dtos/check-unique-title.dto";
-import { GetOneStoryByTitleDto } from "#be/apis/v1/stories/dtos/get-one-by-story-title.dto";
+import {
+  CreateStoryBodyDTO,
+  CreateStoryResponseDTO,
+  UpdateStoryBodyDTO,
+  UpdateStoryParamDTO,
+  UpdateStoryResponseDTO,
+  GetManyRandomStoryQueryDTO,
+  GetManyRandomStoryResponseDTO,
+  GetManyByKeywordParamDTO,
+  GetManyByKeywordResponseDTO,
+  GetAllStoryByCategoryParamDTO,
+  GetAllStoryByCategoryResponseDTO,
+  CheckUniqueTitleBodyDTO,
+  CheckUniqueTitleResponseDTO,
+  GetAllStoriesResponseDTO,
+  GetOneStoryByTitleParamDTO,
+  GetOneStoryByTitleResponseDTO,
+  GetOneStoryByIdParamDTO,
+  GetOneStoryByIdResponseDTO,
+  DeleteStoryParamDTO,
+  DeleteStoryResponseDTO,
+} from "#be/apis/v1/stories/dtos";
 
 @Controller("apis/v1/stories")
 export class StoriesController {
@@ -32,17 +54,30 @@ export class StoriesController {
   @UseGuards(IsLoggedIn)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Req() req: Request, @Body() createStoryDto: CreateStoryDto) {
+  @ApiOperation({ summary: "이야기 생성" })
+  @ApiBody({ type: CreateStoryBodyDTO })
+  @ApiResponse({
+    status: 201,
+    description: "이야기 생성 성공",
+    type: CreateStoryResponseDTO,
+  })
+  async create(@Req() req: Request, @Body() bodyDTO: CreateStoryBodyDTO) {
     return {
       toast: {
         title: "이야기 작성 완료",
         description: `이야기를 작성했습니다.\n메인 페이지로 이동합니다!`,
       },
-      payload: await this.storiesService.create(req.user!.id, createStoryDto),
+      payload: await this.storiesService.create(req.user!.id, bodyDTO),
     };
   }
 
   @Get()
+  @ApiOperation({ summary: "모든 이야기 조회" })
+  @ApiResponse({
+    status: 200,
+    description: "모든 이야기 조회 성공",
+    type: GetAllStoriesResponseDTO,
+  })
   async getAll() {
     return {
       payload: await this.storiesService.getAll(),
@@ -50,75 +85,131 @@ export class StoriesController {
   }
 
   @Get("/random")
-  async getManyRandom(@Query() getManyRandomStoryDto: GetManyRandomStoryDto) {
+  @ApiOperation({ summary: "랜덤 이야기 조회" })
+  @ApiQuery({ name: "existingIds", type: GetManyRandomStoryQueryDTO })
+  @ApiResponse({
+    status: 200,
+    description: "랜덤 이야기 조회 성공",
+    type: GetManyRandomStoryResponseDTO,
+  })
+  async getManyRandom(@Query() queryDTO: GetManyRandomStoryQueryDTO) {
     return {
-      payload: await this.storiesService.getManyRandom(getManyRandomStoryDto),
+      payload: await this.storiesService.getManyRandom(queryDTO),
     };
   }
 
   @Get("/title/:title")
-  async getOneByTitle(@Param() findByTitleDto: GetOneStoryByTitleDto) {
+  @ApiOperation({ summary: "제목으로 이야기 조회" })
+  @ApiParam({ name: "title", type: GetOneStoryByTitleParamDTO })
+  @ApiResponse({
+    status: 200,
+    description: "제목으로 이야기 조회 성공",
+    type: GetOneStoryByTitleResponseDTO,
+  })
+  async getOneByTitle(@Param() paramDTO: GetOneStoryByTitleParamDTO) {
     return {
-      payload: await this.storiesService.getOneByTitle(findByTitleDto),
+      payload: await this.storiesService.getOneByTitle(paramDTO),
     };
   }
 
   @Get(":storyId")
-  async getOne(@Param() findByIdDto: FindByStoryIdDto) {
+  @ApiOperation({ summary: "식별자로 이야기 조회" })
+  @ApiParam({ name: "storyId", type: GetOneStoryByIdParamDTO })
+  @ApiResponse({
+    status: 200,
+    description: "식별자로 이야기 조회 성공",
+    type: GetOneStoryByIdResponseDTO,
+  })
+  async getOne(@Param() paramDTO: GetOneStoryByIdParamDTO) {
     return {
-      payload: await this.storiesService.getOne(findByIdDto),
+      payload: await this.storiesService.getOne(paramDTO),
     };
   }
 
   @Get("/search/:keyword")
-  async getManyKeyword(@Param() findSearchStoryDto: FindKeywordStoryDto) {
+  @ApiOperation({ summary: "키워드 기반 이야기 조회" })
+  @ApiParam({ name: "keyword", type: GetManyByKeywordParamDTO })
+  @ApiResponse({
+    status: 200,
+    description: "키워드 기반 이야기 조회 성공",
+    type: GetManyByKeywordResponseDTO,
+  })
+  async getManyKeyword(@Param() paramDTO: GetManyByKeywordParamDTO) {
     return {
-      payload: await this.storiesService.getManyKeyword(findSearchStoryDto),
+      payload: await this.storiesService.getManyKeyword(paramDTO),
     };
   }
 
   @Get("/category/:category")
-  async getAllCategory(
-    @Param() getAllCategoryStoryDto: GetAllCategoryStoryDto,
-  ) {
+  @ApiOperation({ summary: "카테고리 기반 이야기 조회" })
+  @ApiParam({ name: "category", type: GetAllStoryByCategoryParamDTO })
+  @ApiResponse({
+    status: 200,
+    description: "카테고리 기반 이야기 조회 성공",
+    type: GetAllStoryByCategoryResponseDTO,
+  })
+  async getAllCategory(@Param() paramDTO: GetAllStoryByCategoryParamDTO) {
     return {
-      payload: await this.storiesService.getAllCategory(getAllCategoryStoryDto),
+      payload: await this.storiesService.getAllCategory(paramDTO),
     };
   }
 
   @UseGuards(IsLoggedIn)
   @Patch(":storyId")
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: "이야기 수정" })
+  @ApiParam({ name: "storyId", type: UpdateStoryParamDTO })
+  @ApiBody({ type: UpdateStoryBodyDTO })
+  @ApiResponse({
+    status: 200,
+    description: "이야기 수정 성공",
+    type: UpdateStoryResponseDTO,
+  })
   async update(
-    @Param() findByIdDto: FindByStoryIdDto,
-    @Body() updateStoryDto: UpdateStoryDto,
+    @Param() paramDTO: UpdateStoryParamDTO,
+    @Body() bodyDTO: UpdateStoryBodyDTO,
   ) {
     return {
       toast: {
         title: "이야기 수정 완료",
         description: `이야기를 수정했습니다.\n메인 페이지로 이동합니다!`,
       },
-      payload: await this.storiesService.update(findByIdDto, updateStoryDto),
+      payload: await this.storiesService.update(paramDTO, bodyDTO),
     };
   }
 
   @UseGuards(IsLoggedIn)
   @Delete(":storyId")
   @HttpCode(HttpStatus.OK)
-  async delete(@Param() findByIdDto: FindByStoryIdDto) {
+  @ApiOperation({ summary: "이야기 삭제" })
+  @ApiParam({ name: "storyId", type: DeleteStoryParamDTO })
+  @ApiResponse({
+    status: 200,
+    description: "이야기 삭제 성공",
+    type: DeleteStoryResponseDTO,
+  })
+  async delete(@Param() paramDTO: DeleteStoryParamDTO) {
     return {
       toast: {
         title: "이야기 삭제 완료",
         description: `이야기를 삭제했습니다.\n메인 페이지로 이동합니다!`,
       },
-      payload: await this.storiesService.delete(findByIdDto),
+      payload: await this.storiesService.delete(paramDTO),
     };
   }
 
   @Post("/check-unique-title")
   @HttpCode(HttpStatus.OK)
-  async checkUniqueTitle(@Body() checkUniqueTitleDto: CheckUniqueTitleDto) {
+  @ApiOperation({ summary: "제목 중복 여부 확인" })
+  @ApiBody({ type: CheckUniqueTitleBodyDTO })
+  @ApiResponse({
+    status: 200,
+    description: "제목 중복 여부 확인 성공",
+    type: CheckUniqueTitleResponseDTO,
+  })
+  async checkUniqueTitle(@Body() bodyDTO: CheckUniqueTitleBodyDTO) {
     return {
-      payload: await this.storiesService.checkUniqueTitle(checkUniqueTitleDto),
+      payload: await this.storiesService.checkUniqueTitle(bodyDTO),
     };
   }
 }

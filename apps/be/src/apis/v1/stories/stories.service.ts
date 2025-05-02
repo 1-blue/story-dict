@@ -6,14 +6,18 @@ import {
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
 import { ImagesService } from "#be/apis/v1/images/images.service";
-import { CreateStoryDto } from "#be/apis/v1/stories/dtos/create-story.dto";
-import { UpdateStoryDto } from "#be/apis/v1/stories/dtos/update-story.dto";
-import { FindByStoryIdDto } from "#be/apis/v1/stories/dtos/find-by-id.dto";
-import { GetManyRandomStoryDto } from "#be/apis/v1/stories/dtos/get-many-random-story.dto";
-import { FindKeywordStoryDto } from "#be/apis/v1/stories/dtos/find-keyword-story.dto";
-import { GetAllCategoryStoryDto } from "#be/apis/v1/stories/dtos/get-all-category-story.dto";
-import { CheckUniqueTitleDto } from "#be/apis/v1/stories/dtos/check-unique-title.dto";
-import { GetOneStoryByTitleDto } from "#be/apis/v1/stories/dtos/get-one-by-story-title.dto";
+import {
+  CreateStoryBodyDTO,
+  UpdateStoryBodyDTO,
+  UpdateStoryParamDTO,
+  GetManyRandomStoryQueryDTO,
+  GetManyByKeywordParamDTO,
+  GetAllStoryByCategoryParamDTO,
+  CheckUniqueTitleBodyDTO,
+  GetOneStoryByTitleParamDTO,
+  GetOneStoryByIdParamDTO,
+  DeleteStoryParamDTO,
+} from "#be/apis/v1/stories/dtos";
 
 @Injectable()
 export class StoriesService {
@@ -23,7 +27,7 @@ export class StoriesService {
   ) {}
 
   /** 이야기 생성 */
-  async create(userId: string, { ...story }: CreateStoryDto) {
+  async create(userId: string, story: CreateStoryBodyDTO) {
     const { isUnique } = await this.checkUniqueTitle({ title: story.title });
 
     if (!isUnique) throw new ConflictException("이미 존재하는 제목입니다.");
@@ -58,7 +62,7 @@ export class StoriesService {
   }
 
   /** 특정 이야기 찾기 */
-  async getOne({ storyId }: FindByStoryIdDto) {
+  async getOne({ storyId }: GetOneStoryByIdParamDTO) {
     const exStory = await this.prismaService.story.findUnique({
       where: { id: storyId },
       include: {
@@ -87,7 +91,7 @@ export class StoriesService {
   }
 
   /** 제목으로 특정 이야기 찾기 */
-  async getOneByTitle({ title }: GetOneStoryByTitleDto) {
+  async getOneByTitle({ title }: GetOneStoryByTitleParamDTO) {
     const exStory = await this.prismaService.story.findUnique({
       where: { title },
       include: {
@@ -116,7 +120,7 @@ export class StoriesService {
   }
 
   /** (FIXME: 비효율) 랜덤 이야기 찾기 */
-  async getManyRandom({ existingIds }: GetManyRandomStoryDto) {
+  async getManyRandom({ existingIds }: GetManyRandomStoryQueryDTO) {
     const existingIdsArray = existingIds.split(",").map((id) => id.trim());
 
     // 1. 먼저 조건에 맞는 모든 이야기를 가져옵니다
@@ -151,7 +155,7 @@ export class StoriesService {
   }
 
   /** 키워드 기반 이야기 찾기 */
-  async getManyKeyword({ keyword }: FindKeywordStoryDto) {
+  async getManyKeyword({ keyword }: GetManyByKeywordParamDTO) {
     const decodedKeyword = decodeURIComponent(keyword);
 
     const stories = await this.prismaService.story.findMany({
@@ -176,7 +180,7 @@ export class StoriesService {
   }
 
   /** 카테고리 기반 이야기 찾기 */
-  async getAllCategory({ category }: GetAllCategoryStoryDto) {
+  async getAllCategory({ category }: GetAllStoryByCategoryParamDTO) {
     const stories = await this.prismaService.story.findMany({
       where: {
         category,
@@ -196,7 +200,10 @@ export class StoriesService {
   }
 
   /** 특정 이야기 수정 */
-  async update({ storyId }: FindByStoryIdDto, { ...story }: UpdateStoryDto) {
+  async update(
+    { storyId }: UpdateStoryParamDTO,
+    { ...story }: UpdateStoryBodyDTO,
+  ) {
     const originalStory = await this.getOne({ storyId });
 
     const isTitleChanged = originalStory.title !== story.title;
@@ -243,7 +250,7 @@ export class StoriesService {
   }
 
   /** 특정 이야기 삭제 */
-  async delete({ storyId }: FindByStoryIdDto) {
+  async delete({ storyId }: DeleteStoryParamDTO) {
     const exStory = await this.getOne({ storyId });
 
     // S3 이미지 제거 폴더로 이동
@@ -261,7 +268,7 @@ export class StoriesService {
   }
 
   /** 제목 유니크값 검증 */
-  async checkUniqueTitle({ title }: CheckUniqueTitleDto) {
+  async checkUniqueTitle({ title }: CheckUniqueTitleBodyDTO) {
     const exStory = await this.prismaService.story.findUnique({
       where: { title },
     });
