@@ -2,13 +2,25 @@ import { ApiProperty } from "@nestjs/swagger";
 import { ReactionType } from "@sd/db";
 
 export class StoryCommentReactionEntity {
-  @ApiProperty({ description: "스토리 식별자" })
+  @ApiProperty({
+    description: "스토리 식별자",
+    type: "string",
+    format: "uuid",
+  })
   id: string;
 
-  @ApiProperty({ description: "생성 일자" })
+  @ApiProperty({
+    description: "생성 일자",
+    type: "string",
+    format: "date-time",
+  })
   createdAt: Date;
 
-  @ApiProperty({ description: "수정 일자" })
+  @ApiProperty({
+    description: "수정 일자",
+    type: "string",
+    format: "date-time",
+  })
   updatedAt: Date;
 
   @ApiProperty({
@@ -26,12 +38,24 @@ export class StoryCommentReactionEntity {
   })
   type: ReactionType;
 
-  @ApiProperty({ description: "유저 식별자" })
+  @ApiProperty({
+    description: "유저 식별자",
+    type: "string",
+    format: "uuid",
+  })
   userId: string;
 
-  @ApiProperty({ description: "스토리 식별자" })
+  @ApiProperty({
+    description: "스토리 식별자",
+    type: "string",
+    format: "uuid",
+  })
   storyId: string;
 
-  @ApiProperty({ description: "댓글 식별자" })
+  @ApiProperty({
+    description: "댓글 식별자",
+    type: "string",
+    format: "uuid",
+  })
   commentId: string;
 }

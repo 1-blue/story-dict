@@ -2,13 +2,25 @@ import { ApiProperty } from "@nestjs/swagger";
 import { UserProvider, UserRole } from "@sd/db";
 
 export class UserEntity {
-  @ApiProperty({ description: "유저 식별자" })
+  @ApiProperty({
+    description: "유저 식별자",
+    type: "string",
+    format: "uuid",
+  })
   id: string;
 
-  @ApiProperty({ description: "생성 일자" })
+  @ApiProperty({
+    description: "생성 일자",
+    type: "string",
+    format: "date-time",
+  })
   createdAt: Date;
 
-  @ApiProperty({ description: "수정 일자" })
+  @ApiProperty({
+    description: "수정 일자",
+    type: "string",
+    format: "date-time",
+  })
   updatedAt: Date;
 
   @ApiProperty({
@@ -19,16 +31,29 @@ export class UserEntity {
   })
   deletedAt: Date | null;
 
-  @ApiProperty({ description: "유저 이메일" })
+  @ApiProperty({
+    description: "유저 이메일",
+    type: "string",
+  })
   email: string;
 
-  @ApiProperty({ description: "유저 비밀번호" })
+  @ApiProperty({
+    description: "유저 비밀번호",
+    type: "string",
+  })
   password: string;
 
-  @ApiProperty({ description: "유저 소지금", default: 1000 })
+  @ApiProperty({
+    description: "유저 소지금",
+    default: 1000,
+    type: "number",
+  })
   money: number;
 
-  @ApiProperty({ description: "유저 닉네임" })
+  @ApiProperty({
+    description: "유저 닉네임",
+    type: "string",
+  })
   nickname: string;
 
   @ApiProperty({
