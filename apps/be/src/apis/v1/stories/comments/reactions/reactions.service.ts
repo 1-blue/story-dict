@@ -27,7 +27,7 @@ export class StoriesCommentsReactionsService {
     commentId,
     reactionId,
   }: FindByStoryIdAndCommentIdAndReactionIdDto) {
-    await this.storiesCommentsService.getOne({ storyId, commentId });
+    await this.storiesCommentsService.getOneById({ storyId, commentId });
 
     const exStoryReaction = await this.prisma.storyCommentReaction.findUnique({
       where: { id: reactionId, storyId, commentId },
@@ -46,7 +46,7 @@ export class StoriesCommentsReactionsService {
     { storyId, commentId }: FindByStoryIdAndCommentIdDto,
     createReactionDto: CreateReactionDto,
   ) {
-    await this.storiesCommentsService.getOne({ storyId, commentId });
+    await this.storiesCommentsService.getOneById({ storyId, commentId });
 
     const hasReaction = await this.hasReaction({ userId, storyId, commentId });
 
