@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PickType } from "@nestjs/swagger";
 import { UserProvider, UserRole } from "@sd/db";
 
 export class UserEntity {
@@ -91,3 +91,9 @@ export class UserEntity {
   })
   providerId: string | null;
 }
+
+export class UserBasicEntity extends PickType(UserEntity, [
+  "id",
+  "nickname",
+  "imagePath",
+]) {}

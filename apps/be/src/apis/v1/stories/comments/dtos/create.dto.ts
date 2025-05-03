@@ -2,9 +2,9 @@ import { IsOptional, IsNotEmpty, IsUUID, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   StoryCommentEntity,
-  StoryCommentReactionEntity,
+  StoryCommentReactionBasicEntity,
   ToastEntity,
-  UserEntity,
+  UserBasicEntity,
 } from "#be/entities";
 
 export class CreateStoryCommentParamDTO {
@@ -40,10 +40,10 @@ export class CreateStoryCommentBodyDTO {
 
 class CreateStoryCommentResponsePayloadDTO extends StoryCommentEntity {
   @ApiProperty({ description: "댓글 작성자" })
-  user: UserEntity;
+  user: UserBasicEntity;
 
   @ApiProperty({ description: "댓글 리액션" })
-  reactions: StoryCommentReactionEntity[];
+  reactions: StoryCommentReactionBasicEntity[];
 }
 export class CreateStoryCommentResponseDTO {
   @ApiProperty({ description: "토스트 메시지" })

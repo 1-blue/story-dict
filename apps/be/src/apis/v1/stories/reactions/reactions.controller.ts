@@ -16,6 +16,7 @@ import {
   ApiCreatedResponse,
   ApiOperation,
   ApiParam,
+  ApiResponse,
 } from "@nestjs/swagger";
 
 import { reactionTypeToEmojiMap } from "@sd/utils";
@@ -86,7 +87,7 @@ export class StoriesReactionsController {
     description: "이야기 리액션 수정 요청 본문",
     type: UpdateStoryReactionBodyDTO,
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     description: "이야기 리액션 수정 성공",
     type: UpdateStoryReactionResponseDTO,
   })
@@ -112,7 +113,7 @@ export class StoriesReactionsController {
     description: "리액션 식별자",
     type: DeleteStoryReactionParamDTO,
   })
-  @ApiCreatedResponse({
+  @ApiResponse({
     description: "이야기 리액션 제거 성공",
     type: DeleteStoryReactionResponseDTO,
   })

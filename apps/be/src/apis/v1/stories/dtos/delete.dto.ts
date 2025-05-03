@@ -15,7 +15,8 @@ export class DeleteStoryParamDTO {
   storyId: string;
 }
 
+class DeleteStoryResponsePayloadDTO extends StoryEntity {}
 export class DeleteStoryResponseDTO {
-  @ApiProperty({ description: "이야기 데이터" })
-  payload: StoryEntity;
+  @ApiProperty({ description: "삭제된 이야기 데이터" })
+  payload: DeleteStoryResponsePayloadDTO;
 }

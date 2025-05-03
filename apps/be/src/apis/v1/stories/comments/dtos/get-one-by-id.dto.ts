@@ -3,9 +3,9 @@ import { ApiProperty } from "@nestjs/swagger";
 
 import {
   StoryCommentEntity,
-  StoryCommentReactionEntity,
+  StoryCommentReactionBasicEntity,
   ToastEntity,
-  UserEntity,
+  UserBasicEntity,
 } from "#be/entities";
 
 export class GetOneByIdStoryCommentParamDTO {
@@ -30,10 +30,10 @@ export class GetOneByIdStoryCommentParamDTO {
 
 class GetOneByIdStoryCommentResponsePayloadDTO extends StoryCommentEntity {
   @ApiProperty({ description: "댓글 작성자" })
-  user: UserEntity;
+  user: UserBasicEntity;
 
   @ApiProperty({ description: "댓글 리액션" })
-  reactions: StoryCommentReactionEntity[];
+  reactions: StoryCommentReactionBasicEntity[];
 }
 export class GetOneByIdStoryCommentResponseDTO {
   @ApiProperty({ description: "토스트 메시지" })

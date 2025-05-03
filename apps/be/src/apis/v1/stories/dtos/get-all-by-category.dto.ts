@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum } from "class-validator";
 
 import { StoryCategory } from "@sd/db";
-import { StoryEntity, StoryReactionEntity } from "#be/entities";
+import { StoryEntity, StoryReactionBasicEntity } from "#be/entities";
 
 export class GetAllStoryByCategoryParamDTO {
   @IsEnum(Object.values(StoryCategory), {
@@ -18,7 +18,7 @@ export class GetAllStoryByCategoryParamDTO {
 
 export class GetAllStoryByCategoryResponsePayloadDTO extends StoryEntity {
   @ApiProperty({ description: "반응 목록" })
-  reactions: StoryReactionEntity[];
+  reactions: StoryReactionBasicEntity[];
 }
 
 export class GetAllStoryByCategoryResponseDTO {

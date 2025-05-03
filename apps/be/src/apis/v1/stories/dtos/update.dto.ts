@@ -18,7 +18,8 @@ export class UpdateStoryParamDTO {
 }
 export class UpdateStoryBodyDTO extends PartialType(CreateStoryBodyDTO) {}
 
+class UpdateStoryResponsePayloadDTO extends StoryEntity {}
 export class UpdateStoryResponseDTO {
-  @ApiProperty({ description: "이야기 데이터" })
-  payload: StoryEntity;
+  @ApiProperty({ description: "수정된 이야기 데이터" })
+  payload: UpdateStoryResponsePayloadDTO;
 }

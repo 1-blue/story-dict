@@ -4,1319 +4,1300 @@
  */
 
 export interface paths {
-  "/apis/v0/ping": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v0/ping": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["PingController_ping"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["PingController_ping"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/auth/login": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 로그인 */
+        post: operations["AuthController_logIn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** 로그인 */
-    post: operations["AuthController_logIn"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/auth/login/kakao": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/auth/login/kakao": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuthController_oauthKakao"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AuthController_oauthKakao"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/auth/login/kakao/redirect": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/auth/login/kakao/redirect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuthController_oauthKakaoRedirect"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AuthController_oauthKakaoRedirect"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/auth/login/google": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/auth/login/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuthController_oauthGoogle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AuthController_oauthGoogle"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/auth/login/google/redirect": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/auth/login/google/redirect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["AuthController_oauthGoogleRedirect"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AuthController_oauthGoogleRedirect"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/auth/logout": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 로그아웃 */
+        post: operations["AuthController_logOut"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** 로그아웃 */
-    post: operations["AuthController_logOut"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/images/presigned-url": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/images/presigned-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** presignedURL 생성 */
+        post: operations["ImagesController_createPresignedURL"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** presignedURL 생성 */
-    post: operations["ImagesController_createPresignedURL"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/images/move": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/images/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** 이미지 이동 */
+        patch: operations["ImagesController_moveImage"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 이미지 이동 */
-    patch: operations["ImagesController_moveImage"];
-    trace?: never;
-  };
-  "/apis/v1/users/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 내 정보 조회 */
+        get: operations["UsersController_getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** 내 정보 조회 */
-    get: operations["UsersController_getMe"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 회원가입 */
+        post: operations["UsersController_create"];
+        /** 회원탈퇴 */
+        delete: operations["UsersController_delete"];
+        options?: never;
+        head?: never;
+        /** 회원정보 수정 */
+        patch: operations["UsersController_update"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** 회원가입 */
-    post: operations["UsersController_create"];
-    /** 회원탈퇴 */
-    delete: operations["UsersController_delete"];
-    options?: never;
-    head?: never;
-    /** 회원정보 수정 */
-    patch: operations["UsersController_update"];
-    trace?: never;
-  };
-  "/apis/v1/stories": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesController_getAll"];
+        put?: never;
+        post: operations["StoriesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["StoriesController_getAll"];
-    put?: never;
-    post: operations["StoriesController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/random": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/random": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesController_getManyRandom"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["StoriesController_getManyRandom"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/title/{title}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/title/{title}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesController_getOneByTitle"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["StoriesController_getOneByTitle"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesController_getOne"];
+        put?: never;
+        post?: never;
+        delete: operations["StoriesController_delete"];
+        options?: never;
+        head?: never;
+        patch: operations["StoriesController_update"];
+        trace?: never;
     };
-    get: operations["StoriesController_getOne"];
-    put?: never;
-    post?: never;
-    delete: operations["StoriesController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["StoriesController_update"];
-    trace?: never;
-  };
-  "/apis/v1/stories/search/{keyword}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/search/{keyword}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesController_getManyKeyword"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["StoriesController_getManyKeyword"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/category/{category}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/category/{category}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesController_getAllCategory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["StoriesController_getAllCategory"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/check-unique-title": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/check-unique-title": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["StoriesController_checkUniqueTitle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["StoriesController_checkUniqueTitle"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}/reactions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}/reactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["StoriesReactionsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["StoriesReactionsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}/reactions/{reactionId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}/reactions/{reactionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["StoriesReactionsController_delete"];
+        options?: never;
+        head?: never;
+        patch: operations["StoriesReactionsController_update"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["StoriesReactionsController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["StoriesReactionsController_update"];
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}/comments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StoriesCommentsController_findMany"];
+        put?: never;
+        post: operations["StoriesCommentsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["StoriesCommentsController_findMany"];
-    put?: never;
-    post: operations["StoriesCommentsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}/comments/{commentId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}/comments/{commentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["StoriesCommentsController_delete"];
+        options?: never;
+        head?: never;
+        patch: operations["StoriesCommentsController_update"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["StoriesCommentsController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["StoriesCommentsController_update"];
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}/comments/{commentId}/reactions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}/comments/{commentId}/reactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["StoriesCommentsReactionsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["StoriesCommentsReactionsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/apis/v1/stories/{storyId}/comments/{commentId}/reactions/{reactionId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/apis/v1/stories/{storyId}/comments/{commentId}/reactions/{reactionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["StoriesCommentsReactionsController_delete"];
+        options?: never;
+        head?: never;
+        patch: operations["StoriesCommentsReactionsController_update"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["StoriesCommentsReactionsController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["StoriesCommentsReactionsController_update"];
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    LogInBodyDTO: {
-      /** @description 유저 이메일 */
-      email: string;
-      /** @description 유저 비밀번호 */
-      password: string;
+    schemas: {
+        LogInBodyDTO: {
+            /** @description 유저 이메일 */
+            email: string;
+            /** @description 유저 비밀번호 */
+            password: string;
+        };
+        ToastEntity: {
+            /** @description 토스트 제목 */
+            title: string;
+            /** @description 토스트 내용 */
+            description: string;
+        };
+        /**
+         * @description 유저 역할
+         * @enum {string}
+         */
+        UserRole: "ADMIN" | "MANAGER" | "USER" | "GUEST";
+        /**
+         * @description 유저 로그인 방식
+         * @enum {string}
+         */
+        UserProvider: "LOCAL" | "KAKAO" | "GOOGLE";
+        PayloadDTO: {
+            /** @description 유저 식별자 */
+            id: string;
+            /**
+             * Format: date-time
+             * @description 생성 일자
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description 수정 일자
+             */
+            updatedAt: string;
+            /**
+             * Format: date-time
+             * @description 삭제 일자
+             */
+            deletedAt: string | null;
+            /** @description 유저 이메일 */
+            email: string;
+            /**
+             * @description 유저 소지금
+             * @default 1000
+             */
+            money: number;
+            /** @description 유저 닉네임 */
+            nickname: string;
+            /** @description 유저 휴대폰 번호 */
+            phone: string | null;
+            /** @description 유저 역할 */
+            role: components["schemas"]["UserRole"];
+            /** @description 유저 이미지 경로 */
+            imagePath: string | null;
+            /** @description 유저 로그인 방식 */
+            provider: components["schemas"]["UserProvider"];
+            /** @description 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값) */
+            providerId: string | null;
+        };
+        LogInResponseDTO: {
+            /** @description 토스트 정보 */
+            toast: components["schemas"]["ToastEntity"];
+            /** @description 유저 정보 */
+            payload: components["schemas"]["PayloadDTO"];
+        };
+        LogOutResponseDTO: {
+            /** @description 토스트 정보 */
+            toast: components["schemas"]["ToastEntity"];
+        };
+        CreatePresignedURLBodyDTO: {
+            /**
+             * @description 파일명
+             * @example image.jpg
+             */
+            filename: string;
+            /**
+             * @description 이미지의 상태
+             * @example public
+             */
+            status?: string;
+        };
+        CreatePresignedURLFieldsDTO: {
+            /**
+             * @description 버킷
+             * @example storydict
+             */
+            bucket: string;
+            /**
+             * @description X-Amz-Algorithm
+             * @example X-Amz-Algorithm
+             */
+            "X-Amz-Algorithm": string;
+            /**
+             * @description X-Amz-Credential
+             * @example X-Amz-Credential
+             */
+            "X-Amz-Credential": string;
+            /**
+             * @description X-Amz-Date
+             * @example X-Amz-Date
+             */
+            "X-Amz-Date": string;
+            /**
+             * @description key
+             * @example key
+             */
+            key: string;
+            /**
+             * @description Policy
+             * @example Policy
+             */
+            Policy: string;
+            /**
+             * @description X-Amz-Signature
+             * @example X-Amz-Signature
+             */
+            "X-Amz-Signature": string;
+        };
+        CreatePresignedURLResponsePayloadDTO: {
+            /**
+             * @description URL
+             * @example https://s3.ap-northeast-2.amazonaws.com/storydict
+             */
+            url: string;
+            /** @description 필드 ( AWS에서 제공하는 필드 ) */
+            fields: components["schemas"]["CreatePresignedURLFieldsDTO"];
+        };
+        CreatePresignedURLResponseDTO: {
+            /** @description presignedURL 생성 결과 */
+            payload: components["schemas"]["CreatePresignedURLResponsePayloadDTO"];
+        };
+        MoveImageBodyDTO: {
+            /**
+             * @description 이미지 경로
+             * @example https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+             */
+            imagePath: string;
+            /**
+             * @description 변경전 상태
+             * @example temp
+             */
+            beforeStatus: string;
+            /**
+             * @description 변경될 상태
+             * @example use
+             */
+            afterStatus: string;
+        };
+        MoveImageResponsePayloadDTO: {
+            /**
+             * @description 이동된 이미지 경로
+             * @example https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+             */
+            imagePath: string;
+        };
+        MoveImageResponseDTO: {
+            /** @description 이미지 이동 결과 */
+            payload: components["schemas"]["MoveImageResponsePayloadDTO"];
+        };
+        GetMeResponseDTO: {
+            /** @description 로그인한 유저 정보 */
+            payload: components["schemas"]["PayloadDTO"];
+        };
+        CreateUserBodyDTO: {
+            /**
+             * Format: uuid
+             * @description 유저 식별자
+             */
+            id?: string;
+            /**
+             * Format: email
+             * @description 이메일
+             */
+            email: string;
+            /** @description 비밀번호 */
+            password: string;
+            /** @description 닉네임 */
+            nickname: string;
+            /** @description 휴대폰 번호 */
+            phone?: string;
+            /** @description 보유 금액 */
+            money?: number;
+            /**
+             * @description 유저 역할
+             * @enum {string}
+             */
+            role?: "ADMIN" | "admin" | "MANAGER" | "manager" | "USER" | "user" | "GUEST" | "guest";
+            /** @description 유저 이미지 경로 */
+            imagePath?: string;
+            /**
+             * @description 유저 제공자
+             * @enum {string}
+             */
+            provider?: "LOCAL" | "local" | "KAKAO" | "kakao" | "GOOGLE" | "google";
+            /** @description 유저 제공자의 식별자 */
+            providerId?: string;
+        };
+        CreateUserResponseDTO: {
+            /** @description 토스트 메시지 */
+            toast: components["schemas"]["ToastEntity"];
+            /** @description 회원가입한 유저 정보 */
+            payload: components["schemas"]["PayloadDTO"];
+        };
+        UpdateUserDTO: {
+            /**
+             * Format: email
+             * @description 이메일
+             */
+            email?: string;
+            /** @description 닉네임 */
+            nickname?: string;
+            /** @description 휴대폰 번호 */
+            phone?: string;
+            /** @description 보유 금액 */
+            money?: number;
+            /**
+             * @description 유저 역할
+             * @enum {string}
+             */
+            role?: "ADMIN" | "admin" | "MANAGER" | "manager" | "USER" | "user" | "GUEST" | "guest";
+            /** @description 유저 이미지 경로 */
+            imagePath?: string;
+            /**
+             * @description 유저 제공자
+             * @enum {string}
+             */
+            provider?: "LOCAL" | "local" | "KAKAO" | "kakao" | "GOOGLE" | "google";
+            /** @description 유저 제공자의 식별자 */
+            providerId?: string;
+        };
+        UpdateUserResponseDTO: {
+            /** @description 토스트 메시지 */
+            toast: components["schemas"]["ToastEntity"];
+            /** @description 수정된 유저 정보 */
+            payload: components["schemas"]["PayloadDTO"];
+        };
+        DeleteUserResponseDTO: {
+            /** @description 토스트 메시지 */
+            toast: components["schemas"]["ToastEntity"];
+            /** @description 삭제된 유저 정보 */
+            payload: components["schemas"]["PayloadDTO"];
+        };
+        CreateStoryDto: Record<string, never>;
+        UpdateStoryDto: Record<string, never>;
+        CheckUniqueTitleDto: Record<string, never>;
+        CreateReactionDto: Record<string, never>;
+        UpdateReactionDto: Record<string, never>;
+        CreateCommentDto: Record<string, never>;
+        UpdateCommentDto: Record<string, never>;
     };
-    ToastEntity: {
-      /** @description 토스트 제목 */
-      title: string;
-      /** @description 토스트 내용 */
-      description: string;
-    };
-    /**
-     * @description 유저 역할
-     * @enum {string}
-     */
-    UserRole: "ADMIN" | "MANAGER" | "USER" | "GUEST";
-    /**
-     * @description 유저 로그인 방식
-     * @enum {string}
-     */
-    UserProvider: "LOCAL" | "KAKAO" | "GOOGLE";
-    PayloadDTO: {
-      /** @description 유저 식별자 */
-      id: string;
-      /**
-       * Format: date-time
-       * @description 생성 일자
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description 수정 일자
-       */
-      updatedAt: string;
-      /**
-       * Format: date-time
-       * @description 삭제 일자
-       */
-      deletedAt: string | null;
-      /** @description 유저 이메일 */
-      email: string;
-      /**
-       * @description 유저 소지금
-       * @default 1000
-       */
-      money: number;
-      /** @description 유저 닉네임 */
-      nickname: string;
-      /** @description 유저 휴대폰 번호 */
-      phone: string | null;
-      /** @description 유저 역할 */
-      role: components["schemas"]["UserRole"];
-      /** @description 유저 이미지 경로 */
-      imagePath: string | null;
-      /** @description 유저 로그인 방식 */
-      provider: components["schemas"]["UserProvider"];
-      /** @description 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값) */
-      providerId: string | null;
-    };
-    LogInResponseDTO: {
-      /** @description 토스트 정보 */
-      toast: components["schemas"]["ToastEntity"];
-      /** @description 유저 정보 */
-      payload: components["schemas"]["PayloadDTO"];
-    };
-    LogOutResponseDTO: {
-      /** @description 토스트 정보 */
-      toast: components["schemas"]["ToastEntity"];
-    };
-    CreatePresignedURLBodyDTO: {
-      /**
-       * @description 파일명
-       * @example image.jpg
-       */
-      filename: string;
-      /**
-       * @description 이미지의 상태
-       * @example public
-       */
-      status?: string;
-    };
-    CreatePresignedURLFieldsDTO: {
-      /**
-       * @description 버킷
-       * @example storydict
-       */
-      bucket: string;
-      /**
-       * @description X-Amz-Algorithm
-       * @example X-Amz-Algorithm
-       */
-      "X-Amz-Algorithm": string;
-      /**
-       * @description X-Amz-Credential
-       * @example X-Amz-Credential
-       */
-      "X-Amz-Credential": string;
-      /**
-       * @description X-Amz-Date
-       * @example X-Amz-Date
-       */
-      "X-Amz-Date": string;
-      /**
-       * @description key
-       * @example key
-       */
-      key: string;
-      /**
-       * @description Policy
-       * @example Policy
-       */
-      Policy: string;
-      /**
-       * @description X-Amz-Signature
-       * @example X-Amz-Signature
-       */
-      "X-Amz-Signature": string;
-    };
-    CreatePresignedURLResponsePayloadDTO: {
-      /**
-       * @description URL
-       * @example https://s3.ap-northeast-2.amazonaws.com/storydict
-       */
-      url: string;
-      /**
-       * @description 필드 ( AWS에서 제공하는 필드 )
-       * @example https://s3.ap-northeast-2.amazonaws.com/storydict
-       */
-      fields: components["schemas"]["CreatePresignedURLFieldsDTO"];
-    };
-    CreatePresignedURLResponseDTO: {
-      /** @description presignedURL 생성 결과 */
-      payload: components["schemas"]["CreatePresignedURLResponsePayloadDTO"];
-    };
-    MoveImageBodyDTO: {
-      /**
-       * @description 이미지 경로
-       * @example https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
-       */
-      imagePath: string;
-      /**
-       * @description 변경전 상태
-       * @example temp
-       */
-      beforeStatus: string;
-      /**
-       * @description 변경될 상태
-       * @example use
-       */
-      afterStatus: string;
-    };
-    MoveImageResponsePayloadDTO: {
-      /**
-       * @description 이동된 이미지 경로
-       * @example https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
-       */
-      imagePath: string;
-    };
-    MoveImageResponseDTO: {
-      /** @description 이미지 이동 결과 */
-      payload: components["schemas"]["MoveImageResponsePayloadDTO"];
-    };
-    GetMeResponseDTO: {
-      /** @description 로그인한 유저 정보 */
-      payload: components["schemas"]["PayloadDTO"];
-    };
-    CreateUserBodyDTO: {
-      /**
-       * Format: uuid
-       * @description 유저 식별자
-       */
-      id?: string;
-      /**
-       * Format: email
-       * @description 이메일
-       */
-      email: string;
-      /** @description 비밀번호 */
-      password: string;
-      /** @description 닉네임 */
-      nickname: string;
-      /** @description 휴대폰 번호 */
-      phone?: string;
-      /** @description 보유 금액 */
-      money?: number;
-      /**
-       * @description 유저 역할
-       * @enum {string}
-       */
-      role?:
-        | "ADMIN"
-        | "admin"
-        | "MANAGER"
-        | "manager"
-        | "USER"
-        | "user"
-        | "GUEST"
-        | "guest";
-      /** @description 유저 이미지 경로 */
-      imagePath?: string;
-      /**
-       * @description 유저 제공자
-       * @enum {string}
-       */
-      provider?: "LOCAL" | "local" | "KAKAO" | "kakao" | "GOOGLE" | "google";
-      /** @description 유저 제공자의 식별자 */
-      providerId?: string;
-    };
-    CreateUserResponseDTO: {
-      /** @description 토스트 메시지 */
-      toast: components["schemas"]["ToastEntity"];
-      /** @description 회원가입한 유저 정보 */
-      payload: components["schemas"]["PayloadDTO"];
-    };
-    UpdateUserDTO: {
-      /**
-       * Format: email
-       * @description 이메일
-       */
-      email?: string;
-      /** @description 닉네임 */
-      nickname?: string;
-      /** @description 휴대폰 번호 */
-      phone?: string;
-      /** @description 보유 금액 */
-      money?: number;
-      /**
-       * @description 유저 역할
-       * @enum {string}
-       */
-      role?:
-        | "ADMIN"
-        | "admin"
-        | "MANAGER"
-        | "manager"
-        | "USER"
-        | "user"
-        | "GUEST"
-        | "guest";
-      /** @description 유저 이미지 경로 */
-      imagePath?: string;
-      /**
-       * @description 유저 제공자
-       * @enum {string}
-       */
-      provider?: "LOCAL" | "local" | "KAKAO" | "kakao" | "GOOGLE" | "google";
-      /** @description 유저 제공자의 식별자 */
-      providerId?: string;
-    };
-    UpdateUserResponseDTO: {
-      /** @description 토스트 메시지 */
-      toast: components["schemas"]["ToastEntity"];
-      /** @description 수정된 유저 정보 */
-      payload: components["schemas"]["PayloadDTO"];
-    };
-    DeleteUserResponseDTO: {
-      /** @description 토스트 메시지 */
-      toast: components["schemas"]["ToastEntity"];
-      /** @description 삭제된 유저 정보 */
-      payload: components["schemas"]["PayloadDTO"];
-    };
-    CreateStoryDto: Record<string, never>;
-    UpdateStoryDto: Record<string, never>;
-    CheckUniqueTitleDto: Record<string, never>;
-    CreateReactionDto: Record<string, never>;
-    UpdateReactionDto: Record<string, never>;
-    CreateCommentDto: Record<string, never>;
-    UpdateCommentDto: Record<string, never>;
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  PingController_ping: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    PingController_ping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  AuthController_logIn: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["LogInBodyDTO"];
-      };
-    };
-    responses: {
-      /** @description 로그인 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content: {
-          "application/json": components["schemas"]["LogInResponseDTO"];
+    };
+    AuthController_logIn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-  };
-  AuthController_oauthKakao: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LogInBodyDTO"];
+            };
         };
-        content?: never;
-      };
-    };
-  };
-  AuthController_oauthKakaoRedirect: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description 로그인 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LogInResponseDTO"];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  AuthController_oauthGoogle: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_oauthKakao: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  AuthController_oauthGoogleRedirect: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  AuthController_logOut: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 로그아웃 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_oauthKakaoRedirect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["LogOutResponseDTO"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  ImagesController_createPresignedURL: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreatePresignedURLBodyDTO"];
-      };
-    };
-    responses: {
-      /** @description presignedURL 생성 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_oauthGoogle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["CreatePresignedURLResponseDTO"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  ImagesController_moveImage: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["MoveImageBodyDTO"];
-      };
-    };
-    responses: {
-      /** @description 이미지 이동 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_oauthGoogleRedirect: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["MoveImageResponseDTO"];
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  UsersController_getMe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 사용자 정보 조회 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    AuthController_logOut: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["GetMeResponseDTO"];
+        requestBody?: never;
+        responses: {
+            /** @description 로그아웃 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LogOutResponseDTO"];
+                };
+            };
         };
-      };
     };
-  };
-  UsersController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateUserBodyDTO"];
-      };
-    };
-    responses: {
-      /** @description 회원가입 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    ImagesController_createPresignedURL: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["CreateUserResponseDTO"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePresignedURLBodyDTO"];
+            };
         };
-      };
-    };
-  };
-  UsersController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description 회원탈퇴 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description presignedURL 생성 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatePresignedURLResponseDTO"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["DeleteUserResponseDTO"];
+    };
+    ImagesController_moveImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-  };
-  UsersController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateUserDTO"];
-      };
-    };
-    responses: {
-      /** @description 회원정보 수정 성공 */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveImageBodyDTO"];
+            };
         };
-        content: {
-          "application/json": components["schemas"]["UpdateUserResponseDTO"];
+        responses: {
+            /** @description 이미지 이동 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MoveImageResponseDTO"];
+                };
+            };
         };
-      };
     };
-  };
-  StoriesController_getAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    UsersController_getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateStoryDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description 사용자 정보 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMeResponseDTO"];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesController_getManyRandom: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    UsersController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesController_getOneByTitle: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateUserBodyDTO"];
+            };
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesController_getOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description 회원가입 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateUserResponseDTO"];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    UsersController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateStoryDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description 회원탈퇴 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteUserResponseDTO"];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesController_getManyKeyword: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    UsersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesController_getAllCategory: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserDTO"];
+            };
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesController_checkUniqueTitle: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CheckUniqueTitleDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description 회원정보 수정 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateUserResponseDTO"];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesReactionsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateReactionDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    StoriesController_getAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesReactionsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesReactionsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateReactionDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    StoriesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesCommentsController_findMany: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStoryDto"];
+            };
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesCommentsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCommentDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesCommentsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    StoriesController_getManyRandom: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesCommentsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateCommentDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesCommentsReactionsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateReactionDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
+    StoriesController_getOneByTitle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  StoriesCommentsReactionsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  StoriesCommentsReactionsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateReactionDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
+    StoriesController_getOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
     };
-  };
+    StoriesController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStoryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesController_getManyKeyword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesController_getAllCategory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesController_checkUniqueTitle: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckUniqueTitleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesReactionsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReactionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesReactionsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesReactionsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReactionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsController_findMany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCommentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCommentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsReactionsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReactionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsReactionsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StoriesCommentsReactionsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateReactionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
 }

@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, PickType } from "@nestjs/swagger";
 import { ReactionType } from "@sd/db";
 
 export class StoryCommentReactionEntity {
@@ -59,3 +59,8 @@ export class StoryCommentReactionEntity {
   })
   commentId: string;
 }
+
+export class StoryCommentReactionBasicEntity extends PickType(
+  StoryCommentReactionEntity,
+  ["id", "type", "userId"],
+) {}

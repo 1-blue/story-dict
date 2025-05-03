@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
-import { StoryEntity, StoryReactionEntity, UserEntity } from "#be/entities";
+import { StoryEntity, StoryReactionBasicEntity } from "#be/entities";
 
 export class GetManyByKeywordParamDTO {
   @IsString({ message: "검색어는 문자열 형태만 가능합니다." })
@@ -14,11 +14,8 @@ export class GetManyByKeywordParamDTO {
 }
 
 class GetManyByKeywordResponsePayloadDTO extends StoryEntity {
-  @ApiProperty({ description: "유저 데이터" })
-  user: UserEntity;
-
   @ApiProperty({ description: "리액션 목록" })
-  reactions: StoryReactionEntity[];
+  reactions: StoryReactionBasicEntity[];
 }
 export class GetManyByKeywordResponseDTO {
   @ApiProperty({ description: "이야기 목록" })
