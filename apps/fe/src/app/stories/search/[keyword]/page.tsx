@@ -4,7 +4,7 @@ import type { NextPage } from "next";
 
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { getQueryClient } from "#fe/libs/getQueryClient";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 
 import SearchedStories from "#fe/app/stories/search/[keyword]/_components/SearchedStories";
 
@@ -20,7 +20,7 @@ export const revalidate = 60 * 30;
 const queryClient = getQueryClient();
 const getSearchedStories = cache(({ params }: IProps) => {
   return queryClient.fetchQuery(
-    $tempAPI.queryOptions("get", "/apis/v1/stories/search/{keyword}", {
+    openapi.queryOptions("get", "/apis/v1/stories/search/{keyword}", {
       params: { path: { keyword: params.keyword } },
     }),
   );

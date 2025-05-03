@@ -4,7 +4,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { getQueryClient } from "#fe/libs/getQueryClient";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import StoryCarouselWrapper from "#fe/app/stories/random/_components/StoryCarouselWrapper";
 
 // FIXME: 리팩토링하기
@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 const queryClient = getQueryClient();
 const getRandomstories = cache(() => {
   return queryClient.fetchQuery(
-    $tempAPI.queryOptions("get", "/apis/v1/stories/random", {
+    openapi.queryOptions("get", "/apis/v1/stories/random", {
       params: { query: { existingIds: "" } },
     }),
   );

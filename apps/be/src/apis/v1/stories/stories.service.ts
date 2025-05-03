@@ -84,7 +84,7 @@ export class StoriesService {
     });
 
     if (!exStory) {
-      throw new NotFoundException("찾는 이야기이 존재하지 않습니다.");
+      throw new NotFoundException("찾는 이야기가 존재하지 않습니다.");
     }
 
     return exStory;
@@ -93,7 +93,7 @@ export class StoriesService {
   /** 제목으로 특정 이야기 찾기 */
   async getOneByTitle({ title }: GetOneStoryByTitleParamDTO) {
     const exStory = await this.prismaService.story.findUnique({
-      where: { title },
+      where: { title: decodeURIComponent(title) },
       include: {
         user: {
           select: {
@@ -113,7 +113,7 @@ export class StoriesService {
     });
 
     if (!exStory) {
-      throw new NotFoundException("찾는 이야기이 존재하지 않습니다.");
+      throw new NotFoundException("찾는 이야기가 존재하지 않습니다.");
     }
 
     return exStory;

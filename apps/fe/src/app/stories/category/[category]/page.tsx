@@ -6,7 +6,7 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { StoryCategory } from "@sd/db";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import { CATEGORIES, routes } from "#fe/constants";
 import CategoryStories from "#fe/app/stories/category/[category]/_components/CategoryStories";
 import { getQueryClient } from "#fe/libs/getQueryClient";
@@ -22,7 +22,7 @@ export const revalidate = 60 * 30;
 const queryClient = getQueryClient();
 const getManyCategoryStory = cache(({ params }: IProps) => {
   return queryClient.fetchQuery(
-    $tempAPI.queryOptions("get", "/apis/v1/stories/category/{category}", {
+    openapi.queryOptions("get", "/apis/v1/stories/category/{category}", {
       params: { path: { category: params.category } },
     }),
   );

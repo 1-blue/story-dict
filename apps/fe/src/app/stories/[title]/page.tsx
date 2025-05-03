@@ -2,7 +2,7 @@ import type { Metadata, NextPage } from "next";
 import { cache } from "react";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import { getQueryClient } from "#fe/libs/getQueryClient";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 
@@ -21,7 +21,7 @@ interface IProps {
 const queryClient = getQueryClient();
 const getOneByTitle = cache(({ params }: IProps) => {
   return queryClient.fetchQuery(
-    $tempAPI.queryOptions("get", "/apis/v1/stories/title/{title}", {
+    openapi.queryOptions("get", "/apis/v1/stories/title/{title}", {
       params: { path: { title: params.title } },
     }),
   );

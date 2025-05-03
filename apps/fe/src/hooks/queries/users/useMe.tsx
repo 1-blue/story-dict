@@ -1,28 +1,28 @@
 import { useQueryClient } from "@tanstack/react-query";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 
 const useMe = () => {
   const queryClient = useQueryClient();
-  const { data, isLoading } = $tempAPI.useQuery(
+  const { data, isLoading } = openapi.useQuery(
     "get",
     "/apis/v1/users/me",
     undefined,
     { select: (data) => data.payload },
   );
 
-  const logInMutation = $tempAPI.useMutation("post", "/apis/v1/auth/login", {
+  const logInMutation = openapi.useMutation("post", "/apis/v1/auth/login", {
     onSuccess: ({ payload }) => {
       queryClient.setQueryData(
-        $tempAPI.queryOptions("get", "/apis/v1/users/me").queryKey,
+        openapi.queryOptions("get", "/apis/v1/users/me").queryKey,
         { payload },
       );
     },
   });
-  const logOutMutation = $tempAPI.useMutation("post", "/apis/v1/auth/logout", {
+  const logOutMutation = openapi.useMutation("post", "/apis/v1/auth/logout", {
     onSuccess: () => {
       queryClient.setQueryData(
-        $tempAPI.queryOptions("get", "/apis/v1/users/me").queryKey,
+        openapi.queryOptions("get", "/apis/v1/users/me").queryKey,
         { payload: null },
       );
     },

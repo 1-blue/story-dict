@@ -1,7 +1,7 @@
 "use client";
 
 import { StoryCategory } from "@sd/db";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import StoryCard from "#fe/components/StoryCard";
 import EmptyAlert from "#fe/components/EmptyAlert";
 import CategoryForm from "#fe/app/stories/category/_components/CategoryForm";
@@ -11,7 +11,7 @@ interface IProps {
 }
 
 const CategoryStories: React.FC<IProps> = ({ category }) => {
-  const { data: stories } = $tempAPI.useSuspenseQuery(
+  const { data: stories } = openapi.useSuspenseQuery(
     "get",
     "/apis/v1/stories/category/{category}",
     { params: { path: { category } } },
@@ -31,7 +31,7 @@ const CategoryStories: React.FC<IProps> = ({ category }) => {
       ) : (
         <EmptyAlert
           title="이야기 없음"
-          description="해당 카테고리의 이야기이 존재하지 않아요 🥲"
+          description="해당 카테고리의 이야기가 존재하지 않아요 🥲"
         />
       )}
     </article>

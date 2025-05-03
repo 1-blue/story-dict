@@ -1,17 +1,17 @@
 import { useParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 
 const useStoryReactionMutations = () => {
   const queryClient = useQueryClient();
   const params = useParams<{ title: string }>();
-  const { queryKey } = $tempAPI.queryOptions(
+  const { queryKey } = openapi.queryOptions(
     "get",
-    "/apis/v1/stories/{storyId}",
-    { params: { path: { storyId: params.title } } },
+    "/apis/v1/stories/title/{title}",
+    { params: { path: { title: params.title } } },
   );
 
-  const createStoryReactionMutation = $tempAPI.useMutation(
+  const createStoryReactionMutation = openapi.useMutation(
     "post",
     "/apis/v1/stories/{storyId}/reactions",
     {
@@ -20,7 +20,7 @@ const useStoryReactionMutations = () => {
       },
     },
   );
-  const patchStoryReactionMutation = $tempAPI.useMutation(
+  const patchStoryReactionMutation = openapi.useMutation(
     "patch",
     "/apis/v1/stories/{storyId}/reactions/{reactionId}",
     {
@@ -29,7 +29,7 @@ const useStoryReactionMutations = () => {
       },
     },
   );
-  const deleteStoryReactionMutation = $tempAPI.useMutation(
+  const deleteStoryReactionMutation = openapi.useMutation(
     "delete",
     "/apis/v1/stories/{storyId}/reactions/{reactionId}",
     {

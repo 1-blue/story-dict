@@ -15,7 +15,7 @@ import {
   CommandSeparator,
 } from "@sd/ui";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import { routes } from "#fe/constants";
 import useMe from "#fe/hooks/queries/users/useMe";
 import { getRoutesByAccessLevel } from "#fe/libs/getRoutesByAccessLevel";
@@ -72,7 +72,7 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
     onOpenChange(false);
     router.push(routes.story.detail.url(title));
   };
-  const { data: stories } = $tempAPI.useQuery(
+  const { data: stories } = openapi.useQuery(
     "get",
     "/apis/v1/stories/search/{keyword}",
     { params: { path: { keyword: debouncedKeyword } } },

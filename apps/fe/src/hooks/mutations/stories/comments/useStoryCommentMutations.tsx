@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 
 interface IArgs {
   storyId: string;
@@ -7,13 +7,13 @@ interface IArgs {
 
 const useStoryCommentMutations = ({ storyId }: IArgs) => {
   const queryClient = useQueryClient();
-  const { queryKey } = $tempAPI.queryOptions(
+  const { queryKey } = openapi.queryOptions(
     "get",
     "/apis/v1/stories/{storyId}/comments",
     { params: { path: { storyId } } },
   );
 
-  const createStoryCommentMutation = $tempAPI.useMutation(
+  const createStoryCommentMutation = openapi.useMutation(
     "post",
     "/apis/v1/stories/{storyId}/comments",
     {
@@ -22,7 +22,7 @@ const useStoryCommentMutations = ({ storyId }: IArgs) => {
       },
     },
   );
-  const patchStoryCommentMutation = $tempAPI.useMutation(
+  const patchStoryCommentMutation = openapi.useMutation(
     "patch",
     "/apis/v1/stories/{storyId}/comments/{commentId}",
     {
@@ -31,7 +31,7 @@ const useStoryCommentMutations = ({ storyId }: IArgs) => {
       },
     },
   );
-  const deleteStoryCommentMutation = $tempAPI.useMutation(
+  const deleteStoryCommentMutation = openapi.useMutation(
     "delete",
     "/apis/v1/stories/{storyId}/comments/{commentId}",
     {

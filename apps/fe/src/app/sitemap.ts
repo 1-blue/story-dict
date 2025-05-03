@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-import { getAllStoryAPI } from "#fe/openapis";
+import { getAllStoryAPI } from "#fe/apis";
 import { NAV_ROUTES } from "#fe/constants";
 import type { IRoute } from "#fe/types";
 

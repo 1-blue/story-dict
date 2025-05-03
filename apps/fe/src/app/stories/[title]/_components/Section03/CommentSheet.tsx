@@ -15,7 +15,7 @@ import {
 } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import useMe from "#fe/hooks/queries/users/useMe";
 import useStoryCommentMutations from "#fe/hooks/mutations/stories/comments/useStoryCommentMutations";
 
@@ -43,7 +43,7 @@ const CommentSheet: React.FC<IProps> = ({ title, storyId }) => {
   const { createStoryCommentMutation } = useStoryCommentMutations({
     storyId,
   });
-  const { data: comments } = $tempAPI.useSuspenseQuery(
+  const { data: comments } = openapi.useSuspenseQuery(
     "get",
     "/apis/v1/stories/{storyId}/comments",
     { params: { path: { storyId } } },

@@ -24,7 +24,7 @@ import {
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
 import { handleError } from "#fe/libs/handleError";
-import { postUploadImageByPresignedURL } from "#fe/openapis/external";
+import { postUploadImageByPresignedURL } from "#fe/apis";
 import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
 
 const CATEGORY_OPTIONS = Object.entries(storyCategoryToKoreanMap).map(

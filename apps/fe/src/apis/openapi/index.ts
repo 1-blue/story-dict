@@ -8,5 +8,4 @@ const fetchClient = createFetchClient<paths>({
   headers: { "Content-Type": "application/json" },
   credentials: "include",
 });
-/** 임시 API 이전 코드 모두 변경 후 변수명 수정 */
-export const $tempAPI = createClient(fetchClient);
+export const openapi = createClient(fetchClient);

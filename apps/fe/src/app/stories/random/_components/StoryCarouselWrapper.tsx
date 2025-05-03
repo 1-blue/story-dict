@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import { components } from "#be/@openapi";
 import StoryCarousel from "#fe/app/stories/random/_components/StoryCarousel";
 
@@ -12,7 +12,7 @@ const StoryCarouselWrapper: React.FC = () => {
   >([]);
   const existingIdsRef = useRef<string[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const { data, refetch } = $tempAPI.useSuspenseQuery(
+  const { data, refetch } = openapi.useSuspenseQuery(
     "get",
     "/apis/v1/stories/random",
     { params: { query: { existingIds: existingIdsRef.current.join(",") } } },

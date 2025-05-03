@@ -1,4 +1,5 @@
-import { useFormContext } from "react-hook-form";
+import * as ReactHookForm from "react-hook-form";
+const { useFormContext } = ReactHookForm;
 
 import {
   FormControl,

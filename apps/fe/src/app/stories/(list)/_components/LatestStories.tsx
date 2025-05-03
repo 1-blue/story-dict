@@ -1,10 +1,10 @@
 "use client";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import StoryCard from "#fe/components/StoryCard";
 
 const LatestStories: React.FC = () => {
-  const { data: stories } = $tempAPI.useSuspenseQuery(
+  const { data: stories } = openapi.useSuspenseQuery(
     "get",
     "/apis/v1/stories",
     undefined,

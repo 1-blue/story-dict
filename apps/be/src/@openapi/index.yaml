@@ -506,14 +506,40 @@ paths:
             type: string
       responses:
         '200':
-          description: 이야기 댓글 조회 성공
+          description: 이야기 댓글들 조회 성공
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetAllStoryCommentResponseDTO'
-      summary: 이야기 댓글 조회
+      summary: 이야기 댓글들 조회
       tags: *ref_5
   /apis/v1/stories/{storyId}/comments/{commentId}:
+    get:
+      operationId: StoriesCommentsController_getOneById
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: 이야기 댓글 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOneByIdStoryCommentResponseDTO'
+      summary: 이야기 댓글 조회
+      tags: *ref_5
     patch:
       operationId: StoriesCommentsController_update
       parameters:
@@ -2369,6 +2395,66 @@ components:
       required:
         - toast
         - payload
+    GetAllStoryCommentResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        content:
+          type: string
+          description: 댓글 내용
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        user:
+          description: 댓글 작성자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 댓글 리액션
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryCommentReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - content
+        - userId
+        - storyId
+        - user
+        - reactions
+    GetAllStoryCommentResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 댓글
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAllStoryCommentResponsePayloadDTO'
+      required:
+        - payload
     GetOneByIdStoryCommentResponsePayloadDTO:
       type: object
       properties:
@@ -2432,66 +2518,6 @@ components:
             - $ref: '#/components/schemas/GetOneByIdStoryCommentResponsePayloadDTO'
       required:
         - toast
-        - payload
-    GetAllStoryCommentResponsePayloadDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 댓글 식별자
-          format: uuid
-        createdAt:
-          type: string
-          description: 생성 일자
-          format: date-time
-        updatedAt:
-          type: string
-          description: 수정 일자
-          format: date-time
-        deletedAt:
-          type: string
-          description: 삭제 일자
-          nullable: true
-          format: date-time
-        content:
-          type: string
-          description: 댓글 내용
-        userId:
-          type: string
-          description: 유저 식별자
-          format: uuid
-        storyId:
-          type: string
-          description: 스토리 식별자
-          format: uuid
-        user:
-          description: 댓글 작성자
-          allOf:
-            - $ref: '#/components/schemas/UserBasicEntity'
-        reactions:
-          description: 댓글 리액션
-          type: array
-          items:
-            $ref: '#/components/schemas/StoryCommentReactionBasicEntity'
-      required:
-        - id
-        - createdAt
-        - updatedAt
-        - deletedAt
-        - content
-        - userId
-        - storyId
-        - user
-        - reactions
-    GetAllStoryCommentResponseDTO:
-      type: object
-      properties:
-        payload:
-          description: 댓글
-          type: array
-          items:
-            $ref: '#/components/schemas/GetAllStoryCommentResponsePayloadDTO'
-      required:
         - payload
     UpdateStoryCommentBodyDTO:
       type: object

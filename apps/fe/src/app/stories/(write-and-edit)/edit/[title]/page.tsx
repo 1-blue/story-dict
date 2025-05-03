@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import { getQueryClient } from "#fe/libs/getQueryClient";
 import StoryForm from "#fe/app/stories/(write-and-edit)/_components/StoryForm";
 
@@ -16,7 +16,7 @@ const Page: NextPage<IProps> = async ({ params }) => {
   const title = decodeURIComponent(params.title);
 
   const { payload: story } = await queryClient.fetchQuery(
-    $tempAPI.queryOptions("get", "/apis/v1/stories/title/{title}", {
+    openapi.queryOptions("get", "/apis/v1/stories/title/{title}", {
       params: { path: { title } },
     }),
   );

@@ -64,6 +64,19 @@ export class StoriesCommentsController {
   }
 
   @Get()
+  @ApiOperation({ summary: "이야기 댓글들 조회" })
+  @ApiResponse({
+    status: 200,
+    description: "이야기 댓글들 조회 성공",
+    type: GetAllStoryCommentResponseDTO,
+  })
+  async getAll(@Param() paramDTO: GetAllStoryCommentParamDTO) {
+    return {
+      payload: await this.storiesCommentsService.getAll(paramDTO),
+    };
+  }
+
+  @Get(":commentId")
   @ApiOperation({ summary: "이야기 댓글 조회" })
   @ApiResponse({
     status: 200,
@@ -73,19 +86,6 @@ export class StoriesCommentsController {
   async getOneById(@Param() paramDTO: GetOneByIdStoryCommentParamDTO) {
     return {
       payload: await this.storiesCommentsService.getOneById(paramDTO),
-    };
-  }
-
-  @Get()
-  @ApiOperation({ summary: "이야기 댓글 조회" })
-  @ApiResponse({
-    status: 200,
-    description: "이야기 댓글 조회 성공",
-    type: GetAllStoryCommentResponseDTO,
-  })
-  async getAll(@Param() paramDTO: GetAllStoryCommentParamDTO) {
-    return {
-      payload: await this.storiesCommentsService.getAll(paramDTO),
     };
   }
 

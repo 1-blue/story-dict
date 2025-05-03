@@ -5,7 +5,7 @@ import { AspectRatio, Badge } from "@sd/ui";
 import { CalendarIcon, PersonIcon } from "@radix-ui/react-icons";
 
 import "#fe/css/github-markdown.css";
-import { $tempAPI } from "#fe/openapis";
+import { openapi } from "#fe/apis";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
 import StoryReactions from "#fe/app/stories/[title]/_components/Section01/StoryReactions";
@@ -19,7 +19,7 @@ interface IProps {
 }
 
 const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
-  const { data: story } = $tempAPI.useSuspenseQuery(
+  const { data: story } = openapi.useSuspenseQuery(
     "get",
     "/apis/v1/stories/title/{title}",
     { params: { path: { title: storyTitle } } },
