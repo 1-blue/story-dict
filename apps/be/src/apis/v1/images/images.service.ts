@@ -3,16 +3,15 @@ import { S3 } from "aws-sdk";
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
 
-import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
-import { MoveImageDto } from "#be/apis/v1/images/dto/move-image.dto";
-import { CreatePresignedURLDto } from "#be/apis/v1/images/dto/create-presinged-url.dto";
+import { MoveImageBodyDTO } from "#be/apis/v1/images/dto/move-image.dto";
+import { CreatePresignedURLBodyDTO } from "#be/apis/v1/images/dto/create-presinged-url.dto";
 
 @Injectable()
 export class ImagesService {
   private readonly s3: S3;
   private readonly s3Client: S3Client;
 
-  constructor(private readonly prismaService: PrismaService) {
+  constructor() {
     this.s3 = new S3({
       // 현재 사용중인 region ( "ap-northeast-2" )
       region: process.env.AWS_REGION,
@@ -50,7 +49,7 @@ export class ImagesService {
   async createPresignedURL({
     filename,
     status = "temp",
-  }: CreatePresignedURLDto) {
+  }: CreatePresignedURLBodyDTO) {
     const [, ext] = filename.split(".");
 
     return await createPresignedPost(this.s3Client, {
@@ -80,7 +79,7 @@ export class ImagesService {
    *   afterStatus: "use"
    * });
    **/
-  async move({ imagePath, beforeStatus, afterStatus }: MoveImageDto) {
+  async move({ imagePath, beforeStatus, afterStatus }: MoveImageBodyDTO) {
     // 1. https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
     const url = imagePath;
     // 2. https://no-service.s3.ap-northeast-2.amazonaws.com/
@@ -114,7 +113,7 @@ export class ImagesService {
       throw new NotFoundException("이동할 이미지를 찾을 수 없습니다.");
     } finally {
       return {
-        payload: { imagePath: basePath + destinationKey },
+        imagePath: basePath + destinationKey,
       };
     }
   }

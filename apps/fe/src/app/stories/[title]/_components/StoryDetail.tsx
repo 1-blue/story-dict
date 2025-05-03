@@ -1,12 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { AspectRatio, Badge } from "@sd/ui";
 import { CalendarIcon, PersonIcon } from "@radix-ui/react-icons";
 
 import "#fe/css/github-markdown.css";
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
 import StoryReactions from "#fe/app/stories/[title]/_components/Section01/StoryReactions";
@@ -20,12 +19,12 @@ interface IProps {
 }
 
 const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
-  const { data: story } = useSuspenseQuery({
-    queryKey: apis.stories.getOneByTitle.key({ params: { title: storyTitle } }),
-    queryFn: () =>
-      apis.stories.getOneByTitle.fn({ params: { title: storyTitle } }),
-    select: (data) => data.payload,
-  });
+  const { data: story } = openapi.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories/title/{title}",
+    { params: { path: { title: storyTitle } } },
+    { select: (data) => data.payload },
+  );
 
   if (!story) return null;
 

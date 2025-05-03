@@ -16,9 +16,9 @@ const StoryPanelPopover: React.FC<IProps> = ({ storyId }) => {
 
   const onClickEditButton = () => router.replace(`/stories/edit/${title}`);
 
-  const { deleteStoryMutateAsync } = useStoryMutations();
+  const { storyDeleteMutation } = useStoryMutations();
   const onClickDeleteButton = () => {
-    deleteStoryMutateAsync({ params: { storyId } });
+    storyDeleteMutation.mutateAsync({ params: { path: { storyId } } });
   };
 
   return (

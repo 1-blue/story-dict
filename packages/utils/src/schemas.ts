@@ -25,12 +25,9 @@ const nickname = z
   .regex(/^[a-zA-Z가-힣]+$/, { message: "한글과 영문만 사용 가능합니다!" });
 
 /** 휴대폰 번호 유효성 검사 스키마 */
-const phone = z
-  .string()
-  .min(1, { message: "휴대폰 번호를 입력해주세요!" })
-  .regex(/^\d{3}-\d{3,4}-\d{4}$/, {
-    message: "'-'를 포함해서 휴대폰 번호 형식에 맞게 입력해주세요!",
-  });
+const phone = z.string().regex(/^\d{3}-\d{3,4}-\d{4}$/, {
+  message: "'-'를 포함해서 휴대폰 번호 형식에 맞게 입력해주세요!",
+});
 
 /** 제목 유효성 검사 스키마 */
 const title = z
