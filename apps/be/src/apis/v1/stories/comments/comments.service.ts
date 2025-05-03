@@ -6,6 +6,7 @@ import type {
   CreateStoryCommentBodyDTO,
   CreateStoryCommentParamDTO,
   DeleteStoryCommentParamDTO,
+  GetAllStoryCommentParamDTO,
   GetOneByIdStoryCommentParamDTO,
   UpdateStoryCommentBodyDTO,
   UpdateStoryCommentParamDTO,
@@ -80,6 +81,32 @@ export class StoriesCommentsService {
     }
 
     return exStoryComment;
+  }
+
+  async getAll({ storyId }: GetAllStoryCommentParamDTO) {
+    await this.storiesService.getOne({ storyId });
+
+    return this.prismaService.storyComment.findMany({
+      where: {
+        storyId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            imagePath: true,
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
+    });
   }
 
   async update(

@@ -12,13 +12,7 @@ import {
   Req,
 } from "@nestjs/common";
 import type { Request } from "express";
-import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 import { IsLoggedIn } from "#be/guards";
 import { StoriesCommentsService } from "#be/apis/v1/stories/comments/comments.service";
@@ -33,6 +27,8 @@ import {
   GetOneByIdStoryCommentResponseDTO,
   DeleteStoryCommentParamDTO,
   DeleteStoryCommentResponseDTO,
+  GetAllStoryCommentParamDTO,
+  GetAllStoryCommentResponseDTO,
 } from "#be/apis/v1/stories/comments/dtos";
 
 @Controller("apis/v1/stories/:storyId/comments")
@@ -45,12 +41,8 @@ export class StoriesCommentsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "이야기 댓글 생성" })
-  @ApiParam({
-    name: "storyId",
-    type: CreateStoryCommentParamDTO,
-  })
-  @ApiBody({ type: CreateStoryCommentBodyDTO })
   @ApiCreatedResponse({
+    description: "이야기 댓글 생성 성공",
     type: CreateStoryCommentResponseDTO,
   })
   async create(
@@ -73,16 +65,27 @@ export class StoriesCommentsController {
 
   @Get()
   @ApiOperation({ summary: "이야기 댓글 조회" })
-  @ApiParam({
-    name: "storyId",
-    type: GetOneByIdStoryCommentParamDTO,
-  })
   @ApiResponse({
+    status: 200,
+    description: "이야기 댓글 조회 성공",
     type: GetOneByIdStoryCommentResponseDTO,
   })
-  async getOneById(@Param() findByIdDto: GetOneByIdStoryCommentParamDTO) {
+  async getOneById(@Param() paramDTO: GetOneByIdStoryCommentParamDTO) {
     return {
-      payload: await this.storiesCommentsService.getOneById(findByIdDto),
+      payload: await this.storiesCommentsService.getOneById(paramDTO),
+    };
+  }
+
+  @Get()
+  @ApiOperation({ summary: "이야기 댓글 조회" })
+  @ApiResponse({
+    status: 200,
+    description: "이야기 댓글 조회 성공",
+    type: GetAllStoryCommentResponseDTO,
+  })
+  async getAll(@Param() paramDTO: GetAllStoryCommentParamDTO) {
+    return {
+      payload: await this.storiesCommentsService.getAll(paramDTO),
     };
   }
 
@@ -90,12 +93,9 @@ export class StoriesCommentsController {
   @Patch(":commentId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "이야기 댓글 수정" })
-  @ApiParam({
-    name: "commentId",
-    type: UpdateStoryCommentParamDTO,
-  })
-  @ApiBody({ type: UpdateStoryCommentBodyDTO })
   @ApiResponse({
+    status: 200,
+    description: "이야기 댓글 수정 성공",
     type: UpdateStoryCommentResponseDTO,
   })
   async update(
@@ -115,11 +115,9 @@ export class StoriesCommentsController {
   @Delete(":commentId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "이야기 댓글 삭제" })
-  @ApiParam({
-    name: "commentId",
-    type: DeleteStoryCommentParamDTO,
-  })
   @ApiResponse({
+    status: 200,
+    description: "이야기 댓글 삭제 성공",
     type: DeleteStoryCommentResponseDTO,
   })
   async delete(@Param() paramDTO: DeleteStoryCommentParamDTO) {

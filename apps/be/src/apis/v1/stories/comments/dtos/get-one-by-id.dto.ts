@@ -32,7 +32,10 @@ class GetOneByIdStoryCommentResponsePayloadDTO extends StoryCommentEntity {
   @ApiProperty({ description: "댓글 작성자" })
   user: UserBasicEntity;
 
-  @ApiProperty({ description: "댓글 리액션" })
+  @ApiProperty({
+    description: "댓글 리액션",
+    type: [StoryCommentReactionBasicEntity],
+  })
   reactions: StoryCommentReactionBasicEntity[];
 }
 export class GetOneByIdStoryCommentResponseDTO {

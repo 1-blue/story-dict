@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import {
@@ -16,7 +15,7 @@ import {
 } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
-import { apis } from "#fe/apis";
+import { $tempAPI } from "#fe/openapis";
 import useMe from "#fe/hooks/queries/users/useMe";
 import useStoryCommentMutations from "#fe/hooks/mutations/stories/comments/useStoryCommentMutations";
 
@@ -41,20 +40,21 @@ const CommentSheet: React.FC<IProps> = ({ title, storyId }) => {
     },
   });
 
-  const { createStoryCommentMutateAsync } = useStoryCommentMutations({
+  const { createStoryCommentMutation } = useStoryCommentMutations({
     storyId,
   });
-  const { data: comments } = useSuspenseQuery({
-    queryKey: apis.stories.comments.getAll.key({ params: { storyId } }),
-    queryFn: () => apis.stories.comments.getAll.fn({ params: { storyId } }),
-    select: (data) => data.payload,
-  });
+  const { data: comments } = $tempAPI.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories/{storyId}/comments",
+    { params: { path: { storyId } } },
+    { select: (data) => data.payload },
+  );
 
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me) return toast.warning("로그인 후 이용해주세요.");
 
-    createStoryCommentMutateAsync({
-      params: { storyId },
+    createStoryCommentMutation.mutateAsync({
+      params: { path: { storyId } },
       body: { content: body.content },
     });
 
