@@ -11,11 +11,15 @@ export class CheckUniqueTitleBodyDTO {
   title: string;
 }
 
-export class CheckUniqueTitleResponseDTO {
+class CheckUniqueTitleResponsePayloadDTO {
   @ApiProperty({
     description: "제목 중복 여부",
     type: "boolean",
     example: true,
   })
-  payload: boolean;
+  isUnique: boolean;
+}
+export class CheckUniqueTitleResponseDTO {
+  @ApiProperty({ description: "제목 중복 여부" })
+  payload: CheckUniqueTitleResponsePayloadDTO;
 }

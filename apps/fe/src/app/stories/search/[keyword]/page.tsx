@@ -4,7 +4,7 @@ import type { NextPage } from "next";
 
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { getQueryClient } from "#fe/libs/getQueryClient";
-import { apis } from "#fe/apis";
+import { $tempAPI } from "#fe/openapis";
 
 import SearchedStories from "#fe/app/stories/search/[keyword]/_components/SearchedStories";
 
@@ -18,12 +18,13 @@ export const dynamic = "force-dynamic";
 export const revalidate = 60 * 30;
 
 const queryClient = getQueryClient();
-const getSearchedStories = cache(({ params }: IProps) =>
-  queryClient.fetchQuery({
-    queryKey: apis.stories.getManyKeyword.key({ params }),
-    queryFn: () => apis.stories.getManyKeyword.fn({ params }),
-  }),
-);
+const getSearchedStories = cache(({ params }: IProps) => {
+  return queryClient.fetchQuery(
+    $tempAPI.queryOptions("get", "/apis/v1/stories/search/{keyword}", {
+      params: { path: { keyword: params.keyword } },
+    }),
+  );
+});
 
 export const generateMetadata = async ({ params }: IProps) => {
   const { payload: stories } = await getSearchedStories({ params });

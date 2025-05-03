@@ -11,13 +11,7 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import { reactionTypeToEmojiMap } from "@sd/utils";
 
 import { IsLoggedIn } from "#be/guards";
@@ -43,12 +37,10 @@ export class StoriesCommentsReactionsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "댓글 리액션 생성" })
-  @ApiParam({
-    name: "storyId & commentId",
-    type: CreateStoryCommentReactionParamDTO,
+  @ApiCreatedResponse({
+    description: "댓글 리액션 생성 성공",
+    type: CreateStoryCommentReactionResponseDTO,
   })
-  @ApiBody({ type: CreateStoryCommentReactionBodyDTO })
-  @ApiCreatedResponse({ type: CreateStoryCommentReactionResponseDTO })
   async create(
     @Req() req: Request,
     @Param() paramDTO: CreateStoryCommentReactionParamDTO,
@@ -71,12 +63,11 @@ export class StoriesCommentsReactionsController {
   @Patch(":reactionId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "댓글 리액션 교체" })
-  @ApiParam({
-    name: "storyId & commentId & reactionId",
-    type: UpdateStoryCommentReactionParamDTO,
+  @ApiResponse({
+    status: 200,
+    description: "댓글 리액션 교체 성공",
+    type: UpdateStoryCommentReactionResponseDTO,
   })
-  @ApiBody({ type: UpdateStoryCommentReactionBodyDTO })
-  @ApiResponse({ type: UpdateStoryCommentReactionResponseDTO })
   async update(
     @Param() paramDTO: UpdateStoryCommentReactionParamDTO,
     @Body() bodyDTO: UpdateStoryCommentReactionBodyDTO,
@@ -97,11 +88,11 @@ export class StoriesCommentsReactionsController {
   @Delete(":reactionId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "댓글 리액션 제거" })
-  @ApiParam({
-    name: "storyId & commentId & reactionId",
-    type: DeleteStoryCommentReactionParamDTO,
+  @ApiResponse({
+    status: 200,
+    description: "댓글 리액션 제거 성공",
+    type: DeleteStoryCommentReactionResponseDTO,
   })
-  @ApiResponse({ type: DeleteStoryCommentReactionResponseDTO })
   async delete(@Param() paramDTO: DeleteStoryCommentReactionParamDTO) {
     return {
       toast: {

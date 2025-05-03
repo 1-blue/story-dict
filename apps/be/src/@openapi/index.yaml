@@ -217,7 +217,8 @@ paths:
           in: query
           description: 존재하는 이야기 식별자
           schema:
-            $ref: '#/components/schemas/GetManyRandomStoryQueryDTO'
+            example: 1,2,3
+            type: string
       responses:
         '200':
           description: 랜덤 이야기 조회 성공
@@ -236,7 +237,8 @@ paths:
           in: path
           description: 스토리 제목
           schema:
-            $ref: '#/components/schemas/GetOneStoryByTitleParamDTO'
+            example: 윤슬
+            type: string
       responses:
         '200':
           description: 제목으로 이야기 조회 성공
@@ -255,7 +257,9 @@ paths:
           in: path
           description: 스토리 식별자
           schema:
-            $ref: '#/components/schemas/GetOneStoryByIdParamDTO'
+            format: uuid
+            example: 00000000-0000-0000-0000-000000000000
+            type: string
       responses:
         '200':
           description: 식별자로 이야기 조회 성공
@@ -273,7 +277,9 @@ paths:
           in: path
           description: 이야기 식별자
           schema:
-            $ref: '#/components/schemas/UpdateStoryParamDTO'
+            format: uuid
+            example: 00000000-0000-0000-0000-000000000000
+            type: string
       requestBody:
         required: true
         content:
@@ -297,7 +303,9 @@ paths:
           in: path
           description: 이야기 식별자
           schema:
-            $ref: '#/components/schemas/DeleteStoryParamDTO'
+            format: uuid
+            example: 00000000-0000-0000-0000-000000000000
+            type: string
       responses:
         '200':
           description: 이야기 삭제 성공
@@ -316,7 +324,8 @@ paths:
           in: path
           description: 검색어
           schema:
-            $ref: '#/components/schemas/GetManyByKeywordParamDTO'
+            example: 키워드
+            type: string
       responses:
         '200':
           description: 키워드 기반 이야기 조회 성공
@@ -335,7 +344,15 @@ paths:
           in: path
           description: 이야기 카테고리
           schema:
-            $ref: '#/components/schemas/GetAllStoryByCategoryParamDTO'
+            example: LOVE
+            type: string
+            enum:
+              - GENERAL_KNOWLEDGE
+              - ETYMOLOGY
+              - PURE_KOREAN
+              - QUOTATION
+              - INFORMATION
+              - NONSENSE
       responses:
         '200':
           description: 카테고리 기반 이야기 조회 성공
@@ -373,10 +390,10 @@ paths:
           in: path
           description: 이야기 식별자
           schema:
-            $ref: '#/components/schemas/CreateStoryReactionParamDTO'
+            format: uuid
+            type: string
       requestBody:
         required: true
-        description: 이야기 리액션 생성 요청 본문
         content:
           application/json:
             schema:
@@ -407,10 +424,10 @@ paths:
           in: path
           description: 리액션 식별자
           schema:
-            $ref: '#/components/schemas/UpdateStoryReactionParamDTO'
+            format: uuid
+            type: string
       requestBody:
         required: true
-        description: 이야기 리액션 수정 요청 본문
         content:
           application/json:
             schema:
@@ -439,7 +456,8 @@ paths:
           in: path
           description: 리액션 식별자
           schema:
-            $ref: '#/components/schemas/DeleteStoryReactionParamDTO'
+            format: uuid
+            type: string
       responses:
         default:
           description: 이야기 리액션 제거 성공
@@ -572,11 +590,6 @@ paths:
           schema:
             format: uuid
             type: string
-        - name: storyId & commentId
-          required: true
-          in: path
-          schema:
-            $ref: '#/components/schemas/CreateStoryCommentReactionParamDTO'
       requestBody:
         required: true
         content:
@@ -585,7 +598,7 @@ paths:
               $ref: '#/components/schemas/CreateStoryCommentReactionBodyDTO'
       responses:
         '201':
-          description: ''
+          description: 댓글 리액션 생성 성공
           content:
             application/json:
               schema:
@@ -618,11 +631,6 @@ paths:
           schema:
             format: uuid
             type: string
-        - name: storyId & commentId & reactionId
-          required: true
-          in: path
-          schema:
-            $ref: '#/components/schemas/UpdateStoryCommentReactionParamDTO'
       requestBody:
         required: true
         content:
@@ -630,8 +638,8 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateStoryCommentReactionBodyDTO'
       responses:
-        default:
-          description: ''
+        '200':
+          description: 댓글 리액션 교체 성공
           content:
             application/json:
               schema:
@@ -662,14 +670,9 @@ paths:
           schema:
             format: uuid
             type: string
-        - name: storyId & commentId & reactionId
-          required: true
-          in: path
-          schema:
-            $ref: '#/components/schemas/DeleteStoryCommentReactionParamDTO'
       responses:
-        default:
-          description: ''
+        '200':
+          description: 댓글 리액션 제거 성공
           content:
             application/json:
               schema:
@@ -1333,7 +1336,7 @@ components:
         category:
           type: string
           description: 이야기 카테고리
-          enum:
+          enum: &ref_9
             - GENERAL_KNOWLEDGE
             - ETYMOLOGY
             - PURE_KOREAN
@@ -1343,6 +1346,7 @@ components:
         thumbnailPath:
           type: string
           description: 이야기 썸네일 경로
+          nullable: true
       required:
         - title
         - summary
@@ -1424,26 +1428,7 @@ components:
       required:
         - toast
         - payload
-    GetAllStoriesResponseDTO:
-      type: object
-      properties:
-        payload:
-          description: 모든 이야기 데이터
-          type: array
-          items:
-            type: string
-      required:
-        - payload
-    GetManyRandomStoryQueryDTO:
-      type: object
-      properties:
-        existingIds:
-          type: string
-          description: 존재하는 이야기 식별자
-          example: 1,2,3
-      required:
-        - existingIds
-    GetManyRandomStoryResponsePayloadDTO:
+    GetAllStoriesResponsePayloadDTO:
       type: object
       properties:
         id:
@@ -1496,24 +1481,118 @@ components:
         - thumbnailPath
         - category
         - userId
+    GetAllStoriesResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 모든 이야기 데이터
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAllStoriesResponsePayloadDTO'
+      required:
+        - payload
+    ReactionType:
+      type: string
+      enum:
+        - GOOD
+        - BAD
+        - FIRE
+        - SEE
+        - HEART
+        - SMILE
+        - SAD
+        - ANGRY
+        - WOW
+        - QUESTION
+      description: 리액션 타입
+    StoryReactionBasicEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - type
+        - userId
+    GetManyRandomStoryResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        reactions:
+          description: 이야기 반응 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - reactions
     GetManyRandomStoryResponseDTO:
       type: object
       properties:
         payload:
           description: 랜덤 이야기 목록
-          allOf:
-            - $ref: '#/components/schemas/GetManyRandomStoryResponsePayloadDTO'
+          type: array
+          items:
+            $ref: '#/components/schemas/GetManyRandomStoryResponsePayloadDTO'
       required:
         - payload
-    GetOneStoryByTitleParamDTO:
-      type: object
-      properties:
-        title:
-          type: string
-          description: 스토리 제목
-          example: 윤슬
-      required:
-        - title
     UserBasicEntity:
       type: object
       properties:
@@ -1582,7 +1661,7 @@ components:
           description: 반응 목록
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
       required:
         - id
         - createdAt
@@ -1605,16 +1684,6 @@ components:
             - $ref: '#/components/schemas/GetOneStoryByTitleResponsePayloadDTO'
       required:
         - payload
-    GetOneStoryByIdParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 스토리 식별자
-          example: 00000000-0000-0000-0000-000000000000
-          format: uuid
-      required:
-        - storyId
     GetOneStoryByIdResponsePayloadDTO:
       type: object
       properties:
@@ -1665,7 +1734,7 @@ components:
           description: 반응 목록
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
       required:
         - id
         - createdAt
@@ -1688,15 +1757,65 @@ components:
             - $ref: '#/components/schemas/GetOneStoryByIdResponsePayloadDTO'
       required:
         - payload
-    GetManyByKeywordParamDTO:
+    GetManyByKeywordResponsePayloadDTO:
       type: object
       properties:
-        keyword:
+        id:
           type: string
-          description: 검색어
-          example: 키워드
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        reactions:
+          description: 리액션 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
       required:
-        - keyword
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - reactions
     GetManyByKeywordResponseDTO:
       type: object
       properties:
@@ -1704,25 +1823,68 @@ components:
           description: 이야기 목록
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/GetManyByKeywordResponsePayloadDTO'
       required:
         - payload
-    GetAllStoryByCategoryParamDTO:
+    GetAllStoryByCategoryResponsePayloadDTO:
       type: object
       properties:
-        category:
+        id:
           type: string
-          description: 이야기 카테고리
-          example: LOVE
-          enum:
-            - GENERAL_KNOWLEDGE
-            - ETYMOLOGY
-            - PURE_KOREAN
-            - QUOTATION
-            - INFORMATION
-            - NONSENSE
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        reactions:
+          description: 반응 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
       required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
         - category
+        - userId
+        - reactions
     GetAllStoryByCategoryResponseDTO:
       type: object
       properties:
@@ -1730,22 +1892,33 @@ components:
           description: 이야기 목록
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/GetAllStoryByCategoryResponsePayloadDTO'
       required:
         - payload
-    UpdateStoryParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 이야기 식별자
-          example: 00000000-0000-0000-0000-000000000000
-          format: uuid
-      required:
-        - storyId
     UpdateStoryBodyDTO:
       type: object
-      properties: {}
+      properties:
+        id:
+          type: string
+          description: 이야기 식별자
+          format: uuid
+        title:
+          type: string
+          description: 이야기 제목
+        summary:
+          type: string
+          description: 이야기 요약
+        content:
+          type: string
+          description: 이야기 내용
+        category:
+          type: string
+          description: 이야기 카테고리
+          enum: *ref_9
+        thumbnailPath:
+          type: string
+          description: 이야기 썸네일 경로
+          nullable: true
     UpdateStoryResponsePayloadDTO:
       type: object
       properties:
@@ -1808,16 +1981,6 @@ components:
             - $ref: '#/components/schemas/UpdateStoryResponsePayloadDTO'
       required:
         - payload
-    DeleteStoryParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 이야기 식별자
-          example: 00000000-0000-0000-0000-000000000000
-          format: uuid
-      required:
-        - storyId
     DeleteStoryResponsePayloadDTO:
       type: object
       properties:
@@ -1889,24 +2052,24 @@ components:
           example: 윤슬
       required:
         - title
-    CheckUniqueTitleResponseDTO:
+    CheckUniqueTitleResponsePayloadDTO:
       type: object
       properties:
-        payload:
+        isUnique:
           type: boolean
           description: 제목 중복 여부
           example: true
       required:
-        - payload
-    CreateStoryReactionParamDTO:
+        - isUnique
+    CheckUniqueTitleResponseDTO:
       type: object
       properties:
-        storyId:
-          type: string
-          description: 이야기 식별자
-          format: uuid
+        payload:
+          description: 제목 중복 여부
+          allOf:
+            - $ref: '#/components/schemas/CheckUniqueTitleResponsePayloadDTO'
       required:
-        - storyId
+        - payload
     CreateStoryReactionBodyDTO:
       type: object
       properties:
@@ -1930,20 +2093,6 @@ components:
             - QUESTION
       required:
         - type
-    ReactionType:
-      type: string
-      enum:
-        - GOOD
-        - BAD
-        - FIRE
-        - SEE
-        - HEART
-        - SMILE
-        - SAD
-        - ANGRY
-        - WOW
-        - QUESTION
-      description: 리액션 타입
     CreateStoryReactionResponsePayloadDTO:
       type: object
       properties:
@@ -1998,20 +2147,6 @@ components:
       required:
         - toast
         - payload
-    UpdateStoryReactionParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 스토리 식별자
-          format: uuid
-        reactionId:
-          type: string
-          description: 리액션 식별자
-          format: uuid
-      required:
-        - storyId
-        - reactionId
     UpdateStoryReactionBodyDTO:
       type: object
       properties:
@@ -2085,20 +2220,6 @@ components:
       required:
         - toast
         - payload
-    DeleteStoryReactionParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 스토리 식별자
-          format: uuid
-        reactionId:
-          type: string
-          description: 리액션 식별자
-          format: uuid
-      required:
-        - storyId
-        - reactionId
     DeleteStoryReactionResponsePayloadDTO:
       type: object
       properties:
@@ -2519,22 +2640,7 @@ components:
             - WOW
             - QUESTION
       required:
-        - id
         - type
-    CreateStoryCommentReactionParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 이야기 식별자
-          format: uuid
-        commentId:
-          type: string
-          description: 댓글 식별자
-          format: uuid
-      required:
-        - storyId
-        - commentId
     CreateStoryCommentReactionResponsePayloadDTO:
       type: object
       properties:
@@ -2602,27 +2708,22 @@ components:
           type: string
           description: 리액션 식별자
           format: uuid
+        type:
+          type: string
+          description: 리액션 타입
+          enum:
+            - GOOD
+            - BAD
+            - FIRE
+            - SEE
+            - HEART
+            - SMILE
+            - SAD
+            - ANGRY
+            - WOW
+            - QUESTION
       required:
-        - id
-    UpdateStoryCommentReactionParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 이야기 식별자
-          format: uuid
-        commentId:
-          type: string
-          description: 댓글 식별자
-          format: uuid
-        reactionId:
-          type: string
-          description: 리액션 식별자
-          format: uuid
-      required:
-        - storyId
-        - commentId
-        - reactionId
+        - type
     UpdateStoryCommentReactionResponsePayloadDTO:
       type: object
       properties:
@@ -2683,25 +2784,6 @@ components:
       required:
         - toast
         - payload
-    DeleteStoryCommentReactionParamDTO:
-      type: object
-      properties:
-        storyId:
-          type: string
-          description: 이야기 식별자
-          format: uuid
-        commentId:
-          type: string
-          description: 댓글 식별자
-          format: uuid
-        reactionId:
-          type: string
-          description: 리액션 식별자
-          format: uuid
-      required:
-        - storyId
-        - commentId
-        - reactionId
     DeleteStoryCommentReactionResponsePayloadDTO:
       type: object
       properties:
@@ -2755,7 +2837,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/ToastEntity'
         payload:
-          description: 수정된 리액션
+          description: 삭제된 리액션
           allOf:
             - $ref: >-
                 #/components/schemas/DeleteStoryCommentReactionResponsePayloadDTO

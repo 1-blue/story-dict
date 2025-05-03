@@ -30,6 +30,7 @@ export class CreateStoryCommentReactionBodyDTO {
     description: "리액션 식별자",
     type: "string",
     format: "uuid",
+    required: false,
   })
   id?: string;
 

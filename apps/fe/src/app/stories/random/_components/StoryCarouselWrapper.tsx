@@ -1,27 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { apis, IGetManyRandomStoryAPIResponse } from "#fe/apis";
+import { $tempAPI } from "#fe/openapis";
+import { components } from "#be/@openapi";
 import StoryCarousel from "#fe/app/stories/random/_components/StoryCarousel";
 
 const StoryCarouselWrapper: React.FC = () => {
   const [stories, setStories] = useState<
-    IGetManyRandomStoryAPIResponse["payload"]
+    components["schemas"]["GetManyRandomStoryResponsePayloadDTO"][]
   >([]);
   const existingIdsRef = useRef<string[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const { data, refetch } = useSuspenseQuery({
-    queryKey: apis.stories.getManyRandom.key({
-      queries: { existingIds: existingIdsRef.current.join(",") },
-    }),
-    queryFn: () =>
-      apis.stories.getManyRandom.fn({
-        queries: { existingIds: existingIdsRef.current.join(",") },
-      }),
-    select: (data) => data.payload,
-  });
+  const { data, refetch } = $tempAPI.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories/random",
+    { params: { query: { existingIds: existingIdsRef.current.join(",") } } },
+    { select: (data) => data.payload },
+  );
 
   useEffect(() => {
     if (data.length === 0) {

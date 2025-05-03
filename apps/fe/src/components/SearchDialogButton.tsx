@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "react-use";
-import { useQuery } from "@tanstack/react-query";
 import { MagnifyingGlassIcon, LightBulbIcon } from "@heroicons/react/24/solid";
 import {
   CommandDialog,
@@ -16,7 +15,7 @@ import {
   CommandSeparator,
 } from "@sd/ui";
 
-import { apis } from "#fe/apis";
+import { $tempAPI } from "#fe/openapis";
 import { routes } from "#fe/constants";
 import useMe from "#fe/hooks/queries/users/useMe";
 import { getRoutesByAccessLevel } from "#fe/libs/getRoutesByAccessLevel";
@@ -73,17 +72,12 @@ const Dialog: React.FC<IProps> = ({ open, onOpenChange }) => {
     onOpenChange(false);
     router.push(routes.story.detail.url(title));
   };
-  const { data: stories } = useQuery({
-    enabled: !!debouncedKeyword,
-    queryKey: apis.stories.getManyKeyword.key({
-      params: { keyword: debouncedKeyword },
-    }),
-    queryFn: () =>
-      apis.stories.getManyKeyword.fn({
-        params: { keyword: debouncedKeyword },
-      }),
-    select: (data) => data.payload,
-  });
+  const { data: stories } = $tempAPI.useQuery(
+    "get",
+    "/apis/v1/stories/search/{keyword}",
+    { params: { path: { keyword: debouncedKeyword } } },
+    { enabled: !!debouncedKeyword, select: (data) => data.payload },
+  );
 
   const { isLoggedIn, isLoggedOut, logOutMutation } = useMe();
   const filteredRoutes = useMemo(

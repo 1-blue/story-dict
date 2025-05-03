@@ -22,7 +22,10 @@ class GetOneStoryByTitleResponsePayloadDTO extends StoryEntity {
   @ApiProperty({ description: "유저 식별자" })
   user: UserBasicEntity;
 
-  @ApiProperty({ description: "반응 목록" })
+  @ApiProperty({
+    description: "반응 목록",
+    type: [StoryReactionBasicEntity],
+  })
   reactions: StoryReactionBasicEntity[];
 }
 export class GetOneStoryByTitleResponseDTO {

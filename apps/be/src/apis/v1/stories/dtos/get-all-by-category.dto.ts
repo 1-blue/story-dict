@@ -17,11 +17,17 @@ export class GetAllStoryByCategoryParamDTO {
 }
 
 export class GetAllStoryByCategoryResponsePayloadDTO extends StoryEntity {
-  @ApiProperty({ description: "반응 목록" })
+  @ApiProperty({
+    description: "반응 목록",
+    type: [StoryReactionBasicEntity],
+  })
   reactions: StoryReactionBasicEntity[];
 }
 
 export class GetAllStoryByCategoryResponseDTO {
-  @ApiProperty({ description: "이야기 목록" })
+  @ApiProperty({
+    description: "이야기 목록",
+    type: [GetAllStoryByCategoryResponsePayloadDTO],
+  })
   payload: GetAllStoryByCategoryResponsePayloadDTO[];
 }

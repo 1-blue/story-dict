@@ -4,20 +4,20 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { getQueryClient } from "#fe/libs/getQueryClient";
-import { apis } from "#fe/apis";
+import { $tempAPI } from "#fe/openapis";
 import StoryCarouselWrapper from "#fe/app/stories/random/_components/StoryCarouselWrapper";
 
 // FIXME: 리팩토링하기
 export const dynamic = "force-dynamic";
 
 const queryClient = getQueryClient();
-const getRandomstories = cache(() =>
-  queryClient.fetchQuery({
-    queryKey: apis.stories.getManyRandom.key({ queries: { existingIds: "" } }),
-    queryFn: () =>
-      apis.stories.getManyRandom.fn({ queries: { existingIds: "" } }),
-  }),
-);
+const getRandomstories = cache(() => {
+  return queryClient.fetchQuery(
+    $tempAPI.queryOptions("get", "/apis/v1/stories/random", {
+      params: { query: { existingIds: "" } },
+    }),
+  );
+});
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { payload: stories } = await getRandomstories();

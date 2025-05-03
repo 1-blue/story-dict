@@ -11,13 +11,7 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOperation,
-  ApiParam,
-  ApiResponse,
-} from "@nestjs/swagger";
+import { ApiCreatedResponse, ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 import { reactionTypeToEmojiMap } from "@sd/utils";
 import { IsLoggedIn } from "#be/guards";
@@ -43,15 +37,6 @@ export class StoriesReactionsController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "이야기 리액션 생성" })
-  @ApiParam({
-    name: "storyId",
-    description: "이야기 식별자",
-    type: CreateStoryReactionParamDTO,
-  })
-  @ApiBody({
-    description: "이야기 리액션 생성 요청 본문",
-    type: CreateStoryReactionBodyDTO,
-  })
   @ApiCreatedResponse({
     description: "이야기 리액션 생성 성공",
     type: CreateStoryReactionResponseDTO,
@@ -78,15 +63,6 @@ export class StoriesReactionsController {
   @Patch(":reactionId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "이야기 리액션 수정" })
-  @ApiParam({
-    name: "reactionId",
-    description: "리액션 식별자",
-    type: UpdateStoryReactionParamDTO,
-  })
-  @ApiBody({
-    description: "이야기 리액션 수정 요청 본문",
-    type: UpdateStoryReactionBodyDTO,
-  })
   @ApiResponse({
     description: "이야기 리액션 수정 성공",
     type: UpdateStoryReactionResponseDTO,
@@ -108,11 +84,6 @@ export class StoriesReactionsController {
   @Delete(":reactionId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "이야기 리액션 제거" })
-  @ApiParam({
-    name: "reactionId",
-    description: "리액션 식별자",
-    type: DeleteStoryReactionParamDTO,
-  })
   @ApiResponse({
     description: "이야기 리액션 제거 성공",
     type: DeleteStoryReactionResponseDTO,

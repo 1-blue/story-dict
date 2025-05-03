@@ -37,6 +37,6 @@ export class DeleteStoryCommentReactionResponseDTO {
   @ApiProperty({ description: "토스트 메시지" })
   toast: ToastEntity;
 
-  @ApiProperty({ description: "수정된 리액션" })
+  @ApiProperty({ description: "삭제된 리액션" })
   payload: DeleteStoryCommentReactionResponsePayloadDTO;
 }

@@ -1,6 +1,5 @@
 import { IsNotEmpty, IsUUID } from "class-validator";
-import { ApiProperty } from "@nestjs/swagger";
-import { PartialType } from "@nestjs/mapped-types";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
 
 import { CreateStoryBodyDTO } from "#be/apis/v1/stories/dtos/create.dto";
 import { StoryEntity } from "#be/entities";

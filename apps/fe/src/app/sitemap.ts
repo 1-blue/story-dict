@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
 
+import { getAllStoryAPI } from "#fe/openapis";
 import { NAV_ROUTES } from "#fe/constants";
 import type { IRoute } from "#fe/types";
-import { getAllStoryAPI } from "#fe/apis";
 
 /** 재귀적으로 돌아서 `sitemap` 생성 */
 const generateSitemap = (routes: IRoute[]): MetadataRoute.Sitemap => {

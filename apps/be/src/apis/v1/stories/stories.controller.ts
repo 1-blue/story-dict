@@ -13,13 +13,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import type { Request } from "express";
-import {
-  ApiBody,
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiResponse } from "@nestjs/swagger";
 
 import { StoriesService } from "#be/apis/v1/stories/stories.service";
 
@@ -55,7 +49,6 @@ export class StoriesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: "이야기 생성" })
-  @ApiBody({ type: CreateStoryBodyDTO })
   @ApiResponse({
     status: 201,
     description: "이야기 생성 성공",
@@ -86,7 +79,6 @@ export class StoriesController {
 
   @Get("/random")
   @ApiOperation({ summary: "랜덤 이야기 조회" })
-  @ApiQuery({ name: "existingIds", type: GetManyRandomStoryQueryDTO })
   @ApiResponse({
     status: 200,
     description: "랜덤 이야기 조회 성공",
@@ -100,7 +92,6 @@ export class StoriesController {
 
   @Get("/title/:title")
   @ApiOperation({ summary: "제목으로 이야기 조회" })
-  @ApiParam({ name: "title", type: GetOneStoryByTitleParamDTO })
   @ApiResponse({
     status: 200,
     description: "제목으로 이야기 조회 성공",
@@ -114,7 +105,6 @@ export class StoriesController {
 
   @Get(":storyId")
   @ApiOperation({ summary: "식별자로 이야기 조회" })
-  @ApiParam({ name: "storyId", type: GetOneStoryByIdParamDTO })
   @ApiResponse({
     status: 200,
     description: "식별자로 이야기 조회 성공",
@@ -128,7 +118,6 @@ export class StoriesController {
 
   @Get("/search/:keyword")
   @ApiOperation({ summary: "키워드 기반 이야기 조회" })
-  @ApiParam({ name: "keyword", type: GetManyByKeywordParamDTO })
   @ApiResponse({
     status: 200,
     description: "키워드 기반 이야기 조회 성공",
@@ -142,7 +131,6 @@ export class StoriesController {
 
   @Get("/category/:category")
   @ApiOperation({ summary: "카테고리 기반 이야기 조회" })
-  @ApiParam({ name: "category", type: GetAllStoryByCategoryParamDTO })
   @ApiResponse({
     status: 200,
     description: "카테고리 기반 이야기 조회 성공",
@@ -158,8 +146,6 @@ export class StoriesController {
   @Patch(":storyId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "이야기 수정" })
-  @ApiParam({ name: "storyId", type: UpdateStoryParamDTO })
-  @ApiBody({ type: UpdateStoryBodyDTO })
   @ApiResponse({
     status: 200,
     description: "이야기 수정 성공",
@@ -182,7 +168,6 @@ export class StoriesController {
   @Delete(":storyId")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "이야기 삭제" })
-  @ApiParam({ name: "storyId", type: DeleteStoryParamDTO })
   @ApiResponse({
     status: 200,
     description: "이야기 삭제 성공",
@@ -201,7 +186,6 @@ export class StoriesController {
   @Post("/check-unique-title")
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: "제목 중복 여부 확인" })
-  @ApiBody({ type: CheckUniqueTitleBodyDTO })
   @ApiResponse({
     status: 200,
     description: "제목 중복 여부 확인 성공",

@@ -14,10 +14,16 @@ export class GetManyByKeywordParamDTO {
 }
 
 class GetManyByKeywordResponsePayloadDTO extends StoryEntity {
-  @ApiProperty({ description: "리액션 목록" })
+  @ApiProperty({
+    description: "리액션 목록",
+    type: [StoryReactionBasicEntity],
+  })
   reactions: StoryReactionBasicEntity[];
 }
 export class GetManyByKeywordResponseDTO {
-  @ApiProperty({ description: "이야기 목록" })
+  @ApiProperty({
+    description: "이야기 목록",
+    type: [GetManyByKeywordResponsePayloadDTO],
+  })
   payload: GetManyByKeywordResponsePayloadDTO[];
 }

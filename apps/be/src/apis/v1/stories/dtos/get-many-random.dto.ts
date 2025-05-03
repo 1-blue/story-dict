@@ -14,9 +14,16 @@ export class GetManyRandomStoryQueryDTO {
 }
 
 class GetManyRandomStoryResponsePayloadDTO extends StoryEntity {
+  @ApiProperty({
+    description: "이야기 반응 목록",
+    type: [StoryReactionBasicEntity],
+  })
   reactions: StoryReactionBasicEntity[];
 }
 export class GetManyRandomStoryResponseDTO {
-  @ApiProperty({ description: "랜덤 이야기 목록" })
-  payload: GetManyRandomStoryResponsePayloadDTO;
+  @ApiProperty({
+    description: "랜덤 이야기 목록",
+    type: [GetManyRandomStoryResponsePayloadDTO],
+  })
+  payload: GetManyRandomStoryResponsePayloadDTO[];
 }

@@ -39,12 +39,18 @@ export class UpdateStoryCommentReactionBodyDTO {
     description: "리액션 식별자",
     type: "string",
     format: "uuid",
+    required: false,
   })
   id?: string;
 
   @IsNotEmpty({ message: "리액션 타입은 필수값입니다." })
   @IsEnum(Object.values(ReactionType), {
     message: "유효하지 않은 리액션 타입입니다.",
+  })
+  @ApiProperty({
+    description: "리액션 타입",
+    type: "string",
+    enum: ReactionType,
   })
   type: ReactionType;
 }

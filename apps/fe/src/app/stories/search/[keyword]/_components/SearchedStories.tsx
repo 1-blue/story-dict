@@ -1,8 +1,6 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
-
-import { apis } from "#fe/apis";
+import { $tempAPI } from "#fe/openapis";
 import StoryCard from "#fe/components/StoryCard";
 import EmptyAlert from "#fe/components/EmptyAlert";
 
@@ -11,11 +9,12 @@ interface IProps {
 }
 
 const SearchedStories: React.FC<IProps> = ({ keyword }) => {
-  const { data: stories } = useSuspenseQuery({
-    queryKey: apis.stories.getManyKeyword.key({ params: { keyword } }),
-    queryFn: () => apis.stories.getManyKeyword.fn({ params: { keyword } }),
-    select: (data) => data.payload,
-  });
+  const { data: stories } = $tempAPI.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories/search/{keyword}",
+    { params: { path: { keyword } } },
+    { select: (data) => data.payload },
+  );
 
   return (
     <article>

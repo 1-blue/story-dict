@@ -1,64 +1,48 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  apis,
-  ICreateStoryCommentReactionAPIRequest,
-  ICreateStoryCommentReactionAPIResponse,
-  IDeleteStoryCommentReactionAPIRequest,
-  IDeleteStoryCommentReactionAPIResponse,
-  IPatchStoryCommentReactionAPIRequest,
-  IPatchStoryCommentReactionAPIResponse,
-} from "#fe/apis";
+import { useQueryClient } from "@tanstack/react-query";
+import { $tempAPI } from "#fe/openapis";
 
 interface IArgs {
   storyId: string;
 }
 const useStoryCommentReactionMutations = ({ storyId }: IArgs) => {
   const queryClient = useQueryClient();
+  const { queryKey } = $tempAPI.queryOptions(
+    "get",
+    "/apis/v1/stories/{storyId}/comments",
+    { params: { path: { storyId } } },
+  );
 
-  const { mutateAsync: createStoryCommentReactionMutateAsync } = useMutation<
-    ICreateStoryCommentReactionAPIResponse,
-    Error,
-    ICreateStoryCommentReactionAPIRequest
-  >({
-    mutationFn: ({ params, body }) =>
-      apis.stories.comments.reactions.create.fn({ params, body }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: apis.stories.comments.getAll.key({ params: { storyId } }),
-      });
+  const createStoryCommentReactionMutation = $tempAPI.useMutation(
+    "post",
+    "/apis/v1/stories/{storyId}/comments/{commentId}/reactions",
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey });
+      },
     },
-  });
-  const { mutateAsync: patchStoryCommentReactionMutateAsync } = useMutation<
-    IPatchStoryCommentReactionAPIResponse,
-    Error,
-    IPatchStoryCommentReactionAPIRequest
-  >({
-    mutationFn: ({ params, body }) =>
-      apis.stories.comments.reactions.patch.fn({ params, body }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: apis.stories.comments.getAll.key({ params: { storyId } }),
-      });
+  );
+  const patchStoryCommentReactionMutation = $tempAPI.useMutation(
+    "patch",
+    "/apis/v1/stories/{storyId}/comments/{commentId}/reactions/{reactionId}",
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey });
+      },
     },
-  });
-  const { mutateAsync: deleteStoryCommentReactionMutateAsync } = useMutation<
-    IDeleteStoryCommentReactionAPIResponse,
-    Error,
-    IDeleteStoryCommentReactionAPIRequest
-  >({
-    mutationFn: ({ params }) =>
-      apis.stories.comments.reactions.delete.fn({ params }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: apis.stories.comments.getAll.key({ params: { storyId } }),
-      });
+  );
+  const deleteStoryCommentReactionMutation = $tempAPI.useMutation(
+    "delete",
+    "/apis/v1/stories/{storyId}/comments/{commentId}/reactions/{reactionId}",
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey });
+      },
     },
-  });
-
+  );
   return {
-    createStoryCommentReactionMutateAsync,
-    patchStoryCommentReactionMutateAsync,
-    deleteStoryCommentReactionMutateAsync,
+    createStoryCommentReactionMutation,
+    patchStoryCommentReactionMutation,
+    deleteStoryCommentReactionMutation,
   };
 };
 

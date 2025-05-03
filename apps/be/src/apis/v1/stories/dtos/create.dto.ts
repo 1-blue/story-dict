@@ -67,8 +67,9 @@ export class CreateStoryBodyDTO {
     description: "이야기 썸네일 경로",
     required: false,
     type: "string",
+    nullable: true,
   })
-  thumbnailPath?: string;
+  thumbnailPath?: string | null;
 }
 
 class CreateStoryResponsePayloadDTO extends StoryEntity {}
