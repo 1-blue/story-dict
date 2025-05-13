@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import { getQueryClient } from "#fe/libs/getQueryClient";
 import StoryForm from "#fe/app/stories/(write-and-edit)/_components/StoryForm";
 
@@ -15,10 +15,11 @@ interface IProps {
 const Page: NextPage<IProps> = async ({ params }) => {
   const title = decodeURIComponent(params.title);
 
-  const { payload: story } = await queryClient.fetchQuery({
-    queryKey: apis.stories.getOneByTitle.key({ params: { title } }),
-    queryFn: () => apis.stories.getOneByTitle.fn({ params: { title } }),
-  });
+  const { payload: story } = await queryClient.fetchQuery(
+    openapi.queryOptions("get", "/apis/v1/stories/title/{title}", {
+      params: { path: { title } },
+    }),
+  );
 
   return (
     <StoryForm

@@ -1,62 +1,48 @@
 import { useParams } from "next/navigation";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  apis,
-  ICreateStoryReactionAPIRequest,
-  ICreateStoryReactionAPIResponse,
-  IDeleteStoryReactionAPIRequest,
-  IDeleteStoryReactionAPIResponse,
-  IPatchStoryReactionAPIRequest,
-  IPatchStoryReactionAPIResponse,
-} from "#fe/apis";
+import { useQueryClient } from "@tanstack/react-query";
+import { openapi } from "#fe/apis";
 
 const useStoryReactionMutations = () => {
   const queryClient = useQueryClient();
   const params = useParams<{ title: string }>();
+  const { queryKey } = openapi.queryOptions(
+    "get",
+    "/apis/v1/stories/title/{title}",
+    { params: { path: { title: params.title } } },
+  );
 
-  const { mutateAsync: createStoryReactionMutateAsync } = useMutation<
-    ICreateStoryReactionAPIResponse,
-    Error,
-    ICreateStoryReactionAPIRequest
-  >({
-    mutationFn: ({ params, body }) =>
-      apis.stories.reactions.create.fn({ params, body }),
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: apis.stories.getOneByTitle.key({ params }),
-      });
+  const createStoryReactionMutation = openapi.useMutation(
+    "post",
+    "/apis/v1/stories/{storyId}/reactions",
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey });
+      },
     },
-  });
-  const { mutateAsync: patchStoryReactionMutateAsync } = useMutation<
-    IPatchStoryReactionAPIResponse,
-    Error,
-    IPatchStoryReactionAPIRequest
-  >({
-    mutationFn: ({ params, body }) =>
-      apis.stories.reactions.patch.fn({ params, body }),
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: apis.stories.getOneByTitle.key({ params }),
-      });
+  );
+  const patchStoryReactionMutation = openapi.useMutation(
+    "patch",
+    "/apis/v1/stories/{storyId}/reactions/{reactionId}",
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey });
+      },
     },
-  });
-  const { mutateAsync: deleteStoryReactionMutateAsync } = useMutation<
-    IDeleteStoryReactionAPIResponse,
-    Error,
-    IDeleteStoryReactionAPIRequest
-  >({
-    mutationFn: ({ params }) => apis.stories.reactions.delete.fn({ params }),
-    onSuccess() {
-      queryClient.invalidateQueries({
-        queryKey: apis.stories.getOneByTitle.key({ params }),
-      });
+  );
+  const deleteStoryReactionMutation = openapi.useMutation(
+    "delete",
+    "/apis/v1/stories/{storyId}/reactions/{reactionId}",
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey });
+      },
     },
-  });
+  );
 
   return {
-    createStoryReactionMutateAsync,
-    patchStoryReactionMutateAsync,
-    deleteStoryReactionMutateAsync,
+    createStoryReactionMutation,
+    patchStoryReactionMutation,
+    deleteStoryReactionMutation,
   };
 };
 

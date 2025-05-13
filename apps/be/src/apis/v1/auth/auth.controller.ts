@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
+import { ApiBody, ApiOperation, ApiResponse } from "@nestjs/swagger";
 import type { Request, Response } from "express";
 
 import type { IRequestWithOAuthUser } from "#be/types";
@@ -16,6 +17,11 @@ import { AuthService } from "#be/apis/v1/auth/auth.service";
 import { LocalAuthGuard } from "#be/apis/v1/auth/local/local.guard";
 import { KakaoAuthGuard } from "#be/apis/v1/auth/kakao/kakao.guard";
 import { GoogleAuthGuard } from "#be/apis/v1/auth/google/google.guard";
+import {
+  LogInBodyDTO,
+  LogInResponseDTO,
+  LogOutResponseDTO,
+} from "#be/apis/v1/auth/dtos";
 
 @Controller("apis/v1/auth")
 export class AuthController {
@@ -26,13 +32,20 @@ export class AuthController {
   @UseGuards(IsLoggedOut)
   @Post("login")
   @HttpCode(200)
+  @ApiOperation({ summary: "로그인" })
+  @ApiBody({ type: LogInBodyDTO })
+  @ApiResponse({
+    status: 200,
+    description: "로그인 성공",
+    type: LogInResponseDTO,
+  })
   async logIn(@Req() req: Request, @Res() res: Response) {
     res.cookie("sd_logged_in", "로그인");
 
     return res.json({
       toast: {
-        title: "로그인 완료",
-        description: "로그인에 성공했습니다.",
+        title: "로그인 성공 👋",
+        description: "저희 서비스를 이용해주셔서 감사합니다.",
       },
       payload: req.user,
     });
@@ -93,6 +106,12 @@ export class AuthController {
   @UseGuards(IsLoggedIn)
   @Post("logout")
   @HttpCode(200)
+  @ApiOperation({ summary: "로그아웃" })
+  @ApiResponse({
+    status: 200,
+    description: "로그아웃 성공",
+    type: LogOutResponseDTO,
+  })
   logOut(@Req() req: Request, @Res() res: Response) {
     const { accessToken } = req.cookies;
 
@@ -127,8 +146,8 @@ export class AuthController {
 
       res.json({
         toast: {
-          title: "로그아웃 완료",
-          description: "로그아웃에 성공했습니다.",
+          title: "로그아웃 되었습니다..🥲",
+          description: "다음에 또 이용해주세요!",
         },
         payload: null,
       });

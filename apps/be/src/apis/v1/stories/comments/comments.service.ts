@@ -2,13 +2,15 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
 import { StoriesService } from "#be/apis/v1/stories/stories.service";
-import type { CreateCommentDto } from "#be/apis/v1/stories/comments/dtos/create-comment.dto";
-import type { UpdateCommentDto } from "#be/apis/v1/stories/comments/dtos/update-comment.dto";
-import {
-  FindByStoryIdAndCommentIdDto,
-  FindByStoryIdDto,
-} from "#be/apis/v1/stories/comments/dtos/find-by-id.dto";
-
+import type {
+  CreateStoryCommentBodyDTO,
+  CreateStoryCommentParamDTO,
+  DeleteStoryCommentParamDTO,
+  GetAllStoryCommentParamDTO,
+  GetOneByIdStoryCommentParamDTO,
+  UpdateStoryCommentBodyDTO,
+  UpdateStoryCommentParamDTO,
+} from "#be/apis/v1/stories/comments/dtos";
 @Injectable()
 export class StoriesCommentsService {
   constructor(
@@ -18,8 +20,8 @@ export class StoriesCommentsService {
 
   async create(
     userId: string,
-    { storyId }: FindByStoryIdDto,
-    createCommentDto: CreateCommentDto,
+    { storyId }: CreateStoryCommentParamDTO,
+    createCommentDto: CreateStoryCommentBodyDTO,
   ) {
     await this.storiesService.getOne({ storyId });
 
@@ -48,7 +50,40 @@ export class StoriesCommentsService {
     });
   }
 
-  async findMany({ storyId }: FindByStoryIdDto) {
+  async getOneById({ storyId, commentId }: GetOneByIdStoryCommentParamDTO) {
+    await this.storiesService.getOne({ storyId });
+
+    const exStoryComment = await this.prismaService.storyComment.findUnique({
+      where: {
+        id: commentId,
+        storyId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            imagePath: true,
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
+    });
+
+    if (!exStoryComment) {
+      throw new NotFoundException("댓글이 존재하지 않습니다.");
+    }
+
+    return exStoryComment;
+  }
+
+  async getAll({ storyId }: GetAllStoryCommentParamDTO) {
     await this.storiesService.getOne({ storyId });
 
     return this.prismaService.storyComment.findMany({
@@ -75,10 +110,10 @@ export class StoriesCommentsService {
   }
 
   async update(
-    { storyId, commentId }: FindByStoryIdAndCommentIdDto,
-    updateCommentDto: UpdateCommentDto,
+    { storyId, commentId }: UpdateStoryCommentParamDTO,
+    updateCommentDto: UpdateStoryCommentBodyDTO,
   ) {
-    await this.getOne({ storyId, commentId });
+    await this.getOneById({ storyId, commentId });
 
     return this.prismaService.storyComment.update({
       where: { storyId, id: commentId },
@@ -102,25 +137,11 @@ export class StoriesCommentsService {
     });
   }
 
-  async delete({ storyId, commentId }: FindByStoryIdAndCommentIdDto) {
-    await this.getOne({ storyId, commentId });
+  async delete({ storyId, commentId }: DeleteStoryCommentParamDTO) {
+    await this.getOneById({ storyId, commentId });
 
     return this.prismaService.storyComment.delete({
       where: { storyId, id: commentId },
     });
-  }
-
-  async getOne({ storyId, commentId }: FindByStoryIdAndCommentIdDto) {
-    await this.storiesService.getOne({ storyId });
-
-    const exStoryComment = await this.prismaService.storyComment.findUnique({
-      where: { storyId, id: commentId },
-    });
-
-    if (!exStoryComment) {
-      throw new NotFoundException("댓글이 존재하지 않습니다.");
-    }
-
-    return exStoryComment;
   }
 }

@@ -7,12 +7,16 @@ import {
 import { PrismaService } from "#be/apis/v0/prisma/prisma.service";
 import { StoriesService } from "#be/apis/v1/stories/stories.service";
 import {
-  FindByStoryIdDto,
-  FindByStoryIdAndReactionIdDto,
-} from "#be/apis/v1/stories/reactions/dtos/find-by-id.dto";
-import { CreateReactionDto } from "#be/apis/v1/stories/reactions/dtos/create-reaction.dto";
-import { UpdateReactionDto } from "#be/apis/v1/stories/reactions/dtos/update-reaction.dto";
-import { HasReactionDto } from "#be/apis/v1/stories/reactions/dtos/has-reaction.dto";
+  CreateStoryReactionBodyDTO,
+  CreateStoryReactionParamDTO,
+  UpdateStoryReactionBodyDTO,
+  UpdateStoryReactionParamDTO,
+  DeleteStoryReactionParamDTO,
+} from "#be/apis/v1/stories/reactions/dtos";
+import {
+  GetOneByIdStoryReactionParamDTO,
+  HasReactionDTO,
+} from "#be/apis/v1/stories/reactions/dtos/internals";
 
 @Injectable()
 export class StoriesReactionsService {
@@ -22,7 +26,7 @@ export class StoriesReactionsService {
   ) {}
 
   /** 리액션 조회 */
-  async getOne({ storyId, reactionId }: FindByStoryIdAndReactionIdDto) {
+  async getOne({ storyId, reactionId }: GetOneByIdStoryReactionParamDTO) {
     await this.storiesService.getOne({ storyId });
 
     const exStoryReaction = await this.prisma.storyReaction.findUnique({
@@ -39,8 +43,8 @@ export class StoriesReactionsService {
   /** 리액션 생성 */
   async create(
     userId: string,
-    { storyId }: FindByStoryIdDto,
-    createReactionDto: CreateReactionDto,
+    { storyId }: CreateStoryReactionParamDTO,
+    createReactionDto: CreateStoryReactionBodyDTO,
   ) {
     await this.storiesService.getOne({ storyId });
 
@@ -61,8 +65,8 @@ export class StoriesReactionsService {
 
   /** 리액션 수정 */
   async update(
-    { storyId, reactionId }: FindByStoryIdAndReactionIdDto,
-    updateReactionDto: UpdateReactionDto,
+    { storyId, reactionId }: UpdateStoryReactionParamDTO,
+    updateReactionDto: UpdateStoryReactionBodyDTO,
   ) {
     const exStoryReaction = await this.getOne({ storyId, reactionId });
 
@@ -82,7 +86,7 @@ export class StoriesReactionsService {
   }
 
   /** 리액션 삭제 */
-  async delete({ storyId, reactionId }: FindByStoryIdAndReactionIdDto) {
+  async delete({ storyId, reactionId }: DeleteStoryReactionParamDTO) {
     await this.getOne({ storyId, reactionId });
 
     return await this.prisma.storyReaction.delete({
@@ -91,7 +95,7 @@ export class StoriesReactionsService {
   }
 
   /** 이미 리액션 가지고 있는지 확인 */
-  async hasReaction({ userId, storyId }: HasReactionDto) {
+  async hasReaction({ userId, storyId }: HasReactionDTO) {
     const existingReaction = await this.prisma.storyReaction.findFirst({
       where: { userId, storyId },
     });

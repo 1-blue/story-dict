@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button, Form, RFHInput } from "@sd/ui";
 import { schemas } from "@sd/utils";
 
-import { handleError } from "#fe/libs/handleError";
 import useMe from "#fe/hooks/queries/users/useMe";
 import useUserMutations from "#fe/hooks/mutations/users/useUserMutations";
 
@@ -29,29 +28,27 @@ const formSchema = z.object({
   email: schemas.email,
   password: schemas.password,
   nickname: schemas.nickname,
-  phone: schemas.phone,
+  phone: z.union([z.literal(""), schemas.phone]).optional(),
 });
 
 const SignUpForm: React.FC = () => {
-  const { logInMutateAsync } = useMe();
+  const { logInMutation } = useMe();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEV_DEFAULT_VALUES,
   });
 
-  const { createUserMutateAsync } = useUserMutations();
+  const { registerMutation } = useUserMutations();
   const onSubmit = form.handleSubmit(async (body) => {
-    try {
-      await createUserMutateAsync({ body });
-      await logInMutateAsync({
-        body: {
-          email: body.email,
-          password: body.password,
-        },
-      });
-    } catch (error) {
-      handleError({ error });
-    }
+    const { phone, ...restBody } = body;
+
+    await registerMutation.mutateAsync({
+      body: {
+        ...restBody,
+        ...(phone && { phone }),
+      },
+    });
+    await logInMutation.mutateAsync({ body });
   });
 
   return (
@@ -61,18 +58,20 @@ const SignUpForm: React.FC = () => {
         className="mx-auto mt-12 flex w-1/2 min-w-80 max-w-lg flex-col gap-3"
       >
         <RFHInput
+          type="email"
           name="email"
           label="아이디"
           placeholder="ex) akaps@gmail.com"
         />
         <RFHInput
+          type="password"
           name="password"
           label="비밀번호"
-          type="password"
           placeholder="ex) 123456"
         />
         <RFHInput name="nickname" label="닉네임" placeholder="ex) Akaps" />
         <RFHInput
+          type="tel"
           name="phone"
           label="휴대폰 번호"
           placeholder="ex) 010-1234-5678"
