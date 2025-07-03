@@ -59,7 +59,7 @@ CREATE TABLE "StoryReaction" (
 );
 
 -- CreateTable
-CREATE TABLE "Comment" (
+CREATE TABLE "StoryComment" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -68,11 +68,11 @@ CREATE TABLE "Comment" (
     "userId" TEXT NOT NULL,
     "storyId" TEXT NOT NULL,
 
-    CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "StoryComment_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "CommentReaction" (
+CREATE TABLE "StoryCommentReaction" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -82,11 +82,11 @@ CREATE TABLE "CommentReaction" (
     "storyId" TEXT NOT NULL,
     "commentId" TEXT NOT NULL,
 
-    CONSTRAINT "CommentReaction_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "StoryCommentReaction_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Reply" (
+CREATE TABLE "StoryCommentReply" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -96,11 +96,11 @@ CREATE TABLE "Reply" (
     "storyId" TEXT NOT NULL,
     "commentId" TEXT NOT NULL,
 
-    CONSTRAINT "Reply_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "StoryCommentReply_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ReplyReaction" (
+CREATE TABLE "StoryCommentReplyReaction" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE "ReplyReaction" (
     "commentId" TEXT NOT NULL,
     "replyId" TEXT NOT NULL,
 
-    CONSTRAINT "ReplyReaction_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "StoryCommentReplyReaction_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -139,37 +139,37 @@ ALTER TABLE "StoryReaction" ADD CONSTRAINT "StoryReaction_userId_fkey" FOREIGN K
 ALTER TABLE "StoryReaction" ADD CONSTRAINT "StoryReaction_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryComment" ADD CONSTRAINT "StoryComment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Comment" ADD CONSTRAINT "Comment_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryComment" ADD CONSTRAINT "StoryComment_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CommentReaction" ADD CONSTRAINT "CommentReaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReaction" ADD CONSTRAINT "StoryCommentReaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CommentReaction" ADD CONSTRAINT "CommentReaction_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReaction" ADD CONSTRAINT "StoryCommentReaction_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CommentReaction" ADD CONSTRAINT "CommentReaction_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReaction" ADD CONSTRAINT "StoryCommentReaction_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "StoryComment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reply" ADD CONSTRAINT "Reply_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReply" ADD CONSTRAINT "StoryCommentReply_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reply" ADD CONSTRAINT "Reply_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReply" ADD CONSTRAINT "StoryCommentReply_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Reply" ADD CONSTRAINT "Reply_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReply" ADD CONSTRAINT "StoryCommentReply_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "StoryComment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ReplyReaction" ADD CONSTRAINT "ReplyReaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReplyReaction" ADD CONSTRAINT "StoryCommentReplyReaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ReplyReaction" ADD CONSTRAINT "ReplyReaction_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReplyReaction" ADD CONSTRAINT "StoryCommentReplyReaction_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ReplyReaction" ADD CONSTRAINT "ReplyReaction_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Comment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReplyReaction" ADD CONSTRAINT "StoryCommentReplyReaction_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "StoryComment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ReplyReaction" ADD CONSTRAINT "ReplyReaction_replyId_fkey" FOREIGN KEY ("replyId") REFERENCES "Reply"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "StoryCommentReplyReaction" ADD CONSTRAINT "StoryCommentReplyReaction_replyId_fkey" FOREIGN KEY ("replyId") REFERENCES "StoryCommentReply"("id") ON DELETE CASCADE ON UPDATE CASCADE;

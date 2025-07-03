@@ -34,7 +34,7 @@ const Editor: React.FC<IProps> = ({ content, onChange }) => {
       />
 
       <span className="absolute bottom-2 right-3 text-xs text-muted-foreground">
-        {watch("content").length} / 300
+        {watch("content").length.toLocaleString()} / 3,000
       </span>
     </div>
   );
