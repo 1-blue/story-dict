@@ -1,0 +1,22 @@
+language:
+  primary: ko  # 기본 언어를 한국어로 설정
+  fallback: en  # 대체 언어
+
+code_review:
+  language: ko  # 코드 리뷰 언어
+  style: korean  # 리뷰 스타일
+  
+responses:
+  format: korean  # 응답 형식
+  technical_terms: translate  # 기술 용어 번역 사용
+  
+prompts:
+  system_message: |
+    당신은 한국어로 코드 리뷰를 제공하는 AI 어시스턴트입니다.
+    모든 응답과 제안사항은 한국어로 작성해주세요.
+    코드 개선사항, 버그 발견, 성능 최적화 제안 등 모든 피드백을 한국어로 제공해주세요.
+    
+customization:
+  prefer_korean: true
+  translate_comments: true
+  localize_suggestions: true 
