@@ -22,254 +22,252 @@ export class StoriesService {
     private readonly imagesService: ImagesService,
   ) {}
 
+  // ============================================
+  // CRUD 기본 작업
+  // ============================================
+
   /** 이야기 생성 */
-  async create(userId: string, { ...story }: CreateStoryDto) {
-    const { isUnique } = await this.checkUniqueTitle({ title: story.title });
+  async create(userId: string, storyData: CreateStoryDto) {
+    await this.validateUniqueTitle(storyData.title);
+    const thumbnailPath = await this.handleThumbnailUpload(
+      storyData.thumbnailPath,
+    );
 
-    if (!isUnique) throw new ConflictException("이미 존재하는 제목입니다.");
-
-    let thumbnailPath = story.thumbnailPath;
-    // 썸네일이 존재한다면 이미지 이동
-    if (story.thumbnailPath) {
-      const {
-        payload: { imagePath },
-      } = await this.imagesService.move({
-        imagePath: story.thumbnailPath,
-        beforeStatus: "temp",
-        afterStatus: "use",
-      });
-      thumbnailPath = imagePath;
-    }
-
-    return await this.prismaService.story.create({
+    return this.prismaService.story.create({
       data: {
-        ...story,
+        ...storyData,
         thumbnailPath,
         userId,
       },
     });
   }
 
-  /** 모든 이야기 찾기 */
-  async getAll() {
-    return await this.prismaService.story.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-  }
-
-  /** 특정 이야기 찾기 */
-  async getOne({ storyId }: FindByStoryIdDto) {
-    const exStory = await this.prismaService.story.findUnique({
-      where: { id: storyId },
-      include: {
-        user: {
-          select: {
-            id: true,
-            nickname: true,
-            imagePath: true,
-          },
-        },
-        reactions: {
-          select: {
-            id: true,
-            type: true,
-            userId: true,
-          },
-        },
-      },
-    });
-
-    if (!exStory) {
-      throw new NotFoundException("찾는 이야기이 존재하지 않습니다.");
-    }
-
-    return exStory;
-  }
-
-  /** 제목으로 특정 이야기 찾기 */
-  async getOneByTitle({ title }: GetOneStoryByTitleDto) {
-    const exStory = await this.prismaService.story.findUnique({
-      where: { title },
-      include: {
-        user: {
-          select: {
-            id: true,
-            nickname: true,
-            imagePath: true,
-          },
-        },
-        reactions: {
-          select: {
-            id: true,
-            type: true,
-            userId: true,
-          },
-        },
-      },
-    });
-
-    if (!exStory) {
-      throw new NotFoundException("찾는 이야기이 존재하지 않습니다.");
-    }
-
-    return exStory;
-  }
-
-  /** (FIXME: 비효율) 랜덤 이야기 찾기 */
-  async getManyRandom({ existingIds }: GetManyRandomStoryDto) {
-    const existingIdsArray = existingIds.split(",").map((id) => id.trim());
-
-    // 1. 먼저 조건에 맞는 모든 이야기를 가져옵니다
-    const availableStories = await this.prismaService.story.findMany({
-      where: {
-        id: {
-          notIn: existingIdsArray,
-        },
-      },
-      include: {
-        reactions: {
-          select: {
-            id: true,
-            type: true,
-            userId: true,
-          },
-        },
-      },
-    });
-
-    // 2. Fisher-Yates 셔플 알고리즘을 사용하여 배열을 무작위로 섞습니다
-    for (let i = availableStories.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [availableStories[i], availableStories[j]] = [
-        availableStories[j]!,
-        availableStories[i]!,
-      ];
-    }
-
-    // 3. 앞에서부터 4개만 반환합니다
-    return availableStories.slice(0, 4);
-  }
-
-  /** 키워드 기반 이야기 찾기 */
-  async getManyKeyword({ keyword }: FindKeywordStoryDto) {
-    const decodedKeyword = decodeURIComponent(keyword);
-
-    const stories = await this.prismaService.story.findMany({
-      where: {
-        OR: [
-          { title: { contains: decodedKeyword } },
-          { content: { contains: decodedKeyword } },
-        ],
-      },
-      include: {
-        reactions: {
-          select: {
-            id: true,
-            type: true,
-            userId: true,
-          },
-        },
-      },
-    });
-
-    return stories;
-  }
-
-  /** 카테고리 기반 이야기 찾기 */
-  async getAllCategory({ category }: GetAllCategoryStoryDto) {
-    const stories = await this.prismaService.story.findMany({
-      where: {
-        category,
-      },
-      include: {
-        reactions: {
-          select: {
-            id: true,
-            type: true,
-            userId: true,
-          },
-        },
-      },
-    });
-
-    return stories;
-  }
-
   /** 특정 이야기 수정 */
-  async update({ storyId }: FindByStoryIdDto, { ...story }: UpdateStoryDto) {
-    const originalStory = await this.getOne({ storyId });
+  async update(findDto: FindByStoryIdDto, updateData: UpdateStoryDto) {
+    const originalStory = await this.getOne(findDto);
 
-    const isTitleChanged = originalStory.title !== story.title;
-
-    if (isTitleChanged) {
-      if (story.title) {
-        const { isUnique } = await this.checkUniqueTitle({
-          title: story.title,
-        });
-
-        if (!isUnique) throw new ConflictException("이미 존재하는 제목입니다.");
-      }
+    if (this.isTitleChanged(originalStory.title, updateData.title)) {
+      await this.validateUniqueTitle(updateData.title!);
     }
 
-    let thumbnailPath = originalStory.thumbnailPath;
-    // 썸네일 업로드했다면
-    if (story.thumbnailPath) {
-      // 기존 이미지가 존재하면 제거 폴더로 이동
-      if (originalStory.thumbnailPath) {
-        await this.imagesService.move({
-          imagePath: originalStory.thumbnailPath,
-          beforeStatus: "use",
-          afterStatus: "deleted",
-        });
-      }
+    const thumbnailPath = await this.handleThumbnailUpdate(
+      originalStory.thumbnailPath,
+      updateData.thumbnailPath,
+    );
 
-      // 새로운 이미지 사용 폴더로 이동
-      const {
-        payload: { imagePath },
-      } = await this.imagesService.move({
-        imagePath: story.thumbnailPath,
-        beforeStatus: "temp",
-        afterStatus: "use",
-      });
-
-      thumbnailPath = imagePath;
-    }
-
-    return await this.prismaService.story.update({
-      where: { id: storyId },
+    return this.prismaService.story.update({
+      where: { id: findDto.storyId },
       data: {
-        ...story,
+        ...updateData,
         thumbnailPath,
       },
     });
   }
 
   /** 특정 이야기 삭제 */
-  async delete({ storyId }: FindByStoryIdDto) {
-    const exStory = await this.getOne({ storyId });
+  async delete(findDto: FindByStoryIdDto) {
+    const story = await this.getOne(findDto);
 
-    // S3 이미지 제거 폴더로 이동
-    if (exStory.thumbnailPath) {
-      await this.imagesService.move({
-        imagePath: exStory.thumbnailPath,
-        beforeStatus: "use",
-        afterStatus: "deleted",
-      });
+    if (story.thumbnailPath) {
+      await this.moveImageToDeleted(story.thumbnailPath);
     }
 
-    return await this.prismaService.story.delete({
-      where: { id: storyId },
+    return this.prismaService.story.delete({
+      where: { id: findDto.storyId },
     });
   }
 
-  /** 제목 유니크값 검증 */
-  async checkUniqueTitle({ title }: CheckUniqueTitleDto) {
-    const exStory = await this.prismaService.story.findUnique({
-      where: { title },
+  // ============================================
+  // 조회 작업
+  // ============================================
+
+  /** 모든 이야기 조회 */
+  async getAll() {
+    return this.prismaService.story.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+  }
+
+  /** ID로 특정 이야기 조회 */
+  async getOne(findDto: FindByStoryIdDto) {
+    const story = await this.prismaService.story.findUnique({
+      where: { id: findDto.storyId },
+      include: this.getStoryIncludeOptions(),
     });
 
-    return { isUnique: !exStory };
+    if (!story) {
+      throw new NotFoundException("찾는 이야기가 존재하지 않습니다.");
+    }
+
+    return story;
+  }
+
+  /** 제목으로 특정 이야기 조회 */
+  async getOneByTitle(findDto: GetOneStoryByTitleDto) {
+    const story = await this.prismaService.story.findUnique({
+      where: { title: findDto.title },
+      include: this.getStoryIncludeOptions(),
+    });
+
+    if (!story) {
+      throw new NotFoundException("찾는 이야기가 존재하지 않습니다.");
+    }
+
+    return story;
+  }
+
+  /** 랜덤 이야기 조회 */
+  async getManyRandom(dto: GetManyRandomStoryDto) {
+    const existingIds = this.parseExistingIds(dto.existingIds);
+
+    const availableStories = await this.prismaService.story.findMany({
+      where: { id: { notIn: existingIds } },
+      include: this.getReactionIncludeOptions(),
+    });
+
+    return this.shuffleAndSlice(availableStories, 4);
+  }
+
+  /** 키워드로 이야기 검색 */
+  async getManyKeyword(dto: FindKeywordStoryDto) {
+    const keyword = decodeURIComponent(dto.keyword);
+
+    return this.prismaService.story.findMany({
+      where: {
+        OR: [
+          { title: { contains: keyword } },
+          { content: { contains: keyword } },
+        ],
+      },
+      include: this.getReactionIncludeOptions(),
+    });
+  }
+
+  /** 카테고리별 이야기 조회 */
+  async getAllCategory(dto: GetAllCategoryStoryDto) {
+    return this.prismaService.story.findMany({
+      where: { category: dto.category },
+      include: this.getReactionIncludeOptions(),
+    });
+  }
+
+  // ============================================
+  // 유틸리티 작업
+  // ============================================
+
+  /** 제목 중복 검증 */
+  async checkUniqueTitle(dto: CheckUniqueTitleDto) {
+    const existingStory = await this.prismaService.story.findUnique({
+      where: { title: dto.title },
+    });
+
+    return { isUnique: !existingStory };
+  }
+
+  // ============================================
+  // 프라이빗 헬퍼 메서드
+  // ============================================
+
+  /** 스토리 조회 시 포함할 관계 데이터 설정 */
+  private getStoryIncludeOptions() {
+    return {
+      user: {
+        select: {
+          id: true,
+          nickname: true,
+          imagePath: true,
+        },
+      },
+      reactions: this.getReactionSelectOptions(),
+    };
+  }
+
+  /** 반응 조회 시 포함할 옵션 설정 */
+  private getReactionIncludeOptions() {
+    return {
+      reactions: this.getReactionSelectOptions(),
+    };
+  }
+
+  /** 반응 필드 선택 옵션 */
+  private getReactionSelectOptions() {
+    return {
+      select: {
+        id: true,
+        type: true,
+        userId: true,
+      },
+    };
+  }
+
+  /** 제목 중복 검증 및 예외 처리 */
+  private async validateUniqueTitle(title: string): Promise<void> {
+    const { isUnique } = await this.checkUniqueTitle({ title });
+
+    if (!isUnique) {
+      throw new ConflictException("이미 존재하는 제목입니다.");
+    }
+  }
+
+  /** 썸네일 업로드 처리 */
+  private async handleThumbnailUpload(
+    thumbnailPath?: string,
+  ): Promise<string | null> {
+    if (!thumbnailPath) return null;
+
+    const { payload } = await this.imagesService.move({
+      imagePath: thumbnailPath,
+      beforeStatus: "temp",
+      afterStatus: "use",
+    });
+
+    return payload.imagePath;
+  }
+
+  /** 썸네일 업데이트 처리 */
+  private async handleThumbnailUpdate(
+    originalPath: string | null,
+    newPath?: string,
+  ): Promise<string | null> {
+    if (!newPath) return originalPath;
+
+    // 기존 이미지가 있으면 삭제 폴더로 이동
+    if (originalPath) {
+      await this.moveImageToDeleted(originalPath);
+    }
+
+    // 새 이미지를 사용 폴더로 이동
+    return this.handleThumbnailUpload(newPath);
+  }
+
+  /** 이미지를 삭제 폴더로 이동 */
+  private async moveImageToDeleted(imagePath: string): Promise<void> {
+    await this.imagesService.move({
+      imagePath,
+      beforeStatus: "use",
+      afterStatus: "deleted",
+    });
+  }
+
+  /** 제목 변경 여부 확인 */
+  private isTitleChanged(originalTitle: string, newTitle?: string): boolean {
+    return newTitle !== undefined && originalTitle !== newTitle;
+  }
+
+  /** 기존 ID 문자열 파싱 */
+  private parseExistingIds(existingIds: string): string[] {
+    return existingIds.split(",").map((id) => id.trim());
+  }
+
+  /** 배열 셔플 및 슬라이스 (Fisher-Yates 알고리즘) */
+  private shuffleAndSlice<T>(array: T[], count: number): T[] {
+    const shuffled = [...array];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j]!, shuffled[i]!];
+    }
+
+    return shuffled.slice(0, count);
   }
 }
