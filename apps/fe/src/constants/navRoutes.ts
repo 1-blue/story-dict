@@ -8,6 +8,8 @@ export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
       ...routes.story,
       label: "이야기",
       sitemap: DEFAULT_SITEMAP,
+      // 스토리 상세 페이지만 매칭 (write, random, category 등 기존 라우트 제외)
+      activeWhenMatching: [/^\/stories\/(?!write|random|category)[^\/]+$/],
     },
     {
       ...routes.story.write,
