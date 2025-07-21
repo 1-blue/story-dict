@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@sd/ui";
 import { format } from "date-fns";
 
-import type { components } from "#be/@openapi";
+import type { components } from "#fe/@types/openapi";
 
 import CommentReactions from "#fe/app/stories/[title]/_components/Section03/CommentReactions";
 import CommentReactionPopover from "#fe/app/stories/[title]/_components/Section03/CommentReactionPopover";

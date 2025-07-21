@@ -8,7 +8,9 @@
     "start": "next start -p 9000",
     "start:prod": "next start -p 9000",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+
+    "openapi:generate": "pnpm dlx openapi-typescript ../be/src/@openapi/index.yaml -o ./src/@types/openapi.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",

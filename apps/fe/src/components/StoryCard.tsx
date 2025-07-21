@@ -17,7 +17,7 @@ import {
 } from "@sd/ui";
 
 import { routes } from "#fe/constants";
-import type { components } from "#be/@openapi";
+import type { components } from "#fe/@types/openapi";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
 interface IProps {
