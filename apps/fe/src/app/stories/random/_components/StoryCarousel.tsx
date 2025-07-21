@@ -16,13 +16,13 @@ import {
 } from "@sd/ui";
 
 import { storyCategoryToKoreanMap } from "@sd/utils";
-import { IGetManyRandomStoryAPIResponse } from "#fe/apis";
+import type { components } from "#be/@openapi";
 import { routes } from "#fe/constants";
 
 import Reactions from "#fe/app/stories/random/_components/Reactions";
 
 interface IProps {
-  stories: IGetManyRandomStoryAPIResponse["payload"];
+  stories: components["schemas"]["GetManyRandomStoryResponsePayloadDTO"][];
   randomStoryRefatch: () => void;
   existingIdsRef: React.MutableRefObject<string[]>;
   hasMore: boolean;

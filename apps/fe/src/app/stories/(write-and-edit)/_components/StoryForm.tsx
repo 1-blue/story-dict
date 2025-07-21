@@ -75,11 +75,8 @@ const StoryForm: React.FC<IProps> = ({ ownerId, storyId, defaultValues }) => {
 
   const isEdit = !!storyId;
 
-  const {
-    createStoryMutateAsync,
-    checkUniqueTitleMutateAsync,
-    patchStoryMutateAsync,
-  } = useStoryMutations();
+  const { storyCreateMutation, checkUniqueTitleMutation, storyPatchMutation } =
+    useStoryMutations();
   const onSubmit = form.handleSubmit(async (body) => {
     if (!me?.id) return;
 
@@ -89,7 +86,7 @@ const StoryForm: React.FC<IProps> = ({ ownerId, storyId, defaultValues }) => {
       try {
         const {
           payload: { isUnique },
-        } = await checkUniqueTitleMutateAsync({
+        } = await checkUniqueTitleMutation.mutateAsync({
           body: { title: body.title.trim() },
         });
 
@@ -106,15 +103,15 @@ const StoryForm: React.FC<IProps> = ({ ownerId, storyId, defaultValues }) => {
     }
 
     if (isEdit) {
-      patchStoryMutateAsync({
-        params: { storyId },
+      storyPatchMutation.mutate({
+        params: { path: { storyId } },
         body: {
           ...body,
           title: body.title.trim(),
         },
       });
     } else {
-      createStoryMutateAsync({
+      storyCreateMutation.mutate({
         body: {
           ...body,
           title: body.title.trim(),

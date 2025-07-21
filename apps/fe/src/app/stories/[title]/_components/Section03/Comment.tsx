@@ -3,14 +3,14 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@sd/ui";
 import { format } from "date-fns";
 
-import { IGetAllStoryCommentAPIResponse } from "#fe/apis";
+import type { components } from "#be/@openapi";
 
 import CommentReactions from "#fe/app/stories/[title]/_components/Section03/CommentReactions";
 import CommentReactionPopover from "#fe/app/stories/[title]/_components/Section03/CommentReactionPopover";
 import CommentReactionPanelPopover from "#fe/app/stories/[title]/_components/Section03/CommentReactionPanelPopover";
 
 interface IProps {
-  comment: IGetAllStoryCommentAPIResponse["payload"][number];
+  comment: components["schemas"]["GetAllStoryCommentResponsePayloadDTO"];
 }
 const Comment: React.FC<IProps> = ({ comment }) => {
   return (

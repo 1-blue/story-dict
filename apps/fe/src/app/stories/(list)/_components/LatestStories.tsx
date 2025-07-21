@@ -1,15 +1,15 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import StoryCard from "#fe/components/StoryCard";
 
 const LatestStories: React.FC = () => {
-  const { data: stories } = useSuspenseQuery({
-    queryKey: apis.stories.getAll.key(),
-    queryFn: apis.stories.getAll.fn,
-    select: (data) => data.payload,
-  });
+  const { data: stories } = openapi.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories",
+    undefined,
+    { select: (data) => data.payload },
+  );
 
   return (
     <article>

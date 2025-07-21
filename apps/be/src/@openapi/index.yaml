@@ -1,0 +1,2872 @@
+openapi: 3.0.0
+paths:
+  /apis/v0/ping:
+    get:
+      operationId: PingController_ping
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Ping
+  /apis/v1/auth/login:
+    post:
+      operationId: AuthController_logIn
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogInBodyDTO'
+      responses:
+        '200':
+          description: 로그인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogInResponseDTO'
+      summary: 로그인
+      tags: &ref_0
+        - Auth
+  /apis/v1/auth/login/kakao:
+    get:
+      operationId: AuthController_oauthKakao
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/login/kakao/redirect:
+    get:
+      operationId: AuthController_oauthKakaoRedirect
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/login/google:
+    get:
+      operationId: AuthController_oauthGoogle
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/login/google/redirect:
+    get:
+      operationId: AuthController_oauthGoogleRedirect
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_0
+  /apis/v1/auth/logout:
+    post:
+      operationId: AuthController_logOut
+      parameters: []
+      responses:
+        '200':
+          description: 로그아웃 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogOutResponseDTO'
+      summary: 로그아웃
+      tags: *ref_0
+  /apis/v1/images/presigned-url:
+    post:
+      operationId: ImagesController_createPresignedURL
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePresignedURLBodyDTO'
+      responses:
+        '200':
+          description: presignedURL 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePresignedURLResponseDTO'
+      summary: presignedURL 생성
+      tags: &ref_1
+        - Images
+  /apis/v1/images/move:
+    patch:
+      operationId: ImagesController_moveImage
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveImageBodyDTO'
+      responses:
+        '200':
+          description: 이미지 이동 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoveImageResponseDTO'
+      summary: 이미지 이동
+      tags: *ref_1
+  /apis/v1/users/me:
+    get:
+      operationId: UsersController_getMe
+      parameters: []
+      responses:
+        '200':
+          description: 사용자 정보 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMeResponseDTO'
+      summary: 내 정보 조회
+      tags: &ref_2
+        - Users
+  /apis/v1/users:
+    post:
+      operationId: UsersController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserBodyDTO'
+      responses:
+        '200':
+          description: 회원가입 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponseDTO'
+      summary: 회원가입
+      tags: *ref_2
+    patch:
+      operationId: UsersController_update
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDTO'
+      responses:
+        '200':
+          description: 회원정보 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateUserResponseDTO'
+      summary: 회원정보 수정
+      tags: *ref_2
+    delete:
+      operationId: UsersController_delete
+      parameters: []
+      responses:
+        '200':
+          description: 회원탈퇴 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteUserResponseDTO'
+      summary: 회원탈퇴
+      tags: *ref_2
+  /apis/v1/stories:
+    post:
+      operationId: StoriesController_create
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStoryBodyDTO'
+      responses:
+        '201':
+          description: 이야기 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateStoryResponseDTO'
+      summary: 이야기 생성
+      tags: &ref_3
+        - Stories
+    get:
+      operationId: StoriesController_getAll
+      parameters: []
+      responses:
+        '200':
+          description: 모든 이야기 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllStoriesResponseDTO'
+      summary: 모든 이야기 조회
+      tags: *ref_3
+  /apis/v1/stories/random:
+    get:
+      operationId: StoriesController_getManyRandom
+      parameters:
+        - name: existingIds
+          required: true
+          in: query
+          description: 존재하는 이야기 식별자
+          schema:
+            example: 1,2,3
+            type: string
+      responses:
+        '200':
+          description: 랜덤 이야기 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetManyRandomStoryResponseDTO'
+      summary: 랜덤 이야기 조회
+      tags: *ref_3
+  /apis/v1/stories/title/{title}:
+    get:
+      operationId: StoriesController_getOneByTitle
+      parameters:
+        - name: title
+          required: true
+          in: path
+          description: 스토리 제목
+          schema:
+            example: 윤슬
+            type: string
+      responses:
+        '200':
+          description: 제목으로 이야기 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOneStoryByTitleResponseDTO'
+      summary: 제목으로 이야기 조회
+      tags: *ref_3
+  /apis/v1/stories/{storyId}:
+    get:
+      operationId: StoriesController_getOne
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 스토리 식별자
+          schema:
+            format: uuid
+            example: 00000000-0000-0000-0000-000000000000
+            type: string
+      responses:
+        '200':
+          description: 식별자로 이야기 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOneStoryByIdResponseDTO'
+      summary: 식별자로 이야기 조회
+      tags: *ref_3
+    patch:
+      operationId: StoriesController_update
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            example: 00000000-0000-0000-0000-000000000000
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStoryBodyDTO'
+      responses:
+        '200':
+          description: 이야기 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateStoryResponseDTO'
+      summary: 이야기 수정
+      tags: *ref_3
+    delete:
+      operationId: StoriesController_delete
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            example: 00000000-0000-0000-0000-000000000000
+            type: string
+      responses:
+        '200':
+          description: 이야기 삭제 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteStoryResponseDTO'
+      summary: 이야기 삭제
+      tags: *ref_3
+  /apis/v1/stories/search/{keyword}:
+    get:
+      operationId: StoriesController_getManyKeyword
+      parameters:
+        - name: keyword
+          required: true
+          in: path
+          description: 검색어
+          schema:
+            example: 키워드
+            type: string
+      responses:
+        '200':
+          description: 키워드 기반 이야기 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetManyByKeywordResponseDTO'
+      summary: 키워드 기반 이야기 조회
+      tags: *ref_3
+  /apis/v1/stories/category/{category}:
+    get:
+      operationId: StoriesController_getAllCategory
+      parameters:
+        - name: category
+          required: true
+          in: path
+          description: 이야기 카테고리
+          schema:
+            example: LOVE
+            type: string
+            enum:
+              - GENERAL_KNOWLEDGE
+              - ETYMOLOGY
+              - PURE_KOREAN
+              - QUOTATION
+              - INFORMATION
+              - NONSENSE
+      responses:
+        '200':
+          description: 카테고리 기반 이야기 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllStoryByCategoryResponseDTO'
+      summary: 카테고리 기반 이야기 조회
+      tags: *ref_3
+  /apis/v1/stories/check-unique-title:
+    post:
+      operationId: StoriesController_checkUniqueTitle
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckUniqueTitleBodyDTO'
+      responses:
+        '200':
+          description: 제목 중복 여부 확인 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckUniqueTitleResponseDTO'
+      summary: 제목 중복 여부 확인
+      tags: *ref_3
+  /apis/v1/stories/{storyId}/reactions:
+    post:
+      operationId: StoriesReactionsController_create
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStoryReactionBodyDTO'
+      responses:
+        '201':
+          description: 이야기 리액션 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateStoryReactionResponseDTO'
+      summary: 이야기 리액션 생성
+      tags: &ref_4
+        - StoriesReactions
+  /apis/v1/stories/{storyId}/reactions/{reactionId}:
+    patch:
+      operationId: StoriesReactionsController_update
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 스토리 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: reactionId
+          required: true
+          in: path
+          description: 리액션 식별자
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStoryReactionBodyDTO'
+      responses:
+        default:
+          description: 이야기 리액션 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateStoryReactionResponseDTO'
+      summary: 이야기 리액션 수정
+      tags: *ref_4
+    delete:
+      operationId: StoriesReactionsController_delete
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 스토리 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: reactionId
+          required: true
+          in: path
+          description: 리액션 식별자
+          schema:
+            format: uuid
+            type: string
+      responses:
+        default:
+          description: 이야기 리액션 제거 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteStoryReactionResponseDTO'
+      summary: 이야기 리액션 제거
+      tags: *ref_4
+  /apis/v1/stories/{storyId}/comments:
+    post:
+      operationId: StoriesCommentsController_create
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStoryCommentBodyDTO'
+      responses:
+        '201':
+          description: 이야기 댓글 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateStoryCommentResponseDTO'
+      summary: 이야기 댓글 생성
+      tags: &ref_5
+        - StoriesComments
+    get:
+      operationId: StoriesCommentsController_getAll
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: 이야기 댓글들 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllStoryCommentResponseDTO'
+      summary: 이야기 댓글들 조회
+      tags: *ref_5
+  /apis/v1/stories/{storyId}/comments/{commentId}:
+    get:
+      operationId: StoriesCommentsController_getOneById
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: 이야기 댓글 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOneByIdStoryCommentResponseDTO'
+      summary: 이야기 댓글 조회
+      tags: *ref_5
+    patch:
+      operationId: StoriesCommentsController_update
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStoryCommentBodyDTO'
+      responses:
+        '200':
+          description: 이야기 댓글 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateStoryCommentResponseDTO'
+      summary: 이야기 댓글 수정
+      tags: *ref_5
+    delete:
+      operationId: StoriesCommentsController_delete
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: 이야기 댓글 삭제 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteStoryCommentResponseDTO'
+      summary: 이야기 댓글 삭제
+      tags: *ref_5
+  /apis/v1/stories/{storyId}/comments/{commentId}/reactions:
+    post:
+      operationId: StoriesCommentsReactionsController_create
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStoryCommentReactionBodyDTO'
+      responses:
+        '201':
+          description: 댓글 리액션 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateStoryCommentReactionResponseDTO'
+      summary: 댓글 리액션 생성
+      tags: &ref_6
+        - StoriesCommentsReactions
+  /apis/v1/stories/{storyId}/comments/{commentId}/reactions/{reactionId}:
+    patch:
+      operationId: StoriesCommentsReactionsController_update
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: reactionId
+          required: true
+          in: path
+          description: 리액션 식별자
+          schema:
+            format: uuid
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStoryCommentReactionBodyDTO'
+      responses:
+        '200':
+          description: 댓글 리액션 교체 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateStoryCommentReactionResponseDTO'
+      summary: 댓글 리액션 교체
+      tags: *ref_6
+    delete:
+      operationId: StoriesCommentsReactionsController_delete
+      parameters:
+        - name: storyId
+          required: true
+          in: path
+          description: 이야기 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: commentId
+          required: true
+          in: path
+          description: 댓글 식별자
+          schema:
+            format: uuid
+            type: string
+        - name: reactionId
+          required: true
+          in: path
+          description: 리액션 식별자
+          schema:
+            format: uuid
+            type: string
+      responses:
+        '200':
+          description: 댓글 리액션 제거 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteStoryCommentReactionResponseDTO'
+      summary: 댓글 리액션 제거
+      tags: *ref_6
+info:
+  title: Story Dict
+  description: Story Dict API 문서
+  version: '1.0'
+  contact: {}
+tags:
+  - name: Story Dict
+    description: ''
+servers: []
+components:
+  schemas:
+    LogInBodyDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 유저 이메일
+        password:
+          type: string
+          description: 유저 비밀번호
+      required:
+        - email
+        - password
+    ToastEntity:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 토스트 제목
+        description:
+          type: string
+          description: 토스트 내용
+      required:
+        - title
+        - description
+    UserRole:
+      type: string
+      enum:
+        - ADMIN
+        - MANAGER
+        - USER
+        - GUEST
+      description: 유저 역할
+    UserProvider:
+      type: string
+      enum:
+        - LOCAL
+        - KAKAO
+        - GOOGLE
+      description: 유저 로그인 방식
+    LogInResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        email:
+          type: string
+          description: 유저 이메일
+        money:
+          type: number
+          description: 유저 소지금
+          default: 1000
+        nickname:
+          type: string
+          description: 유저 닉네임
+        phone:
+          type: string
+          description: 유저 휴대폰 번호
+          nullable: true
+        role:
+          description: 유저 역할
+          allOf:
+            - $ref: '#/components/schemas/UserRole'
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+        provider:
+          description: 유저 로그인 방식
+          allOf:
+            - $ref: '#/components/schemas/UserProvider'
+        providerId:
+          type: string
+          description: 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값)
+          nullable: true
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - email
+        - money
+        - nickname
+        - phone
+        - role
+        - imagePath
+        - provider
+        - providerId
+    LogInResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 정보
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/LogInResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    LogOutResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 정보
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+      required:
+        - toast
+    CreatePresignedURLBodyDTO:
+      type: object
+      properties:
+        filename:
+          type: string
+          description: 파일명
+          example: image.jpg
+        status:
+          type: string
+          description: 이미지의 상태
+          example: public
+      required:
+        - filename
+    CreatePresignedURLFieldsDTO:
+      type: object
+      properties:
+        bucket:
+          type: string
+          description: 버킷
+          example: storydict
+        X-Amz-Algorithm:
+          type: string
+          description: X-Amz-Algorithm
+          example: X-Amz-Algorithm
+        X-Amz-Credential:
+          type: string
+          description: X-Amz-Credential
+          example: X-Amz-Credential
+        X-Amz-Date:
+          type: string
+          description: X-Amz-Date
+          example: X-Amz-Date
+        key:
+          type: string
+          description: key
+          example: key
+        Policy:
+          type: string
+          description: Policy
+          example: Policy
+        X-Amz-Signature:
+          type: string
+          description: X-Amz-Signature
+          example: X-Amz-Signature
+      required:
+        - bucket
+        - X-Amz-Algorithm
+        - X-Amz-Credential
+        - X-Amz-Date
+        - key
+        - Policy
+        - X-Amz-Signature
+    CreatePresignedURLResponsePayloadDTO:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL
+          example: https://s3.ap-northeast-2.amazonaws.com/storydict
+        fields:
+          description: 필드 ( AWS에서 제공하는 필드 )
+          allOf:
+            - $ref: '#/components/schemas/CreatePresignedURLFieldsDTO'
+      required:
+        - url
+        - fields
+    CreatePresignedURLResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: presignedURL 생성 결과
+          allOf:
+            - $ref: '#/components/schemas/CreatePresignedURLResponsePayloadDTO'
+      required:
+        - payload
+    MoveImageBodyDTO:
+      type: object
+      properties:
+        imagePath:
+          type: string
+          description: 이미지 경로
+          example: >-
+            https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+        beforeStatus:
+          type: string
+          description: 변경전 상태
+          example: temp
+        afterStatus:
+          type: string
+          description: 변경될 상태
+          example: use
+      required:
+        - imagePath
+        - beforeStatus
+        - afterStatus
+    MoveImageResponsePayloadDTO:
+      type: object
+      properties:
+        imagePath:
+          type: string
+          description: 이동된 이미지 경로
+          example: >-
+            https://storydict.s3.ap-northeast-2.amazonaws.com/images/development/temp/avatar_1709961663461.jpg
+      required:
+        - imagePath
+    MoveImageResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 이미지 이동 결과
+          allOf:
+            - $ref: '#/components/schemas/MoveImageResponsePayloadDTO'
+      required:
+        - payload
+    GetMeResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        email:
+          type: string
+          description: 유저 이메일
+        money:
+          type: number
+          description: 유저 소지금
+          default: 1000
+        nickname:
+          type: string
+          description: 유저 닉네임
+        phone:
+          type: string
+          description: 유저 휴대폰 번호
+          nullable: true
+        role:
+          description: 유저 역할
+          allOf:
+            - $ref: '#/components/schemas/UserRole'
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+        provider:
+          description: 유저 로그인 방식
+          allOf:
+            - $ref: '#/components/schemas/UserProvider'
+        providerId:
+          type: string
+          description: 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값)
+          nullable: true
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - email
+        - money
+        - nickname
+        - phone
+        - role
+        - imagePath
+        - provider
+        - providerId
+    GetMeResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 로그인한 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/GetMeResponsePayloadDTO'
+      required:
+        - payload
+    CreateUserBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        email:
+          type: string
+          description: 이메일
+          format: email
+        password:
+          type: string
+          description: 비밀번호
+        nickname:
+          type: string
+          description: 닉네임
+        phone:
+          type: string
+          description: 휴대폰 번호
+        money:
+          type: number
+          description: 보유 금액
+        role:
+          type: string
+          description: 유저 역할
+          enum: &ref_7
+            - ADMIN
+            - admin
+            - MANAGER
+            - manager
+            - USER
+            - user
+            - GUEST
+            - guest
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+        provider:
+          type: string
+          description: 유저 제공자
+          enum: &ref_8
+            - LOCAL
+            - local
+            - KAKAO
+            - kakao
+            - GOOGLE
+            - google
+        providerId:
+          type: string
+          description: 유저 제공자의 식별자
+      required:
+        - email
+        - password
+        - nickname
+    CreateUserResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        email:
+          type: string
+          description: 유저 이메일
+        money:
+          type: number
+          description: 유저 소지금
+          default: 1000
+        nickname:
+          type: string
+          description: 유저 닉네임
+        phone:
+          type: string
+          description: 유저 휴대폰 번호
+          nullable: true
+        role:
+          description: 유저 역할
+          allOf:
+            - $ref: '#/components/schemas/UserRole'
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+        provider:
+          description: 유저 로그인 방식
+          allOf:
+            - $ref: '#/components/schemas/UserProvider'
+        providerId:
+          type: string
+          description: 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값)
+          nullable: true
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - email
+        - money
+        - nickname
+        - phone
+        - role
+        - imagePath
+        - provider
+        - providerId
+    CreateUserResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 회원가입한 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/CreateUserResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    UpdateUserDTO:
+      type: object
+      properties:
+        email:
+          type: string
+          description: 이메일
+          format: email
+        nickname:
+          type: string
+          description: 닉네임
+        phone:
+          type: string
+          description: 휴대폰 번호
+        money:
+          type: number
+          description: 보유 금액
+        role:
+          type: string
+          description: 유저 역할
+          enum: *ref_7
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+        provider:
+          type: string
+          description: 유저 제공자
+          enum: *ref_8
+        providerId:
+          type: string
+          description: 유저 제공자의 식별자
+    UpdateUserResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        email:
+          type: string
+          description: 유저 이메일
+        money:
+          type: number
+          description: 유저 소지금
+          default: 1000
+        nickname:
+          type: string
+          description: 유저 닉네임
+        phone:
+          type: string
+          description: 유저 휴대폰 번호
+          nullable: true
+        role:
+          description: 유저 역할
+          allOf:
+            - $ref: '#/components/schemas/UserRole'
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+        provider:
+          description: 유저 로그인 방식
+          allOf:
+            - $ref: '#/components/schemas/UserProvider'
+        providerId:
+          type: string
+          description: 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값)
+          nullable: true
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - email
+        - money
+        - nickname
+        - phone
+        - role
+        - imagePath
+        - provider
+        - providerId
+    UpdateUserResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 수정된 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/UpdateUserResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    DeleteUserResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        email:
+          type: string
+          description: 유저 이메일
+        money:
+          type: number
+          description: 유저 소지금
+          default: 1000
+        nickname:
+          type: string
+          description: 유저 닉네임
+        phone:
+          type: string
+          description: 유저 휴대폰 번호
+          nullable: true
+        role:
+          description: 유저 역할
+          allOf:
+            - $ref: '#/components/schemas/UserRole'
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+        provider:
+          description: 유저 로그인 방식
+          allOf:
+            - $ref: '#/components/schemas/UserProvider'
+        providerId:
+          type: string
+          description: 유저 로그인 방식 식별자 (OAuth인 경우 제공받는 값)
+          nullable: true
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - email
+        - money
+        - nickname
+        - phone
+        - role
+        - imagePath
+        - provider
+        - providerId
+    DeleteUserResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 삭제된 유저 정보
+          allOf:
+            - $ref: '#/components/schemas/DeleteUserResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    CreateStoryBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 이야기 식별자
+          format: uuid
+        title:
+          type: string
+          description: 이야기 제목
+        summary:
+          type: string
+          description: 이야기 요약
+        content:
+          type: string
+          description: 이야기 내용
+        category:
+          type: string
+          description: 이야기 카테고리
+          enum: &ref_9
+            - GENERAL_KNOWLEDGE
+            - ETYMOLOGY
+            - PURE_KOREAN
+            - QUOTATION
+            - INFORMATION
+            - NONSENSE
+        thumbnailPath:
+          type: string
+          description: 이야기 썸네일 경로
+          nullable: true
+      required:
+        - title
+        - summary
+        - content
+    StoryCategory:
+      type: string
+      enum:
+        - GENERAL_KNOWLEDGE
+        - ETYMOLOGY
+        - PURE_KOREAN
+        - QUOTATION
+        - INFORMATION
+        - NONSENSE
+      description: 스토리 카테고리
+    CreateStoryResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+    CreateStoryResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 생성된 이야기 데이터
+          allOf:
+            - $ref: '#/components/schemas/CreateStoryResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    GetAllStoriesResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+    GetAllStoriesResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 모든 이야기 데이터
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAllStoriesResponsePayloadDTO'
+      required:
+        - payload
+    ReactionType:
+      type: string
+      enum:
+        - GOOD
+        - BAD
+        - FIRE
+        - SEE
+        - HEART
+        - SMILE
+        - SAD
+        - ANGRY
+        - WOW
+        - QUESTION
+      description: 리액션 타입
+    StoryReactionBasicEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - type
+        - userId
+    GetManyRandomStoryResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        reactions:
+          description: 이야기 반응 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - reactions
+    GetManyRandomStoryResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 랜덤 이야기 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/GetManyRandomStoryResponsePayloadDTO'
+      required:
+        - payload
+    UserBasicEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        nickname:
+          type: string
+          description: 유저 닉네임
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+      required:
+        - id
+        - nickname
+        - imagePath
+    GetOneStoryByTitleResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        user:
+          description: 유저 식별자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 반응 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - user
+        - reactions
+    GetOneStoryByTitleResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 스토리 데이터
+          allOf:
+            - $ref: '#/components/schemas/GetOneStoryByTitleResponsePayloadDTO'
+      required:
+        - payload
+    GetOneStoryByIdResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        user:
+          description: 유저 식별자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 반응 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - user
+        - reactions
+    GetOneStoryByIdResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 스토리 데이터
+          allOf:
+            - $ref: '#/components/schemas/GetOneStoryByIdResponsePayloadDTO'
+      required:
+        - payload
+    GetManyByKeywordResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        reactions:
+          description: 리액션 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - reactions
+    GetManyByKeywordResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 이야기 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/GetManyByKeywordResponsePayloadDTO'
+      required:
+        - payload
+    GetAllStoryByCategoryResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        reactions:
+          description: 반응 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - reactions
+    GetAllStoryByCategoryResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 이야기 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAllStoryByCategoryResponsePayloadDTO'
+      required:
+        - payload
+    UpdateStoryBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 이야기 식별자
+          format: uuid
+        title:
+          type: string
+          description: 이야기 제목
+        summary:
+          type: string
+          description: 이야기 요약
+        content:
+          type: string
+          description: 이야기 내용
+        category:
+          type: string
+          description: 이야기 카테고리
+          enum: *ref_9
+        thumbnailPath:
+          type: string
+          description: 이야기 썸네일 경로
+          nullable: true
+    UpdateStoryResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+    UpdateStoryResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 수정된 이야기 데이터
+          allOf:
+            - $ref: '#/components/schemas/UpdateStoryResponsePayloadDTO'
+      required:
+        - payload
+    DeleteStoryResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+    DeleteStoryResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 삭제된 이야기 데이터
+          allOf:
+            - $ref: '#/components/schemas/DeleteStoryResponsePayloadDTO'
+      required:
+        - payload
+    CheckUniqueTitleBodyDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 검증할 제목
+          example: 윤슬
+      required:
+        - title
+    CheckUniqueTitleResponsePayloadDTO:
+      type: object
+      properties:
+        isUnique:
+          type: boolean
+          description: 제목 중복 여부
+          example: true
+      required:
+        - isUnique
+    CheckUniqueTitleResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 제목 중복 여부
+          allOf:
+            - $ref: '#/components/schemas/CheckUniqueTitleResponsePayloadDTO'
+      required:
+        - payload
+    CreateStoryReactionBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        type:
+          type: string
+          description: 리액션 타입
+          enum:
+            - GOOD
+            - BAD
+            - FIRE
+            - SEE
+            - HEART
+            - SMILE
+            - SAD
+            - ANGRY
+            - WOW
+            - QUESTION
+      required:
+        - type
+    CreateStoryReactionResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - type
+        - userId
+        - storyId
+    CreateStoryReactionResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 생성된 리액션
+          allOf:
+            - $ref: '#/components/schemas/CreateStoryReactionResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    UpdateStoryReactionBodyDTO:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 리액션 타입
+          enum:
+            - GOOD
+            - BAD
+            - FIRE
+            - SEE
+            - HEART
+            - SMILE
+            - SAD
+            - ANGRY
+            - WOW
+            - QUESTION
+      required:
+        - type
+    UpdateStoryReactionResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - type
+        - userId
+        - storyId
+    UpdateStoryReactionResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 수정된 리액션
+          allOf:
+            - $ref: '#/components/schemas/UpdateStoryReactionResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    DeleteStoryReactionResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - type
+        - userId
+        - storyId
+    DeleteStoryReactionResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 삭제된 리액션
+          allOf:
+            - $ref: '#/components/schemas/DeleteStoryReactionResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    CreateStoryCommentBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        content:
+          type: string
+          description: 댓글 내용
+      required:
+        - content
+    StoryCommentReactionBasicEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+      required:
+        - id
+        - type
+        - userId
+    CreateStoryCommentResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        content:
+          type: string
+          description: 댓글 내용
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        user:
+          description: 댓글 작성자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 댓글 리액션
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryCommentReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - content
+        - userId
+        - storyId
+        - user
+        - reactions
+    CreateStoryCommentResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 생성된 댓글
+          allOf:
+            - $ref: '#/components/schemas/CreateStoryCommentResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    GetAllStoryCommentResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        content:
+          type: string
+          description: 댓글 내용
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        user:
+          description: 댓글 작성자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 댓글 리액션
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryCommentReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - content
+        - userId
+        - storyId
+        - user
+        - reactions
+    GetAllStoryCommentResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 댓글
+          type: array
+          items:
+            $ref: '#/components/schemas/GetAllStoryCommentResponsePayloadDTO'
+      required:
+        - payload
+    GetOneByIdStoryCommentResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        content:
+          type: string
+          description: 댓글 내용
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        user:
+          description: 댓글 작성자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 댓글 리액션
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryCommentReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - content
+        - userId
+        - storyId
+        - user
+        - reactions
+    GetOneByIdStoryCommentResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 댓글
+          allOf:
+            - $ref: '#/components/schemas/GetOneByIdStoryCommentResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    UpdateStoryCommentBodyDTO:
+      type: object
+      properties:
+        content:
+          type: string
+          description: 댓글 내용
+      required:
+        - content
+    UpdateStoryCommentResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        content:
+          type: string
+          description: 댓글 내용
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        user:
+          description: 댓글 작성자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 댓글 리액션
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - content
+        - userId
+        - storyId
+        - user
+        - reactions
+    UpdateStoryCommentResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 수정된 댓글
+          allOf:
+            - $ref: '#/components/schemas/UpdateStoryCommentResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    DeleteStoryCommentResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        content:
+          type: string
+          description: 댓글 내용
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - content
+        - userId
+        - storyId
+    DeleteStoryCommentResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 삭제된 댓글
+          allOf:
+            - $ref: '#/components/schemas/DeleteStoryCommentResponsePayloadDTO'
+      required:
+        - toast
+        - payload
+    CreateStoryCommentReactionBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        type:
+          type: string
+          description: 리액션 타입
+          enum:
+            - GOOD
+            - BAD
+            - FIRE
+            - SEE
+            - HEART
+            - SMILE
+            - SAD
+            - ANGRY
+            - WOW
+            - QUESTION
+      required:
+        - type
+    CreateStoryCommentReactionResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        commentId:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - type
+        - userId
+        - storyId
+        - commentId
+    CreateStoryCommentReactionResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 리액션
+          allOf:
+            - $ref: >-
+                #/components/schemas/CreateStoryCommentReactionResponsePayloadDTO
+      required:
+        - toast
+        - payload
+    UpdateStoryCommentReactionBodyDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 리액션 식별자
+          format: uuid
+        type:
+          type: string
+          description: 리액션 타입
+          enum:
+            - GOOD
+            - BAD
+            - FIRE
+            - SEE
+            - HEART
+            - SMILE
+            - SAD
+            - ANGRY
+            - WOW
+            - QUESTION
+      required:
+        - type
+    UpdateStoryCommentReactionResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        commentId:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - type
+        - userId
+        - storyId
+        - commentId
+    UpdateStoryCommentReactionResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 수정된 리액션
+          allOf:
+            - $ref: >-
+                #/components/schemas/UpdateStoryCommentReactionResponsePayloadDTO
+      required:
+        - toast
+        - payload
+    DeleteStoryCommentReactionResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        type:
+          description: 리액션 타입
+          allOf:
+            - $ref: '#/components/schemas/ReactionType'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        storyId:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        commentId:
+          type: string
+          description: 댓글 식별자
+          format: uuid
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - type
+        - userId
+        - storyId
+        - commentId
+    DeleteStoryCommentReactionResponseDTO:
+      type: object
+      properties:
+        toast:
+          description: 토스트 메시지
+          allOf:
+            - $ref: '#/components/schemas/ToastEntity'
+        payload:
+          description: 삭제된 리액션
+          allOf:
+            - $ref: >-
+                #/components/schemas/DeleteStoryCommentReactionResponsePayloadDTO
+      required:
+        - toast
+        - payload

@@ -17,11 +17,11 @@ import {
 } from "@sd/ui";
 
 import { routes } from "#fe/constants";
-import { IGetAllStoryAPIResponse } from "#fe/apis";
+import type { components } from "#be/@openapi";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
 interface IProps {
-  story: IGetAllStoryAPIResponse["payload"][number];
+  story: components["schemas"]["GetAllStoriesResponsePayloadDTO"];
 }
 
 const StoryCard: React.FC<IProps> = ({ story }) => {

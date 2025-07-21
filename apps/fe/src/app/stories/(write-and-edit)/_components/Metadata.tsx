@@ -39,7 +39,7 @@ const Metadata: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { createPresignedURLMutateAsync } = useImageMutations();
+  const { createPresignedURLMutation } = useImageMutations();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -50,7 +50,7 @@ const Metadata: React.FC = () => {
     try {
       const {
         payload: { url, fields },
-      } = await createPresignedURLMutateAsync({
+      } = await createPresignedURLMutation.mutateAsync({
         body: { filename: file.name },
       });
       await postUploadImageByPresignedURL({
