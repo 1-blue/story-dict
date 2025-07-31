@@ -3,18 +3,19 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { openapi } from "#fe/apis";
 import { routes } from "#fe/constants";
+import { revalidateTagForServer } from "#fe/actions/revalidateForServer";
 
 const useStoryMutations = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const { queryKey } = openapi.queryOptions("get", "/apis/v1/stories");
+  const path = queryKey[1];
 
   const storyCreateMutation = openapi.useMutation("post", "/apis/v1/stories", {
     onSuccess() {
       queryClient.invalidateQueries({ queryKey });
-      // FIXME: openapi-typescript 적용 후 처리하기
-      // revalidateTagForServer(queryKey);
+      revalidateTagForServer([path]);
       router.replace(routes.story.url);
     },
   });
@@ -24,8 +25,7 @@ const useStoryMutations = () => {
     {
       onSuccess() {
         queryClient.invalidateQueries({ queryKey });
-        // FIXME: openapi-typescript 적용 후 처리하기
-        // revalidateTagForServer(queryKey);
+        revalidateTagForServer([path]);
         router.replace(routes.story.url);
       },
     },
@@ -36,6 +36,7 @@ const useStoryMutations = () => {
     {
       onSuccess() {
         queryClient.invalidateQueries({ queryKey });
+        revalidateTagForServer([path]);
         router.replace(routes.story.url);
       },
     },

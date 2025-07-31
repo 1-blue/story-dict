@@ -37,12 +37,38 @@ const SidebarCenterGroup: React.FC<IProps> = ({
 
   if (routes.length === 0) return null;
 
+  // 정확한 경로 매칭 함수
+  const isExactMatch = (url: string) => pathname === url;
+
+  // 특수 패턴 매칭 확인 (activeWhenMatching 속성 활용)
+  const isSpecialPatternMatch = (route: IRoute) => {
+    if (!route.activeWhenMatching?.length) return false;
+
+    return route.activeWhenMatching.some((pattern) => pattern.test(pathname));
+  };
+
+  // 라우트가 active 상태인지 확인 (정확한 매칭 또는 특수 패턴 매칭)
+  const isRouteActive = (route: IRoute) => {
+    return isExactMatch(route.url) || isSpecialPatternMatch(route);
+  };
+
+  // 서브라우트가 있는 경우의 부모 active 상태 확인
+  const isParentActive = (route: IRoute) => {
+    if (!route.subRoutes?.length) {
+      return isRouteActive(route);
+    }
+
+    // 서브라우트 중 하나라도 active면 부모도 active
+    return route.subRoutes.some((subRoute) => isExactMatch(subRoute.url));
+  };
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
         {routes.map((route) => {
           const hasSubRoutes = route.subRoutes?.length;
+          const parentIsActive = isParentActive(route);
 
           return (
             <Collapsible key={route.label} asChild defaultOpen={defaultOpen}>
@@ -53,14 +79,10 @@ const SidebarCenterGroup: React.FC<IProps> = ({
                       <div
                         className={cn(
                           "cursor-pointer transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(route.url) && "!text-primary",
+                          parentIsActive && "!text-primary",
                         )}
                       >
-                        {pathname.includes(route.url) ? (
-                          <route.SIcon />
-                        ) : (
-                          <route.OIcon />
-                        )}
+                        {parentIsActive ? <route.SIcon /> : <route.OIcon />}
                         <span>{route.label}</span>
                       </div>
                     ) : (
@@ -68,10 +90,10 @@ const SidebarCenterGroup: React.FC<IProps> = ({
                         href={route.url}
                         className={cn(
                           "transition-colors hover:bg-muted-foreground/20",
-                          pathname.includes(route.url) && "!text-primary",
+                          isRouteActive(route) && "!text-primary",
                         )}
                       >
-                        {pathname.includes(route.url) ? (
+                        {isRouteActive(route) ? (
                           <route.SIcon />
                         ) : (
                           <route.OIcon />
@@ -91,18 +113,18 @@ const SidebarCenterGroup: React.FC<IProps> = ({
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {route.subRoutes?.map((subRoute) => (
+                        {route.subRoutes.map((subRoute) => (
                           <SidebarMenuSubItem key={subRoute.label}>
                             <SidebarMenuSubButton asChild>
                               <Link
                                 href={subRoute.url}
                                 className={cn(
                                   "transition-colors hover:bg-muted-foreground/20",
-                                  pathname.includes(subRoute.url) &&
+                                  isExactMatch(subRoute.url) &&
                                     "bg-primary/10 *:!text-primary",
                                 )}
                               >
-                                {pathname.includes(subRoute.url) ? (
+                                {isExactMatch(subRoute.url) ? (
                                   <subRoute.SIcon />
                                 ) : (
                                   <subRoute.OIcon />

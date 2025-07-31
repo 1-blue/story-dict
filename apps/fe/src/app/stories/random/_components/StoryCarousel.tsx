@@ -16,7 +16,7 @@ import {
 } from "@sd/ui";
 
 import { storyCategoryToKoreanMap } from "@sd/utils";
-import type { components } from "#be/@openapi";
+import type { components } from "#fe/@types/openapi";
 import { routes } from "#fe/constants";
 
 import Reactions from "#fe/app/stories/random/_components/Reactions";

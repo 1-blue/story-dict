@@ -8,6 +8,7 @@ import "#fe/css/github-markdown.css";
 import { openapi } from "#fe/apis";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
+import useMe from "#fe/hooks/queries/users/useMe";
 import StoryReactions from "#fe/app/stories/[title]/_components/Section01/StoryReactions";
 import StoryReactionPopover from "#fe/app/stories/[title]/_components/Section01/StoryReactionPopover";
 import StoryPanelPopover from "#fe/app/stories/[title]/_components/Section01/StoryPanelPopover";
@@ -19,6 +20,7 @@ interface IProps {
 }
 
 const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
+  const { me } = useMe();
   const { data: story } = openapi.useSuspenseQuery(
     "get",
     "/apis/v1/stories/title/{title}",
@@ -28,12 +30,14 @@ const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
 
   if (!story) return null;
 
+  const isOwner = me?.id === story.userId;
+
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-4">
       <section className="relative flex flex-col items-center justify-center gap-4 rounded-md border bg-background p-4">
         <div className="absolute top-0 flex w-full items-center justify-between px-2 pt-2">
           <Badge className="">{storyCategoryToKoreanMap[story.category]}</Badge>
-          <StoryPanelPopover storyId={story.id} />
+          {isOwner && <StoryPanelPopover storyId={story.id} />}
         </div>
         <div className="flex flex-col items-center justify-center gap-1">
           <h1 className="text-2xl font-bold">{story.title}</h1>

@@ -26,6 +26,7 @@ import { storyCategoryToKoreanMap } from "@sd/utils";
 import { handleError } from "#fe/libs/handleError";
 import { postUploadImageByPresignedURL } from "#fe/apis";
 import useImageMutations from "#fe/hooks/mutations/images/useImageMutations";
+import { usePathname } from "next/navigation";
 
 const CATEGORY_OPTIONS = Object.entries(storyCategoryToKoreanMap).map(
   ([key, value]) => ({
@@ -67,6 +68,9 @@ const Metadata: React.FC = () => {
   };
 
   const thumbnailPath = watch("thumbnailPath");
+
+  const pathname = usePathname();
+  const buttonText = pathname.includes("edit") ? "수정" : "생성";
 
   return (
     <article className="mx-auto mt-4 flex max-w-screen-md flex-col gap-4">
@@ -145,7 +149,7 @@ const Metadata: React.FC = () => {
         </div>
       </section>
 
-      <Button type="submit">생성</Button>
+      <Button type="submit">{buttonText}</Button>
     </article>
   );
 };

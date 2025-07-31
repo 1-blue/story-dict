@@ -1,7 +1,7 @@
 import createFetchClient from "openapi-fetch";
 import createClient from "openapi-react-query";
 
-import type { paths } from "#be/@openapi";
+import type { paths } from "#fe/@types/openapi";
 
 const fetchClient = createFetchClient<paths>({
   baseUrl: process.env.NEXT_PUBLIC_SERVER_URL,
