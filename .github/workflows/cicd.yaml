@@ -70,16 +70,6 @@ jobs:
         echo "START_TIME=$(TZ='Asia/Seoul' date +%s)" >> $GITHUB_ENV
         echo "START_TIME_FORMATTED=$(TZ='Asia/Seoul' date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
 
-    # 액션 총 소요시간 계산
-    - name: Calculate duration
-      if: always()
-      run: |
-        END_TIME=$(date +%s)
-        DURATION=$((END_TIME - START_TIME))
-        MINUTES=$((DURATION / 60))
-        SECONDS=$((DURATION % 60))
-        echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
-
     # 배포 시작 알림
     - name: Notify Slack on Start
       id: slack-start
@@ -184,6 +174,16 @@ jobs:
           --protocol tcp \
           --port 22 \
           --cidr $RUNNER_IP/32
+
+    # 액션 총 소요시간 계산
+    - name: Calculate duration
+      if: always()
+      run: |
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - START_TIME))
+        MINUTES=$((DURATION / 60))
+        SECONDS=$((DURATION % 60))
+        echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
 
     # 배포 성공 알림
     - name: Notify Slack on Success
