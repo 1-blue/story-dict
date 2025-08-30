@@ -23,17 +23,12 @@ import {
 } from "@sd/ui";
 
 import useMe from "#fe/hooks/queries/users/useMe";
-import { handleError } from "#fe/libs/handleError";
 
 const SidebarBottom: React.FC = () => {
-  const { me, logOutMutateAsync } = useMe();
+  const { me, logOutMutation } = useMe();
 
   const onLogOut = async () => {
-    try {
-      await logOutMutateAsync({});
-    } catch (error) {
-      handleError({ error });
-    }
+    await logOutMutation.mutateAsync({});
   };
 
   if (!me) return null;

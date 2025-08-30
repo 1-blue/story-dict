@@ -1,14 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { AspectRatio, Badge } from "@sd/ui";
 import { CalendarIcon, PersonIcon } from "@radix-ui/react-icons";
 
 import "#fe/css/github-markdown.css";
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
+import useMe from "#fe/hooks/queries/users/useMe";
 import StoryReactions from "#fe/app/stories/[title]/_components/Section01/StoryReactions";
 import StoryReactionPopover from "#fe/app/stories/[title]/_components/Section01/StoryReactionPopover";
 import StoryPanelPopover from "#fe/app/stories/[title]/_components/Section01/StoryPanelPopover";
@@ -20,21 +20,24 @@ interface IProps {
 }
 
 const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
-  const { data: story } = useSuspenseQuery({
-    queryKey: apis.stories.getOneByTitle.key({ params: { title: storyTitle } }),
-    queryFn: () =>
-      apis.stories.getOneByTitle.fn({ params: { title: storyTitle } }),
-    select: (data) => data.payload,
-  });
+  const { me } = useMe();
+  const { data: story } = openapi.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories/title/{title}",
+    { params: { path: { title: storyTitle } } },
+    { select: (data) => data.payload },
+  );
 
   if (!story) return null;
+
+  const isOwner = me?.id === story.userId;
 
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-4">
       <section className="relative flex flex-col items-center justify-center gap-4 rounded-md border bg-background p-4">
         <div className="absolute top-0 flex w-full items-center justify-between px-2 pt-2">
           <Badge className="">{storyCategoryToKoreanMap[story.category]}</Badge>
-          <StoryPanelPopover storyId={story.id} />
+          {isOwner && <StoryPanelPopover storyId={story.id} />}
         </div>
         <div className="flex flex-col items-center justify-center gap-1">
           <h1 className="text-2xl font-bold">{story.title}</h1>

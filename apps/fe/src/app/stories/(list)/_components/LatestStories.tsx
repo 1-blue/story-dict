@@ -1,21 +1,23 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import StoryCard from "#fe/components/StoryCard";
 
 const LatestStories: React.FC = () => {
-  const { data: stories } = useSuspenseQuery({
-    queryKey: apis.stories.getAll.key(),
-    queryFn: apis.stories.getAll.fn,
-    select: (data) => data.payload,
-  });
+  const { data: stories } = openapi.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories",
+    undefined,
+    { select: (data) => data.payload },
+  );
 
   return (
     <article>
-      <ul className="flex flex-wrap gap-4">
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {stories.map((story) => (
-          <StoryCard key={story.id} story={story} />
+          <li key={story.id}>
+            <StoryCard story={story} className="h-full w-full" />
+          </li>
         ))}
       </ul>
     </article>

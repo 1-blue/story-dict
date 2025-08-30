@@ -11,22 +11,43 @@ async function main() {
   console.log(`🚀 Start seeding 🚀`);
 
   console.log(`✅ seeding to users ...`);
-  await prisma.user.createMany({
-    data: seedUsers,
-    skipDuplicates: true,
-  });
+  for (const user of seedUsers) {
+    await prisma.user.upsert({
+      where: { id: user.id },
+      update: {
+        password: user.password,
+        nickname: user.nickname,
+        role: user.role,
+        provider: user.provider,
+      },
+      create: user,
+    });
+  }
 
   console.log(`✅ seeding to stories ...`);
-  await prisma.story.createMany({
-    data: seedStories,
-    skipDuplicates: true,
-  });
+  for (const story of seedStories) {
+    await prisma.story.upsert({
+      where: { id: story.id },
+      update: {
+        summary: story.summary,
+        content: story.content,
+        category: story.category,
+        thumbnailPath: story.thumbnailPath,
+      },
+      create: story,
+    });
+  }
 
   console.log(`✅ seeding to comments ...`);
-  await prisma.storyComment.createMany({
-    data: seedComments,
-    skipDuplicates: true,
-  });
+  for (const comment of seedComments) {
+    await prisma.storyComment.upsert({
+      where: { id: comment.id },
+      update: {
+        content: comment.content,
+      },
+      create: comment,
+    });
+  }
 
   console.log(`🚀 Seeding finished 🚀`);
   console.groupEnd();

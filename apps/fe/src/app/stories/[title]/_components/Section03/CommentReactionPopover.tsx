@@ -20,9 +20,9 @@ const CommentReactionPopover: React.FC<IProps> = ({
   const { me } = useMe();
 
   const {
-    createStoryCommentReactionMutateAsync,
-    patchStoryCommentReactionMutateAsync,
-    deleteStoryCommentReactionMutateAsync,
+    createStoryCommentReactionMutation,
+    patchStoryCommentReactionMutation,
+    deleteStoryCommentReactionMutation,
   } = useStoryCommentReactionMutations({ storyId });
   const onClickReaction: React.MouseEventHandler<HTMLElement> = (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
@@ -35,22 +35,22 @@ const CommentReactionPopover: React.FC<IProps> = ({
 
     // 리액션 생성
     if (!exReaction) {
-      createStoryCommentReactionMutateAsync({
-        params: { storyId, commentId },
+      createStoryCommentReactionMutation.mutate({
+        params: { path: { storyId, commentId } },
         body: { type },
       });
     }
     // 리액션 교체
     else if (exReaction.type !== type) {
-      patchStoryCommentReactionMutateAsync({
-        params: { storyId, commentId, reactionId: exReaction.id },
+      patchStoryCommentReactionMutation.mutate({
+        params: { path: { storyId, commentId, reactionId: exReaction.id } },
         body: { type },
       });
     }
     // 리액션 제거
     else {
-      deleteStoryCommentReactionMutateAsync({
-        params: { storyId, commentId, reactionId: exReaction.id },
+      deleteStoryCommentReactionMutation.mutate({
+        params: { path: { storyId, commentId, reactionId: exReaction.id } },
       });
     }
   };

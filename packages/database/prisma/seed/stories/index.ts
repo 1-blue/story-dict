@@ -8,19 +8,25 @@ import { pureKoreanStories } from "./pureKorean";
 const datas: Pick<
   Prisma.StoryCreateInput,
   "title" | "summary" | "content" | "category"
->[] = [
-  ...etymologyStories,
-  ...generalKnowledgeStories,
-  ...informationStories,
-  ...nonsenseStories,
-  ...pureKoreanStories,
+>[][] = [
+  etymologyStories,
+  generalKnowledgeStories,
+  informationStories,
+  nonsenseStories,
+  pureKoreanStories,
 ];
 
 /** 기본 게시물들 */
-export const seedStories: Prisma.StoryCreateManyInput[] = datas.map(
-  (data, index) => ({
-    ...data,
-    id: `00000000-0000-0000-0000-${index}00000000000`.slice(0, 36),
-    userId: `00000000-0000-0000-0000-000000000000`,
-  })
+export const seedStories: Prisma.StoryCreateManyInput[] = datas.flatMap(
+  (data, index) =>
+    data.map((story, i) => {
+      const frontId = index.toString().padStart(8, "0");
+      const backId = i.toString().padStart(12, "0");
+
+      return {
+        ...story,
+        id: `${frontId}-0000-0000-0000-${backId}`,
+        userId: `00000000-0000-0000-0000-000000000000`,
+      };
+    })
 );

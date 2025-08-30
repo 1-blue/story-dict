@@ -14,9 +14,9 @@ const StoryReactionPopover: React.FC<IProps> = ({ reactions, storyId }) => {
   const { me } = useMe();
 
   const {
-    createStoryReactionMutateAsync,
-    patchStoryReactionMutateAsync,
-    deleteStoryReactionMutateAsync,
+    createStoryReactionMutation,
+    patchStoryReactionMutation,
+    deleteStoryReactionMutation,
   } = useStoryReactionMutations();
   const onClickReaction: React.MouseEventHandler<HTMLElement> = async (e) => {
     if (!(e.target instanceof HTMLButtonElement)) return;
@@ -29,22 +29,22 @@ const StoryReactionPopover: React.FC<IProps> = ({ reactions, storyId }) => {
 
     // 리액션 생성
     if (!exReaction) {
-      createStoryReactionMutateAsync({
-        params: { storyId },
+      createStoryReactionMutation.mutate({
+        params: { path: { storyId } },
         body: { type },
       });
     }
     // 리액션 교체
     else if (exReaction.type !== type) {
-      patchStoryReactionMutateAsync({
-        params: { storyId, reactionId: exReaction.id },
+      patchStoryReactionMutation.mutate({
+        params: { path: { storyId, reactionId: exReaction.id } },
         body: { type },
       });
     }
     // 리액션 제거
     else {
-      deleteStoryReactionMutateAsync({
-        params: { storyId, reactionId: exReaction.id },
+      deleteStoryReactionMutation.mutate({
+        params: { path: { storyId, reactionId: exReaction.id } },
       });
     }
   };

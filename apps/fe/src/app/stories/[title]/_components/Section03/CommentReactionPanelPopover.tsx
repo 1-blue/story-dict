@@ -14,11 +14,11 @@ const CommentReactionPanelPopover: React.FC<IProps> = ({
   storyId,
   commentId,
 }) => {
-  const { deleteStoryCommentMutateAsync } = useStoryCommentMutations({
-    storyId,
-  });
+  const { deleteStoryCommentMutation } = useStoryCommentMutations({ storyId });
   const onClickDeleteButton = () => {
-    deleteStoryCommentMutateAsync({ params: { storyId, commentId } });
+    deleteStoryCommentMutation.mutateAsync({
+      params: { path: { storyId, commentId } },
+    });
   };
 
   return (

@@ -1,8 +1,6 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
-
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import StoryCard from "#fe/components/StoryCard";
 import EmptyAlert from "#fe/components/EmptyAlert";
 
@@ -11,11 +9,12 @@ interface IProps {
 }
 
 const SearchedStories: React.FC<IProps> = ({ keyword }) => {
-  const { data: stories } = useSuspenseQuery({
-    queryKey: apis.stories.getManyKeyword.key({ params: { keyword } }),
-    queryFn: () => apis.stories.getManyKeyword.fn({ params: { keyword } }),
-    select: (data) => data.payload,
-  });
+  const { data: stories } = openapi.useSuspenseQuery(
+    "get",
+    "/apis/v1/stories/search/{keyword}",
+    { params: { path: { keyword } } },
+    { select: (data) => data.payload },
+  );
 
   return (
     <article>
@@ -28,7 +27,7 @@ const SearchedStories: React.FC<IProps> = ({ keyword }) => {
       ) : (
         <EmptyAlert
           title="이야기 없음"
-          description={`"${decodeURIComponent(keyword)}" 키워드의 이야기이 존재하지 않아요 🥲`}
+          description={`"${decodeURIComponent(keyword)}" 키워드의 이야기가 존재하지 않아요 🥲`}
         />
       )}
     </article>

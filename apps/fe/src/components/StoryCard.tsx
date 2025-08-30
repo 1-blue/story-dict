@@ -17,16 +17,17 @@ import {
 } from "@sd/ui";
 
 import { routes } from "#fe/constants";
-import { IGetAllStoryAPIResponse } from "#fe/apis";
+import type { components } from "#fe/@types/openapi";
 import { storyCategoryToKoreanMap } from "@sd/utils";
+import { cn } from "#ui/libs";
 
-interface IProps {
-  story: IGetAllStoryAPIResponse["payload"][number];
+interface IProps extends React.HTMLAttributes<HTMLDivElement> {
+  story: components["schemas"]["GetAllStoriesResponsePayloadDTO"];
 }
 
-const StoryCard: React.FC<IProps> = ({ story }) => {
+const StoryCard: React.FC<IProps> = ({ story, className, ...props }) => {
   return (
-    <Card className="flex w-80 flex-col">
+    <Card {...props} className={cn("flex w-80 flex-col", className)}>
       <Link
         href={routes.story.detail.url(story.title)}
         className="flex flex-1 flex-col"

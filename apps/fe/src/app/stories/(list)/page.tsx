@@ -2,7 +2,7 @@ import { cache } from "react";
 import { Metadata } from "next";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { apis } from "#fe/apis";
+import { openapi } from "#fe/apis";
 import { getQueryClient } from "#fe/libs/getQueryClient";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import LatestStories from "#fe/app/stories/(list)/_components/LatestStories";
@@ -10,12 +10,15 @@ import LatestStories from "#fe/app/stories/(list)/_components/LatestStories";
 export const revalidate = 0;
 
 const queryClient = getQueryClient();
-const getAllStories = cache(() =>
-  queryClient.fetchQuery({
-    queryKey: apis.stories.getAll.key(),
-    queryFn: () => apis.stories.getAll.fn(),
-  }),
-);
+const getAllStories = cache(() => {
+  return queryClient.fetchQuery(
+    openapi.queryOptions("get", "/apis/v1/stories", {
+      next: {
+        tags: ["/apis/v1/stories"],
+      },
+    }),
+  );
+});
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const { payload: stories } = await getAllStories();
