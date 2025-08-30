@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { openapi } from "#fe/apis";
-import { components } from "#be/@openapi";
+import { components } from "#fe/@types/openapi";
 import StoryCarousel from "#fe/app/stories/random/_components/StoryCarousel";
 
 const StoryCarouselWrapper: React.FC = () => {

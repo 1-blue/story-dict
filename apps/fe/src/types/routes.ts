@@ -19,4 +19,6 @@ export interface IRoute {
   subRoutes?: IRoute[];
   /** 사이트맵 설정 */
   sitemap?: ISitemap;
+  /** 특정 패턴과 매칭될 때 active 상태가 되는 정규식 패턴들 */
+  activeWhenMatching?: RegExp[];
 }

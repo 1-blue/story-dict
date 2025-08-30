@@ -12,7 +12,11 @@ export const revalidate = 0;
 const queryClient = getQueryClient();
 const getAllStories = cache(() => {
   return queryClient.fetchQuery(
-    openapi.queryOptions("get", "/apis/v1/stories"),
+    openapi.queryOptions("get", "/apis/v1/stories", {
+      next: {
+        tags: ["/apis/v1/stories"],
+      },
+    }),
   );
 });
 
