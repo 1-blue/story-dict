@@ -23,9 +23,9 @@ const CategoryStories: React.FC<IProps> = ({ category }) => {
       <CategoryForm defaultCategory={category} />
 
       {stories.length > 0 ? (
-        <ul className="flex flex-wrap gap-4">
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {stories.map((story) => (
-            <StoryCard key={story.id} story={story} />
+            <StoryCard key={story.id} story={story} className="h-full w-full" />
           ))}
         </ul>
       ) : (
