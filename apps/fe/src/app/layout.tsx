@@ -8,7 +8,6 @@ import { ThemeProvider } from "@sd/ui/theme";
 import ClarityProvider from "#fe/providers/ClarityProvider";
 import ShortCutProvider from "#fe/providers/ShortCutProvider";
 import TanstackQueryProvider from "#fe/providers/TanstackQueryProvider";
-import Layout from "#fe/components/layouts/Layout";
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 
 export const metadata: Metadata = getSharedMetadata();
@@ -35,7 +34,7 @@ const RootLayout: React.FC<IProps> = ({ children }) => {
             <ShortCutProvider />
             <Toaster closeButton />
 
-            <Layout>{children}</Layout>
+            <>{children}</>
           </ThemeProvider>
         </TanstackQueryProvider>
       </body>

@@ -6,7 +6,7 @@ export const breadcrumbToKoreanMap: Record<string, string> = {
   signup: "회원가입",
   post: "이야기",
   category: "카테고리",
-  random: "랜덤",
+  shorts: "쇼츠",
   write: "글쓰기",
   edit: "수정",
   search: "검색",
