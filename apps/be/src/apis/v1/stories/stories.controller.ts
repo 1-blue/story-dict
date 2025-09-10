@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
@@ -24,8 +23,6 @@ import {
   UpdateStoryBodyDTO,
   UpdateStoryParamDTO,
   UpdateStoryResponseDTO,
-  GetManyRandomStoryQueryDTO,
-  GetManyRandomStoryResponseDTO,
   GetManyByKeywordParamDTO,
   GetManyByKeywordResponseDTO,
   GetAllStoryByCategoryParamDTO,
@@ -39,6 +36,7 @@ import {
   GetOneStoryByIdResponseDTO,
   DeleteStoryParamDTO,
   DeleteStoryResponseDTO,
+  GetManyShortsResponseDTO,
 } from "#be/apis/v1/stories/dtos";
 
 @Controller("apis/v1/stories")
@@ -77,19 +75,6 @@ export class StoriesController {
     };
   }
 
-  @Get("/random")
-  @ApiOperation({ summary: "랜덤 이야기 조회" })
-  @ApiResponse({
-    status: 200,
-    description: "랜덤 이야기 조회 성공",
-    type: GetManyRandomStoryResponseDTO,
-  })
-  async getManyRandom(@Query() queryDTO: GetManyRandomStoryQueryDTO) {
-    return {
-      payload: await this.storiesService.getManyRandom(queryDTO),
-    };
-  }
-
   @Get("/title/:title")
   @ApiOperation({ summary: "제목으로 이야기 조회" })
   @ApiResponse({
@@ -100,6 +85,19 @@ export class StoriesController {
   async getOneByTitle(@Param() paramDTO: GetOneStoryByTitleParamDTO) {
     return {
       payload: await this.storiesService.getOneByTitle(paramDTO),
+    };
+  }
+
+  @Get("/shorts")
+  @ApiOperation({ summary: "쇼츠 이야기 조회" })
+  @ApiResponse({
+    status: 200,
+    description: "쇼츠 이야기 조회 성공",
+    type: GetManyShortsResponseDTO,
+  })
+  async getManyShorts() {
+    return {
+      payload: await this.storiesService.getManyShorts({}),
     };
   }
 

@@ -7,4 +7,4 @@ export * from "./get-all-by-category.dto";
 export * from "./check-unique-title.dto";
 export * from "./delete.dto";
 export * from "./update.dto";
-export * from "./get-many-random.dto";
+export * from "./get-many-shorts.dto";

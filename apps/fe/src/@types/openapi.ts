@@ -206,23 +206,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/apis/v1/stories/random": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 랜덤 이야기 조회 */
-        get: operations["StoriesController_getManyRandom"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/apis/v1/stories/title/{title}": {
         parameters: {
             query?: never;
@@ -304,6 +287,23 @@ export interface paths {
         put?: never;
         /** 제목 중복 여부 확인 */
         post: operations["StoriesController_checkUniqueTitle"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/apis/v1/stories/shorts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 쇼츠 이야기 조회 */
+        get: operations["StoriesController_getManyShorts"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -946,6 +946,17 @@ export interface components {
             /** @description 모든 이야기 데이터 */
             payload: components["schemas"]["GetAllStoriesResponsePayloadDTO"][];
         };
+        UserBasicEntity: {
+            /**
+             * Format: uuid
+             * @description 유저 식별자
+             */
+            id: string;
+            /** @description 유저 닉네임 */
+            nickname: string;
+            /** @description 유저 이미지 경로 */
+            imagePath: string | null;
+        };
         /**
          * @description 리액션 타입
          * @enum {string}
@@ -964,63 +975,6 @@ export interface components {
              * @description 유저 식별자
              */
             userId: string;
-        };
-        GetManyRandomStoryResponsePayloadDTO: {
-            /**
-             * Format: uuid
-             * @description 스토리 식별자
-             */
-            id: string;
-            /**
-             * Format: date-time
-             * @description 생성 일자
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description 수정 일자
-             */
-            updatedAt: string;
-            /**
-             * Format: date-time
-             * @description 삭제 일자
-             */
-            deletedAt: string | null;
-            /** @description 스토리 제목 */
-            title: string;
-            /** @description 스토리 요약 */
-            summary: string;
-            /** @description 스토리 내용 */
-            content: string;
-            /** @description 스토리 썸네일 이미지 경로 */
-            thumbnailPath: string | null;
-            /**
-             * @description 스토리 카테고리
-             * @default GENERAL_KNOWLEDGE
-             */
-            category: components["schemas"]["StoryCategory"];
-            /**
-             * Format: uuid
-             * @description 유저 식별자
-             */
-            userId: string;
-            /** @description 이야기 반응 목록 */
-            reactions: components["schemas"]["StoryReactionBasicEntity"][];
-        };
-        GetManyRandomStoryResponseDTO: {
-            /** @description 랜덤 이야기 목록 */
-            payload: components["schemas"]["GetManyRandomStoryResponsePayloadDTO"][];
-        };
-        UserBasicEntity: {
-            /**
-             * Format: uuid
-             * @description 유저 식별자
-             */
-            id: string;
-            /** @description 유저 닉네임 */
-            nickname: string;
-            /** @description 유저 이미지 경로 */
-            imagePath: string | null;
         };
         GetOneStoryByTitleResponsePayloadDTO: {
             /**
@@ -1335,6 +1289,52 @@ export interface components {
         CheckUniqueTitleResponseDTO: {
             /** @description 제목 중복 여부 */
             payload: components["schemas"]["CheckUniqueTitleResponsePayloadDTO"];
+        };
+        GetManyShortsResponsePayloadDTO: {
+            /**
+             * Format: uuid
+             * @description 스토리 식별자
+             */
+            id: string;
+            /**
+             * Format: date-time
+             * @description 생성 일자
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description 수정 일자
+             */
+            updatedAt: string;
+            /**
+             * Format: date-time
+             * @description 삭제 일자
+             */
+            deletedAt: string | null;
+            /** @description 스토리 제목 */
+            title: string;
+            /** @description 스토리 요약 */
+            summary: string;
+            /** @description 스토리 내용 */
+            content: string;
+            /** @description 스토리 썸네일 이미지 경로 */
+            thumbnailPath: string | null;
+            /**
+             * @description 스토리 카테고리
+             * @default GENERAL_KNOWLEDGE
+             */
+            category: components["schemas"]["StoryCategory"];
+            /**
+             * Format: uuid
+             * @description 유저 식별자
+             */
+            userId: string;
+            /** @description 리액션 목록 */
+            reactions: components["schemas"]["StoryReactionBasicEntity"][];
+        };
+        GetManyShortsResponseDTO: {
+            /** @description 이야기 목록 */
+            payload: components["schemas"]["GetManyShortsResponsePayloadDTO"][];
         };
         CreateStoryReactionBodyDTO: {
             /**
@@ -2193,29 +2193,6 @@ export interface operations {
             };
         };
     };
-    StoriesController_getManyRandom: {
-        parameters: {
-            query: {
-                /** @description 존재하는 이야기 식별자 */
-                existingIds: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description 랜덤 이야기 조회 성공 */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetManyRandomStoryResponseDTO"];
-                };
-            };
-        };
-    };
     StoriesController_getOneByTitle: {
         parameters: {
             query?: never;
@@ -2378,6 +2355,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CheckUniqueTitleResponseDTO"];
+                };
+            };
+        };
+    };
+    StoriesController_getManyShorts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 쇼츠 이야기 조회 성공 */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetManyShortsResponseDTO"];
                 };
             };
         };
