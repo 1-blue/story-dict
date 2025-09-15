@@ -16,7 +16,7 @@ import {
   GetOneStoryByTitleParamDTO,
   GetOneStoryByIdParamDTO,
   DeleteStoryParamDTO,
-  GetManyShortsParamDTO,
+  GetManyShortsQueryDTO,
 } from "#be/apis/v1/stories/dtos";
 
 @Injectable()
@@ -117,6 +117,35 @@ export class StoriesService {
     }
 
     return exStory;
+  }
+
+  /** 쇼츠 이야기들 가져오기 */
+  async getManyShorts({ page, limit }: GetManyShortsQueryDTO) {
+    const stories = await this.prismaService.story.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            imagePath: true,
+          },
+        },
+        reactions: {
+          select: {
+            id: true,
+            type: true,
+            userId: true,
+          },
+        },
+      },
+    });
+
+    return stories;
   }
 
   /** 키워드 기반 이야기 찾기 */
@@ -239,10 +268,5 @@ export class StoriesService {
     });
 
     return { isUnique: !exStory };
-  }
-
-  /** 쇼츠 이야기들 가져오기 */
-  async getManyShorts({}: GetManyShortsParamDTO) {
-    return await this.prismaService.story.findMany();
   }
 }

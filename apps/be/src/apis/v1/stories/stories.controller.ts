@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from "@nestjs/common";
@@ -37,6 +38,7 @@ import {
   DeleteStoryParamDTO,
   DeleteStoryResponseDTO,
   GetManyShortsResponseDTO,
+  GetManyShortsQueryDTO,
 } from "#be/apis/v1/stories/dtos";
 
 @Controller("apis/v1/stories")
@@ -89,15 +91,15 @@ export class StoriesController {
   }
 
   @Get("/shorts")
-  @ApiOperation({ summary: "쇼츠 이야기 조회" })
+  @ApiOperation({ summary: "이야기 쇼츠들 조회" })
   @ApiResponse({
     status: 200,
-    description: "쇼츠 이야기 조회 성공",
+    description: "이야기 쇼츠들 조회 성공",
     type: GetManyShortsResponseDTO,
   })
-  async getManyShorts() {
+  async getManyShorts(@Query() queryDTO: GetManyShortsQueryDTO) {
     return {
-      payload: await this.storiesService.getManyShorts({}),
+      payload: await this.storiesService.getManyShorts(queryDTO),
     };
   }
 

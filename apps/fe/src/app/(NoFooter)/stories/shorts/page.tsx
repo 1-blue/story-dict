@@ -1,16 +1,19 @@
 import type { Metadata, NextPage } from "next";
 import { cache } from "react";
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 import { getQueryClient } from "#fe/libs/getQueryClient";
 import { openapi } from "#fe/apis";
-import ShortsScrollContainer from "./_components/ShortsScrollContainer";
+import ShortStoryDetail from "./_components/ShortStoryDetail";
 
 const queryClient = getQueryClient();
 const getShortsStories = cache(() => {
   return queryClient.fetchQuery(
-    openapi.queryOptions("get", "/apis/v1/stories/shorts"),
+    openapi.queryOptions("get", "/apis/v1/stories/shorts", {
+      params: {
+        query: { page: 1, limit: 1 },
+      },
+    }),
   );
 });
 
@@ -28,14 +31,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
   });
 };
 
-const Page: NextPage = async () => {
-  const { payload: stories } = await getShortsStories();
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <ShortsScrollContainer stories={stories} />
-    </HydrationBoundary>
-  );
+const Page: NextPage = () => {
+  return <ShortStoryDetail />;
 };
 
 export default Page;

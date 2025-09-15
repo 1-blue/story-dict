@@ -4,7 +4,7 @@ import { storyCategoryToKoreanMap } from "@sd/utils";
 export const breadcrumbToKoreanMap: Record<string, string> = {
   login: "로그인",
   signup: "회원가입",
-  post: "이야기",
+  stories: "이야기들",
   category: "카테고리",
   shorts: "쇼츠",
   write: "글쓰기",

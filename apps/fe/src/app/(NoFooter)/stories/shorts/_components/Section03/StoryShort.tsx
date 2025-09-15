@@ -1,33 +1,26 @@
 "use client";
 
 import Image from "next/image";
-import { AspectRatio, Badge, Button, toast } from "@sd/ui";
-import { CalendarIcon, PersonIcon } from "@radix-ui/react-icons";
-import { ShareIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { PersonIcon } from "@radix-ui/react-icons";
 
-import "#fe/css/github-markdown.css";
-import { openapi } from "#fe/apis";
+import { Button, Badge, toast, AspectRatio } from "@sd/ui";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
+import type { components } from "#fe/@types/openapi";
 import useMe from "#fe/hooks/queries/users/useMe";
-import StoryReactions from "#fe/app/(All)/stories/[title]/_components/Section01/StoryReactions";
-import StoryReactionPopover from "#fe/app/(All)/stories/[title]/_components/Section01/StoryReactionPopover";
-import StoryPanelPopover from "#fe/app/(All)/stories/[title]/_components/Section01/StoryPanelPopover";
 import MarkdownViewer from "#fe/app/(All)/stories/[title]/_components/Section02/MarkdownViewer";
+import StoryPanelPopover from "#fe/app/(All)/stories/[title]/_components/Section01/StoryPanelPopover";
 import CommentSheet from "#fe/app/(All)/stories/[title]/_components/Section03/CommentSheet";
+import StoryReactionPopover from "#fe/app/(All)/stories/[title]/_components/Section01/StoryReactionPopover";
+import StoryReactions from "#fe/app/(All)/stories/[title]/_components/Section01/StoryReactions";
 
 interface IProps {
-  storyTitle: string;
+  story: components["schemas"]["GetManyShortsResponsePayloadDTO"];
 }
 
-const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
+const StoryShort: React.FC<IProps> = ({ story }) => {
   const { me } = useMe();
-  const { data: story } = openapi.useSuspenseQuery(
-    "get",
-    "/apis/v1/stories/title/{title}",
-    { params: { path: { title: storyTitle } } },
-    { select: (data) => data.payload },
-  );
 
   const onClickShare = async () => {
     const hasNavigatorShare = typeof navigator.share !== "undefined";
@@ -57,8 +50,6 @@ const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
       );
     }
   };
-
-  if (!story) return null;
 
   const isOwner = me?.id === story.userId;
 
@@ -131,4 +122,4 @@ const StoryDetail: React.FC<IProps> = ({ storyTitle }) => {
   );
 };
 
-export default StoryDetail;
+export default StoryShort;

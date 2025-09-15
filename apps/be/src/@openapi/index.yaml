@@ -231,15 +231,29 @@ paths:
   /apis/v1/stories/shorts:
     get:
       operationId: StoriesController_getManyShorts
-      parameters: []
+      parameters:
+        - name: page
+          required: true
+          in: query
+          description: 쇼츠 페이지
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: true
+          in: query
+          description: 쇼츠 개수
+          schema:
+            example: 1
+            type: number
       responses:
         '200':
-          description: 쇼츠 이야기 조회 성공
+          description: 이야기 쇼츠들 조회 성공
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetManyShortsResponseDTO'
-      summary: 쇼츠 이야기 조회
+      summary: 이야기 쇼츠들 조회
       tags: *ref_3
   /apis/v1/stories/{storyId}:
     get:
@@ -1676,6 +1690,10 @@ components:
           type: string
           description: 유저 식별자
           format: uuid
+        user:
+          description: 유저 식별자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
         reactions:
           description: 리액션 목록
           type: array
@@ -1692,6 +1710,7 @@ components:
         - thumbnailPath
         - category
         - userId
+        - user
         - reactions
     GetManyShortsResponseDTO:
       type: object
