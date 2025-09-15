@@ -5,10 +5,9 @@ import {
   StoryReactionBasicEntity,
   UserBasicEntity,
 } from "#be/entities";
-import { IsNumber, IsOptional } from "class-validator";
+import { IsNumber } from "class-validator";
 
 export class GetManyShortsQueryDTO {
-  @IsOptional()
   @IsNumber({}, { message: "쇼츠 페이지는 숫자 형태만 가능합니다." })
   @ApiProperty({
     description: "쇼츠 페이지",
@@ -17,7 +16,6 @@ export class GetManyShortsQueryDTO {
   })
   page: number;
 
-  @IsOptional()
   @IsNumber({}, { message: "쇼츠 개수는 숫자 형태만 가능합니다." })
   @ApiProperty({
     description: "쇼츠 개수",
