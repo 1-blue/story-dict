@@ -1,11 +1,21 @@
 name: CD with Docker
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    types: [closed]
-    branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: '배포할 환경을 선택하세요 ( 현재 의미 없음 )'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - production
+        - staging
+      confirm_deploy:
+        description: '배포를 진행하시겠습니까?'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -16,8 +26,8 @@ env:
   SLACK_FAILURE_COLOR: "#ef4444"
   SLACK_COMMON_FIELDS: |
     {
-      "title": "${{ github.event_name == 'pull_request' && 'PR 제목' || '커밋 메시지' }}",
-      "value": "${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit.message }}",
+      "title": "배포 환경",
+      "value": "${{ github.event.inputs.environment }}",
       "short": true
     },
     {
@@ -36,14 +46,19 @@ env:
       "short": true
     },
     {
-      "title": "${{ github.event_name == 'pull_request' && 'PR 브랜치' || '브랜치' }}",
-      "value": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+      "title": "브랜치",
+      "value": "${{ github.ref_name }}",
+      "short": true
+    },
+    {
+      "title": "실행자",
+      "value": "${{ github.actor }}",
       "short": true
     }
 
 jobs:
   Deploy:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.confirm_deploy == 'true'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -55,16 +70,6 @@ jobs:
         echo "START_TIME=$(TZ='Asia/Seoul' date +%s)" >> $GITHUB_ENV
         echo "START_TIME_FORMATTED=$(TZ='Asia/Seoul' date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
 
-    # 액션 총 소요시간 계산
-    - name: Calculate duration
-      if: always()
-      run: |
-        END_TIME=$(date +%s)
-        DURATION=$((END_TIME - START_TIME))
-        MINUTES=$((DURATION / 60))
-        SECONDS=$((DURATION % 60))
-        echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
-
     # 배포 시작 알림
     - name: Notify Slack on Start
       id: slack-start
@@ -75,8 +80,8 @@ jobs:
             "attachments": [
               {
                 "color": "${{ env.SLACK_START_COLOR }}",
-                "title": "🚀 배포 시작 🚀",
-                "text": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+                "title": "🚀 수동 배포 시작 🚀",
+                "text": "${{ github.event.inputs.environment }} 환경으로 배포를 시작합니다.",
                 "fields": [
                   {
                     "title": "시작시간",
@@ -176,6 +181,16 @@ jobs:
           --port 22 \
           --cidr $RUNNER_IP/32
 
+    # 액션 총 소요시간 계산
+    - name: Calculate duration
+      if: always()
+      run: |
+        END_TIME=$(date +%s)
+        DURATION=$((END_TIME - START_TIME))
+        MINUTES=$((DURATION / 60))
+        SECONDS=$((DURATION % 60))
+        echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
+
     # 배포 성공 알림
     - name: Notify Slack on Success
       if: success()
@@ -186,8 +201,8 @@ jobs:
             "attachments": [
               {
                 "color": "${{ env.SLACK_SUCCESS_COLOR }}",
-                "title": "⭕️ 배포 성공 ⭕️",
-                "text": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+                "title": "⭕️ 수동 배포 성공 ⭕️",
+                "text": "${{ github.event.inputs.environment }} 환경으로 배포가 성공적으로 완료되었습니다.",
                 "fields": [
                   {
                     "title": "소요시간",
@@ -214,8 +229,8 @@ jobs:
             "attachments": [
               {
                 "color": "${{ env.SLACK_FAILURE_COLOR }}",
-                "title": "❌ 배포 실패 ❌",
-                "text": "${{ github.event_name == 'pull_request' && format('{0} → {1}', github.event.pull_request.head.ref, github.event.pull_request.base.ref) || github.ref_name }}",
+                "title": "❌ 수동 배포 실패 ❌",
+                "text": "${{ github.event.inputs.environment }} 환경으로 배포 중 오류가 발생했습니다.",
                 "fields": [
                   {
                     "title": "소요시간",
