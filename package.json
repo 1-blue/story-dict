@@ -26,9 +26,7 @@
     "db:reset": "pnpm --filter db db:reset",
     "db:seed": "pnpm --filter db db:seed",
 
-    "openapi:generate:fe": "pnpm --filter fe openapi:generate",
-    "openapi:generate:be": "pnpm --filter be openapi:generate",
-    "openapi:generate": "pnpm --filter be openapi:generate && pnpm --filter fe openapi:generate",
+    "openapi:generate": "pnpm --filter fe openapi:generate",
     
     "ui:add": "pnpm --filter ui ui:add",
 

@@ -9,6 +9,7 @@
     "start:prod": "next start -p 9000",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
+    
     "openapi:generate": "openapi-typescript ../be/src/@openapi/index.yaml -o ./src/@types/openapi.ts"
   },
   "dependencies": {
