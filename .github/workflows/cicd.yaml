@@ -105,6 +105,12 @@ jobs:
         mkdir -p ./apps/be
         echo "${{ secrets.BACKEND_ENV_FILE }}" > ./envs/be/.env.production
         echo "${{ secrets.BACKEND_ENV_FILE }}" > ./apps/be/.env.production
+        echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./apps/fe/.env.production
+
+    - name: Create Database env files
+      run: |
+        mkdir -p ./packages/database
+        echo "${{ secrets.DATABASE_ENV_FILE }}" > ./packages/database/.env
 
     - name: Install Docker Compose
       run: |

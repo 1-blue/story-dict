@@ -1,10 +1,50 @@
+# Git 관련
 **/.git
 **/.gitignore
+**/.gitattributes
+
+# Docker 관련
 **/.dockerignore
 **/Dockerfile
+**/docker-compose*.yaml
+
+# 빌드 결과물
 **/.next
 **/node_modules
 **/dist
-**/README.md
+**/build
+**/coverage
 
+# 환경 변수
 **/.env
+**/.env.*
+
+# 로그 파일
+**/*.log
+**/logs
+
+# 테스트 관련
+**/__tests__
+**/*.test.*
+**/*.spec.*
+**/coverage
+
+# 문서
+**/README.md
+**/CHANGELOG.md
+**/LICENSE
+
+# IDE 설정
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# OS 관련
+**/.DS_Store
+**/Thumbs.db
+
+# 임시 파일
+**/tmp
+**/temp
+**/*.tmp
