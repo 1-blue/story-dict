@@ -9,8 +9,8 @@
     "start:prod": "next start -p 9000",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-
-    "openapi:generate": "pnpm dlx openapi-typescript ../be/src/@openapi/index.yaml -o ./src/@types/openapi.ts"
+    
+    "openapi:generate": "openapi-typescript ../be/src/@openapi/index.yaml -o ./src/@types/openapi.ts"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
@@ -30,8 +30,8 @@
     "framer-motion": "^11.11.11",
     "next": "14.2.14",
     "next-themes": "^0.3.0",
-    "openapi-fetch": "^0.13.5",
-    "openapi-react-query": "^0.3.1",
+    "openapi-fetch": "^0.14.0",
+    "openapi-react-query": "^0.4.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
@@ -53,6 +53,7 @@
     "@types/uuid": "^10.0.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.14",
+    "openapi-typescript": "^7.9.1",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",

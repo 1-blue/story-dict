@@ -8,8 +8,8 @@ export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
       ...routes.story,
       label: "이야기",
       sitemap: DEFAULT_SITEMAP,
-      // 스토리 상세 페이지만 매칭 (write, random, category 등 기존 라우트 제외)
-      activeWhenMatching: [/^\/stories\/(?!write|random|category)[^\/]+$/],
+      // 스토리 상세 페이지만 매칭 (write, shorts, category 등 기존 라우트 제외)
+      activeWhenMatching: [/^\/stories\/(?!write|shorts|category)[^\/]+$/],
     },
     {
       ...routes.story.write,
@@ -17,8 +17,8 @@ export const NAV_ROUTES: Record<"main" | "auth" | "information", IRoute[]> = {
       sitemap: DEFAULT_SITEMAP,
     },
     {
-      ...routes.story.random,
-      label: "랜덤",
+      ...routes.story.shorts,
+      label: "쇼츠",
       sitemap: DEFAULT_SITEMAP,
     },
     {

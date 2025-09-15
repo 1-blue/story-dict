@@ -10,13 +10,13 @@ import {
   CreateStoryBodyDTO,
   UpdateStoryBodyDTO,
   UpdateStoryParamDTO,
-  GetManyRandomStoryQueryDTO,
   GetManyByKeywordParamDTO,
   GetAllStoryByCategoryParamDTO,
   CheckUniqueTitleBodyDTO,
   GetOneStoryByTitleParamDTO,
   GetOneStoryByIdParamDTO,
   DeleteStoryParamDTO,
+  GetManyShortsQueryDTO,
 } from "#be/apis/v1/stories/dtos";
 
 @Injectable()
@@ -119,18 +119,22 @@ export class StoriesService {
     return exStory;
   }
 
-  /** (FIXME: 비효율) 랜덤 이야기 찾기 */
-  async getManyRandom({ existingIds }: GetManyRandomStoryQueryDTO) {
-    const existingIdsArray = existingIds.split(",").map((id) => id.trim());
-
-    // 1. 먼저 조건에 맞는 모든 이야기를 가져옵니다
-    const availableStories = await this.prismaService.story.findMany({
-      where: {
-        id: {
-          notIn: existingIdsArray,
-        },
+  /** 쇼츠 이야기들 가져오기 */
+  async getManyShorts({ page, limit }: GetManyShortsQueryDTO) {
+    const stories = await this.prismaService.story.findMany({
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        createdAt: "desc",
       },
       include: {
+        user: {
+          select: {
+            id: true,
+            nickname: true,
+            imagePath: true,
+          },
+        },
         reactions: {
           select: {
             id: true,
@@ -141,17 +145,7 @@ export class StoriesService {
       },
     });
 
-    // 2. Fisher-Yates 셔플 알고리즘을 사용하여 배열을 무작위로 섞습니다
-    for (let i = availableStories.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [availableStories[i], availableStories[j]] = [
-        availableStories[j]!,
-        availableStories[i]!,
-      ];
-    }
-
-    // 3. 앞에서부터 4개만 반환합니다
-    return availableStories.slice(0, 4);
+    return stories;
   }
 
   /** 키워드 기반 이야기 찾기 */
