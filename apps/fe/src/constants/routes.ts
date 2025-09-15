@@ -4,7 +4,7 @@ import {
   KeyIcon as OKeyIcon,
   HomeIcon as OHomeIcon,
   PencilSquareIcon as OPencilSquareIcon,
-  CubeIcon as OCubeIcon,
+  WalletIcon as OWalletIcon,
   RectangleStackIcon as ORectangleStackIcon,
   CpuChipIcon as OCupChipIcon,
   CommandLineIcon as OCommandLineIcon,
@@ -17,7 +17,7 @@ import {
   KeyIcon as SKeyIcon,
   HomeIcon as SHomeIcon,
   PencilSquareIcon as SPencilSquareIcon,
-  CubeIcon as SCubeIcon,
+  WalletIcon as SWalletIcon,
   RectangleStackIcon as SRectangleStackIcon,
   CpuChipIcon as SCupChipIcon,
   CommandLineIcon as SCommandLineIcon,
@@ -68,11 +68,11 @@ export const routes = {
       OIcon: OPencilSquareIcon,
       SIcon: SPencilSquareIcon,
     },
-    random: {
-      url: "/stories/random",
+    shorts: {
+      url: "/stories/shorts",
       accessLevel: "public",
-      OIcon: OCubeIcon,
-      SIcon: SCubeIcon,
+      OIcon: OWalletIcon,
+      SIcon: SWalletIcon,
     },
     category: {
       url: "/stories/category",

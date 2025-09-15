@@ -37,8 +37,6 @@ export const handleError = ({ error }: IHandleErrorArgs) => {
     errorMessage = error.message;
   }
 
-  console.log("🚀 >> 1");
-
   toast.error(getErrorTitle(errorStatusCode), {
     description: errorMessage,
   });

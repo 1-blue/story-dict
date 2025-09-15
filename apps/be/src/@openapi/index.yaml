@@ -208,26 +208,6 @@ paths:
                 $ref: '#/components/schemas/GetAllStoriesResponseDTO'
       summary: 모든 이야기 조회
       tags: *ref_3
-  /apis/v1/stories/random:
-    get:
-      operationId: StoriesController_getManyRandom
-      parameters:
-        - name: existingIds
-          required: true
-          in: query
-          description: 존재하는 이야기 식별자
-          schema:
-            example: 1,2,3
-            type: string
-      responses:
-        '200':
-          description: 랜덤 이야기 조회 성공
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetManyRandomStoryResponseDTO'
-      summary: 랜덤 이야기 조회
-      tags: *ref_3
   /apis/v1/stories/title/{title}:
     get:
       operationId: StoriesController_getOneByTitle
@@ -247,6 +227,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetOneStoryByTitleResponseDTO'
       summary: 제목으로 이야기 조회
+      tags: *ref_3
+  /apis/v1/stories/shorts:
+    get:
+      operationId: StoriesController_getManyShorts
+      parameters:
+        - name: page
+          required: true
+          in: query
+          description: 쇼츠 페이지
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: true
+          in: query
+          description: 쇼츠 개수
+          schema:
+            example: 1
+            type: number
+      responses:
+        '200':
+          description: 이야기 쇼츠들 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetManyShortsResponseDTO'
+      summary: 이야기 쇼츠들 조회
       tags: *ref_3
   /apis/v1/stories/{storyId}:
     get:
@@ -1517,6 +1524,24 @@ components:
             $ref: '#/components/schemas/GetAllStoriesResponsePayloadDTO'
       required:
         - payload
+    UserBasicEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        nickname:
+          type: string
+          description: 유저 닉네임
+        imagePath:
+          type: string
+          description: 유저 이미지 경로
+          nullable: true
+      required:
+        - id
+        - nickname
+        - imagePath
     ReactionType:
       type: string
       enum:
@@ -1550,93 +1575,6 @@ components:
         - id
         - type
         - userId
-    GetManyRandomStoryResponsePayloadDTO:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 스토리 식별자
-          format: uuid
-        createdAt:
-          type: string
-          description: 생성 일자
-          format: date-time
-        updatedAt:
-          type: string
-          description: 수정 일자
-          format: date-time
-        deletedAt:
-          type: string
-          description: 삭제 일자
-          nullable: true
-          format: date-time
-        title:
-          type: string
-          description: 스토리 제목
-        summary:
-          type: string
-          description: 스토리 요약
-        content:
-          type: string
-          description: 스토리 내용
-        thumbnailPath:
-          type: string
-          description: 스토리 썸네일 이미지 경로
-          nullable: true
-        category:
-          description: 스토리 카테고리
-          default: GENERAL_KNOWLEDGE
-          allOf:
-            - $ref: '#/components/schemas/StoryCategory'
-        userId:
-          type: string
-          description: 유저 식별자
-          format: uuid
-        reactions:
-          description: 이야기 반응 목록
-          type: array
-          items:
-            $ref: '#/components/schemas/StoryReactionBasicEntity'
-      required:
-        - id
-        - createdAt
-        - updatedAt
-        - deletedAt
-        - title
-        - summary
-        - content
-        - thumbnailPath
-        - category
-        - userId
-        - reactions
-    GetManyRandomStoryResponseDTO:
-      type: object
-      properties:
-        payload:
-          description: 랜덤 이야기 목록
-          type: array
-          items:
-            $ref: '#/components/schemas/GetManyRandomStoryResponsePayloadDTO'
-      required:
-        - payload
-    UserBasicEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 유저 식별자
-          format: uuid
-        nickname:
-          type: string
-          description: 유저 닉네임
-        imagePath:
-          type: string
-          description: 유저 이미지 경로
-          nullable: true
-      required:
-        - id
-        - nickname
-        - imagePath
     GetOneStoryByTitleResponsePayloadDTO:
       type: object
       properties:
@@ -1684,7 +1622,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/UserBasicEntity'
         reactions:
-          description: 반응 목록
+          description: 리액션 목록
           type: array
           items:
             $ref: '#/components/schemas/StoryReactionBasicEntity'
@@ -1708,6 +1646,80 @@ components:
           description: 스토리 데이터
           allOf:
             - $ref: '#/components/schemas/GetOneStoryByTitleResponsePayloadDTO'
+      required:
+        - payload
+    GetManyShortsResponsePayloadDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 스토리 식별자
+          format: uuid
+        createdAt:
+          type: string
+          description: 생성 일자
+          format: date-time
+        updatedAt:
+          type: string
+          description: 수정 일자
+          format: date-time
+        deletedAt:
+          type: string
+          description: 삭제 일자
+          nullable: true
+          format: date-time
+        title:
+          type: string
+          description: 스토리 제목
+        summary:
+          type: string
+          description: 스토리 요약
+        content:
+          type: string
+          description: 스토리 내용
+        thumbnailPath:
+          type: string
+          description: 스토리 썸네일 이미지 경로
+          nullable: true
+        category:
+          description: 스토리 카테고리
+          default: GENERAL_KNOWLEDGE
+          allOf:
+            - $ref: '#/components/schemas/StoryCategory'
+        userId:
+          type: string
+          description: 유저 식별자
+          format: uuid
+        user:
+          description: 유저 식별자
+          allOf:
+            - $ref: '#/components/schemas/UserBasicEntity'
+        reactions:
+          description: 리액션 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/StoryReactionBasicEntity'
+      required:
+        - id
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - title
+        - summary
+        - content
+        - thumbnailPath
+        - category
+        - userId
+        - user
+        - reactions
+    GetManyShortsResponseDTO:
+      type: object
+      properties:
+        payload:
+          description: 이야기 목록
+          type: array
+          items:
+            $ref: '#/components/schemas/GetManyShortsResponsePayloadDTO'
       required:
         - payload
     GetOneStoryByIdResponsePayloadDTO:
@@ -1757,7 +1769,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/UserBasicEntity'
         reactions:
-          description: 반응 목록
+          description: 리액션 목록
           type: array
           items:
             $ref: '#/components/schemas/StoryReactionBasicEntity'
@@ -1895,7 +1907,7 @@ components:
           description: 유저 식별자
           format: uuid
         reactions:
-          description: 반응 목록
+          description: 리액션 목록
           type: array
           items:
             $ref: '#/components/schemas/StoryReactionBasicEntity'
