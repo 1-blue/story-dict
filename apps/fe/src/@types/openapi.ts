@@ -1017,7 +1017,7 @@ export interface components {
             userId: string;
             /** @description 유저 식별자 */
             user: components["schemas"]["UserBasicEntity"];
-            /** @description 반응 목록 */
+            /** @description 리액션 목록 */
             reactions: components["schemas"]["StoryReactionBasicEntity"][];
         };
         GetOneStoryByTitleResponseDTO: {
@@ -1113,7 +1113,7 @@ export interface components {
             userId: string;
             /** @description 유저 식별자 */
             user: components["schemas"]["UserBasicEntity"];
-            /** @description 반응 목록 */
+            /** @description 리액션 목록 */
             reactions: components["schemas"]["StoryReactionBasicEntity"][];
         };
         GetOneStoryByIdResponseDTO: {
@@ -1205,7 +1205,7 @@ export interface components {
              * @description 유저 식별자
              */
             userId: string;
-            /** @description 반응 목록 */
+            /** @description 리액션 목록 */
             reactions: components["schemas"]["StoryReactionBasicEntity"][];
         };
         GetAllStoryByCategoryResponseDTO: {

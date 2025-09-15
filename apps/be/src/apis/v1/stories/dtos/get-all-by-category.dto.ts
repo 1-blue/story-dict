@@ -18,7 +18,7 @@ export class GetAllStoryByCategoryParamDTO {
 
 export class GetAllStoryByCategoryResponsePayloadDTO extends StoryEntity {
   @ApiProperty({
-    description: "반응 목록",
+    description: "리액션 목록",
     type: [StoryReactionBasicEntity],
   })
   reactions: StoryReactionBasicEntity[];

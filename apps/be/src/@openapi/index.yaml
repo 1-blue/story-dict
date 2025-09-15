@@ -1622,7 +1622,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/UserBasicEntity'
         reactions:
-          description: 반응 목록
+          description: 리액션 목록
           type: array
           items:
             $ref: '#/components/schemas/StoryReactionBasicEntity'
@@ -1769,7 +1769,7 @@ components:
           allOf:
             - $ref: '#/components/schemas/UserBasicEntity'
         reactions:
-          description: 반응 목록
+          description: 리액션 목록
           type: array
           items:
             $ref: '#/components/schemas/StoryReactionBasicEntity'
@@ -1907,7 +1907,7 @@ components:
           description: 유저 식별자
           format: uuid
         reactions:
-          description: 반응 목록
+          description: 리액션 목록
           type: array
           items:
             $ref: '#/components/schemas/StoryReactionBasicEntity'
