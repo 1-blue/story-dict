@@ -4,10 +4,10 @@ services:
   fe:
     container_name: fe
     platform: linux/arm64
-    build: 
+    build:
       context: .
       dockerfile: ./apps/fe/Dockerfile
-    image: 1blue/storydict-fe:latest
+    image: 1-blue/story-dict-fe:latest
     restart: always
     env_file:
       - ./envs/fe/.env.production
@@ -22,7 +22,7 @@ services:
       dockerfile: ./apps/be/Dockerfile
     env_file:
       - ./envs/be/.env.production
-    image: 1blue/storydict-be:latest
+    image: 1-blue/story-dict-be:latest
     restart: always
     ports:
       - 9050:9050
