@@ -39,7 +39,9 @@ export const getSharedMetadata = ({
   keywords = sharedKeywords,
   images = sharedImages,
 }: IGetSharedMetadataArgs = {}): Metadata => ({
-  metadataBase: new URL(process.env.NEXT_PUBLIC_CLIENT_URL),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_CLIENT_URL || "https://story-dict.com",
+  ),
   title,
   description,
   keywords: [

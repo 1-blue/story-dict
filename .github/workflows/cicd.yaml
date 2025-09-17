@@ -4,26 +4,36 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: '배포할 환경을 선택하세요 ( 현재 의미 없음 )'
+        description: "배포할 환경을 선택하세요"
         required: true
-        default: 'production'
+        default: "production"
         type: choice
         options:
-        - production
-        - staging
-      confirm_deploy:
-        description: '배포를 진행하시겠습니까?'
-        required: true
-        default: false
-        type: boolean
+          - production
+          - staging
 
 permissions:
   contents: read
 
 env:
-  SLACK_START_COLOR: "#6366f1"
-  SLACK_SUCCESS_COLOR: "#22c55e"
-  SLACK_FAILURE_COLOR: "#ef4444"
+  # Slack 알림 색상 정의
+  SLACK_START_COLOR: "#155dfc"
+  SLACK_SUCCESS_COLOR: "#00a63e"
+  SLACK_FAILURE_COLOR: "#e7000b"
+
+  # Docker 관련 설정
+  DOCKER_PLATFORM: "linux/arm64"
+  DOCKER_COMPOSE_VERSION: "v2.24.5"
+
+  # 프로젝트 관련 설정
+  PROJECT_NAME: "story-dict"
+  ECR_FE_REPO: "1-blue/story-dict-fe"
+  ECR_BE_REPO: "1-blue/story-dict-be"
+
+  # 시간대 설정
+  TZ: "Asia/Seoul"
+
+  # Slack 공통 필드 - 모든 알림에서 재사용
   SLACK_COMMON_FIELDS: |
     {
       "title": "배포 환경",
@@ -58,190 +68,320 @@ env:
 
 jobs:
   Deploy:
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.confirm_deploy == 'true'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
 
-    # 시작 시간 설정
-    - name: Set start time
-      run: |
-        echo "TZ='Asia/Seoul'" >> $GITHUB_ENV
-        echo "START_TIME=$(TZ='Asia/Seoul' date +%s)" >> $GITHUB_ENV
-        echo "START_TIME_FORMATTED=$(TZ='Asia/Seoul' date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
+      # 시작 시간 추적을 통한 배포 소요시간 계산
+      - name: Set start time
+        run: |
+          echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+          echo "START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
 
-    # 배포 시작 알림
-    - name: Notify Slack on Start
-      id: slack-start
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        payload: |
-          {
-            "attachments": [
-              {
-                "color": "${{ env.SLACK_START_COLOR }}",
-                "title": "🚀 수동 배포 시작 🚀",
-                "text": "${{ github.event.inputs.environment }} 환경으로 배포를 시작합니다.",
-                "fields": [
-                  {
-                    "title": "시작시간",
-                    "value": "${{ env.START_TIME_FORMATTED }}",
-                    "short": true
-                  },
-                  ${{ env.SLACK_COMMON_FIELDS }}
-                ]
-              }
-            ]
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      # 마지막 커밋 메시지 추출
+      - name: Extract last commit message
+        run: |
+          SUBJECT=$(git log -1 --pretty=%s)
+          echo "COMMIT_SUBJECT=$SUBJECT" >> $GITHUB_ENV
 
-    - name: Create Frontend env files
-      run: |
-        mkdir -p ./envs/fe
-        mkdir -p ./apps/fe
-        echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./envs/fe/.env.production
-        echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./apps/fe/.env.production
+      # 모노레포 환경에서 변경 감지를 통한 선택적 빌드
+      - name: Check for changes
+        id: changes
+        run: |
+          set -e
+          FE_CHANGED=false
+          BE_CHANGED=false
+          ANY_CHANGED=false
 
-    - name: Create Backend env files
-      run: |
-        mkdir -p ./envs/be
-        mkdir -p ./apps/be
-        echo "${{ secrets.BACKEND_ENV_FILE }}" > ./envs/be/.env.production
-        echo "${{ secrets.BACKEND_ENV_FILE }}" > ./apps/be/.env.production
-        echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./apps/fe/.env.production
+          # 기준 커밋 계산
+          BASE=$(git rev-parse HEAD~1 2>/dev/null || echo "")
 
-    - name: Create Database env files
-      run: |
-        mkdir -p ./packages/database
-        echo "${{ secrets.DATABASE_ENV_FILE }}" > ./packages/database/.env
+          # 첫 커밋이거나 얕은 히스토리인 경우 안전하게 모든 앱 빌드
+          if [ -z "$BASE" ]; then
+            git fetch --deepen=1 origin "$GITHUB_REF" || true
+            BASE=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+          fi
 
-    - name: Install Docker Compose
-      run: |
-        sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
+          if [ -z "$BASE" ]; then
+            FE_CHANGED=true
+            BE_CHANGED=true
+            ANY_CHANGED=true
+          else
+            CHANGED_FILES=$(git diff --name-only "$BASE"...HEAD || true)
 
-    - name: Docker LogIn
-      run: |
-        docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+            # 각 앱별 변경사항 확인
+            echo "$CHANGED_FILES" | grep -E '^apps/fe/' >/dev/null && FE_CHANGED=true || true
+            echo "$CHANGED_FILES" | grep -E '^apps/be/' >/dev/null && BE_CHANGED=true || true
 
-    - name: Docker Build
-      run: |
-        docker buildx create --use
-        DOCKER_DEFAULT_PLATFORM=linux/arm64 docker-compose build
+            # 공유 패키지 변경 시 모든 앱 빌드
+            if echo "$CHANGED_FILES" | grep -E '^packages/' >/dev/null; then
+              FE_CHANGED=true
+              BE_CHANGED=true
+            fi
 
-    - name: Docker Push
-      run: |
-        docker-compose push
+            [ "$FE_CHANGED" = "true" ] || [ "$BE_CHANGED" = "true" ] && ANY_CHANGED=true
+          fi
 
-    # AWS 인증
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-region: ${{ secrets.AWS_REGION }}
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-        aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+          # 환경변수 설정
+          echo "FE_CHANGED=$FE_CHANGED" >> $GITHUB_ENV
+          echo "BE_CHANGED=$BE_CHANGED" >> $GITHUB_ENV
+          echo "ANY_CHANGED=$ANY_CHANGED" >> $GITHUB_ENV
 
-    # 보안 그룹에 인바운드 규칙 추가
-    - name: Add GitHub Actions IP to Security Group
-      run: |
-        # GitHub Actions 러너의 공인 IP 주소 가져오기
-        RUNNER_IP=$(curl -s https://api.ipify.org)
-        echo "Add GitHub Actions IP to Security Group: $RUNNER_IP"
-        aws ec2 authorize-security-group-ingress \
-          --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
-          --protocol tcp \
-          --port 22 \
-          --cidr $RUNNER_IP/32
+      # Slack 웹훅을 통한 실시간 배포 알림
+      - name: Notify Slack on Start
+        id: slack-start
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ env.SLACK_START_COLOR }}",
+                  "title": "🚀 배포 시작",
+                  "text": "배포 환경: ${{ github.event.inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
+                  "fields": [
+                    {
+                      "title": "시작시간",
+                      "value": "${{ env.START_TIME_FORMATTED }}",
+                      "short": true
+                    },
+                    {
+                      "title": "이미지 태그 (SHA)",
+                      "value": "${{ github.sha }}",
+                      "short": true
+                    },
+                    ${{ env.SLACK_COMMON_FIELDS }}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-    # EC2 배포
-    - name: Deploy Frontend And Backend
-      uses: appleboy/ssh-action@v0.1.6
-      with:
-        host: ${{ secrets.AWS_EC2_SSH_DNS }} # EC2 IP 주소
-        username: ${{ secrets.AWS_EC2_SSH_USER_NAME }} # EC2 사용자 이름
-        key: ${{ secrets.AWS_EC2_SSH_PEM_KEY }} # EC2의 .pem 키
-        port: ${{ secrets.AWS_EC2_SSH_PORT }} # EC2 포트
-        script: |
-          cd workspace &&
-          sudo docker stop $(sudo docker ps -aq) || true &&
-          sudo docker system prune -a --volumes -f &&
-          sudo docker-compose up -d
+      # 환경 파일 설정
+      - name: Create Frontend env files
+        run: |
+          mkdir -p ./envs/fe ./apps/fe
+          echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./envs/fe/.env.production
+          echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./apps/fe/.env.production
 
-    # 보안 그룹에서 인바운드 규칙 제거
-    - name: Remove GitHub Actions IP from Security Group
-      if: always()  # 이전 단계가 실패하더라도 항상 실행
-      run: |
-        RUNNER_IP=$(curl -s https://api.ipify.org)
-        echo "Remove GitHub Actions IP from Security Group: $RUNNER_IP"
-        aws ec2 revoke-security-group-ingress \
-          --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
-          --protocol tcp \
-          --port 22 \
-          --cidr $RUNNER_IP/32
+      - name: Create Backend env files
+        run: |
+          mkdir -p ./envs/be ./apps/be
+          echo "${{ secrets.BACKEND_ENV_FILE }}" > ./envs/be/.env.production
+          echo "${{ secrets.BACKEND_ENV_FILE }}" > ./apps/be/.env.production
 
-    # 액션 총 소요시간 계산
-    - name: Calculate duration
-      if: always()
-      run: |
-        END_TIME=$(date +%s)
-        DURATION=$((END_TIME - START_TIME))
-        MINUTES=$((DURATION / 60))
-        SECONDS=$((DURATION % 60))
-        echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
+      # Docker Compose 최신 버전 설치
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VERSION }}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
-    # 배포 성공 알림
-    - name: Notify Slack on Success
-      if: success()
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        payload: |
-          {
-            "attachments": [
-              {
-                "color": "${{ env.SLACK_SUCCESS_COLOR }}",
-                "title": "⭕️ 수동 배포 성공 ⭕️",
-                "text": "${{ github.event.inputs.environment }} 환경으로 배포가 성공적으로 완료되었습니다.",
-                "fields": [
-                  {
-                    "title": "소요시간",
-                    "value": "${{ env.DURATION }}",
-                    "short": true
-                  },
-                  ${{ env.SLACK_COMMON_FIELDS }}
-                ]
-              }
-            ]
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      # AWS 인증 및 ECR 로그인
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
 
-    # 배포 실패 알림
-    - name: Notify Slack on Failure
-      if: failure()
-      id: slack-failure
-      uses: slackapi/slack-github-action@v1.24.0
-      with:
-        payload: |
-          {
-            "attachments": [
-              {
-                "color": "${{ env.SLACK_FAILURE_COLOR }}",
-                "title": "❌ 수동 배포 실패 ❌",
-                "text": "${{ github.event.inputs.environment }} 환경으로 배포 중 오류가 발생했습니다.",
-                "fields": [
-                  {
-                    "title": "소요시간",
-                    "value": "${{ env.DURATION }}",
-                    "short": true
-                  },
-                  ${{ env.SLACK_COMMON_FIELDS }}
-                ]
-              }
-            ]
-          }
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
-        SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 멀티아키텍처 빌드를 위한 Docker Buildx 설정
+      - name: Setup buildx
+        if: env.ANY_CHANGED == 'true'
+        run: |
+          docker buildx create --use
+          docker buildx inspect --bootstrap
+
+      # 조건부 이미지 빌드 및 태깅 전략
+      - name: Build and tag FE image
+        if: env.FE_CHANGED == 'true'
+        run: |
+          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+
+          # ARM64 플랫폼용 빌드
+          DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker-compose build fe
+
+          # 태그 설정 (latest 및 commit SHA)
+          docker tag ${{ env.ECR_FE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
+          docker tag ${{ env.ECR_FE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${{ github.sha }}
+
+      - name: Build and tag BE image
+        if: env.BE_CHANGED == 'true'
+        run: |
+          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+
+          # ARM64 플랫폼용 빌드
+          DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker-compose build be
+
+          # 태그 설정 (latest 및 commit SHA)
+          docker tag ${{ env.ECR_BE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
+          docker tag ${{ env.ECR_BE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${{ github.sha }}
+
+      # ECR에 이미지 푸시
+      - name: Push FE image to ECR
+        if: env.FE_CHANGED == 'true'
+        run: |
+          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
+          docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${{ github.sha }}
+
+      - name: Push BE image to ECR
+        if: env.BE_CHANGED == 'true'
+        run: |
+          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
+          docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${{ github.sha }}
+
+      # 동적 보안 그룹 관리로 SSH 접근 제한
+      - name: Add GitHub Actions IP to Security Group
+        id: add-ip
+        run: |
+          RUNNER_IP=$(curl -s https://api.ipify.org)
+          echo "RUNNER_IP=$RUNNER_IP" >> $GITHUB_ENV
+          echo "Adding GitHub Actions IP to Security Group: $RUNNER_IP"
+
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr $RUNNER_IP/32
+
+      # SSH를 통한 EC2 배포 및 ECR 이미지 자동 배포
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_EC2_SSH_DNS }}
+          username: ${{ secrets.AWS_EC2_SSH_USER_NAME }}
+          key: ${{ secrets.AWS_EC2_SSH_PEM_KEY }}
+          port: ${{ secrets.AWS_EC2_SSH_PORT }}
+          script: |
+            cd workspace
+
+            # ECR 인증 및 로그인
+            export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | sudo docker login --username AWS --password-stdin $ECR_REGISTRY
+
+            # 기존 컨테이너 정리
+            sudo docker stop $(sudo docker ps -aq) || true
+            sudo docker system prune -a --volumes -f
+
+            # 최신 이미지로 서비스 시작
+            sudo docker-compose pull
+            sudo docker-compose up -d
+
+            # 서비스 상태 확인
+            sudo docker-compose ps
+
+      # 보안 그룹 정리 (실패 시에도 실행)
+      - name: Remove GitHub Actions IP from Security Group
+        if: always()
+        run: |
+          echo "Removing GitHub Actions IP from Security Group: ${{ env.RUNNER_IP }}"
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ env.RUNNER_IP }}/32 || true
+
+      # 배포 소요시간 계산
+      - name: Calculate duration
+        if: always()
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
+          echo "Total deployment time: ${MINUTES}분 ${SECONDS}초"
+
+      # 배포 결과 알림
+      - name: Notify Slack on Success
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ env.SLACK_SUCCESS_COLOR }}",
+                  "title": "✅ 배포 성공",
+                  "text": "배포 환경: ${{ github.event.inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
+                  "fields": [
+                    {
+                      "title": "소요시간",
+                      "value": "${{ env.DURATION }}",
+                      "short": true
+                    },
+                    {
+                      "title": "이미지 태그 (SHA)",
+                      "value": "${{ github.sha }}",
+                      "short": true
+                    },
+                    {
+                      "title": "FE 빌드",
+                      "value": "${{ env.FE_CHANGED == 'true' && '빌드됨' || '스킵됨' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "BE 빌드",
+                      "value": "${{ env.BE_CHANGED == 'true' && '빌드됨' || '스킵됨' }}",
+                      "short": true
+                    },
+                    ${{ env.SLACK_COMMON_FIELDS }}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Notify Slack on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ env.SLACK_FAILURE_COLOR }}",
+                  "title": "❌ 배포 실패",
+                  "text": "배포 환경: ${{ github.event.inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
+                  "fields": [
+                    {
+                      "title": "소요시간",
+                      "value": "${{ env.DURATION }}",
+                      "short": true
+                    },
+                    {
+                      "title": "이미지 태그 (SHA)",
+                      "value": "${{ github.sha }}",
+                      "short": true
+                    },
+                    {
+                      "title": "FE 빌드",
+                      "value": "${{ env.FE_CHANGED == 'true' && '시도됨' || '스킵됨' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "BE 빌드",
+                      "value": "${{ env.BE_CHANGED == 'true' && '시도됨' || '스킵됨' }}",
+                      "short": true
+                    },
+                    ${{ env.SLACK_COMMON_FIELDS }}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

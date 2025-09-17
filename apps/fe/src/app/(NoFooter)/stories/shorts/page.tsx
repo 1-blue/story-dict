@@ -6,6 +6,9 @@ import { getQueryClient } from "#fe/libs/getQueryClient";
 import { openapi } from "#fe/apis";
 import ShortStoryDetail from "./_components/ShortStoryDetail";
 
+// 정적 생성 비활성화
+export const dynamic = "force-dynamic";
+
 const queryClient = getQueryClient();
 const getShortsStories = cache(() => {
   return queryClient.fetchQuery(
