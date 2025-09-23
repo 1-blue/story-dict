@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [master, development]
+  pull_request:
+    branches: [master, development]
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: Code Quality & Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      should_deploy: ${{ steps.check-deploy.outputs.should_deploy }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.12.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      - name: Setup Turbo Cache
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm db:generate
+
+      - name: Run CI (affected packages only)
+        run: pnpm ci:affected
+
+      # 배포를 위한 빌드 및 S3 캐시 저장 (master 브랜치에서만)
+      - name: Build and cache to S3
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        run: |
+          echo "🔨 Building applications for deployment..."
+          pnpm build
+
+          echo "📁 Verifying build directories..."
+          ls -la apps/fe/ || echo "FE directory not found"
+          ls -la apps/be/ || echo "BE directory not found"
+          ls -la packages/db/prisma/ || echo "Prisma directory not found"
+
+          echo "💾 Saving build cache to S3..."
+          tar -czf build-cache-${{ github.sha }}.tar.gz \
+            --ignore-failed-read \
+            apps/fe/.next \
+            apps/fe/public \
+            apps/be/dist \
+            packages/db/prisma/generated
+
+          aws s3 cp build-cache-${{ github.sha }}.tar.gz \
+            s3://${{ secrets.BUILD_CACHE_S3_BUCKET }}/builds/
+
+          echo "✅ Build cache saved to S3 for commit ${{ github.sha }}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: Check if deployment needed
+        id: check-deploy
+        run: |
+          # CD는 master 브랜치 머지 시에만 실행 (PR이나 push는 제외)
+          if [[ "${{ github.ref }}" == "refs/heads/master" && "${{ github.event_name }}" != "pull_request" ]]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+  trigger-cd:
+    name: Trigger Deployment
+    needs: ci
+    if: needs.ci.outputs.should_deploy == 'true' && success()
+    uses: ./.github/workflows/cd.yml
+    with:
+      environment: 'production'
+      triggered_by: 'ci'
+    secrets: inherit

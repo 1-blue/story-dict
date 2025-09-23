@@ -7,7 +7,13 @@
     "start": "turbo start",
     "start:prod": "turbo start:prod",
     "lint": "turbo lint",
+    "test": "turbo test",
+    "type-check": "turbo type-check",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+
+    "ci": "turbo lint type-check test build",
+    "ci:affected": "turbo lint type-check test build --filter='[HEAD^1]'",
+    "cache:clear": "turbo daemon clean",
 
     "be:dev": "pnpm --filter be dev",
     "be:build": "pnpm --filter be build",
@@ -27,11 +33,11 @@
     "db:seed": "pnpm --filter db db:seed",
 
     "openapi:generate": "pnpm --filter fe openapi:generate",
-    
+
     "ui:add": "pnpm --filter ui ui:add",
 
-    "clean": "rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install",
-    
+    "clean": "turbo clean && rm -rf .turbo && find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name '.next' -type d -prune -exec rm -rf '{}' + && rm -f package-lock.json + && pnpm install",
+
     "docker:clean": "docker system prune -af --volumes",
     "docker:start": "docker-compose build && docker-compose up",
     "docker:deploy": "docker-compose build && docker-compose push"

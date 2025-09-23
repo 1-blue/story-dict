@@ -1,6 +1,17 @@
-name: CD with Docker
+name: CD
 
 on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "배포 환경"
+        required: true
+        type: string
+      triggered_by:
+        description: "트리거 소스"
+        required: false
+        type: string
+        default: 'manual'
   workflow_dispatch:
     inputs:
       environment:
@@ -37,12 +48,17 @@ env:
   SLACK_COMMON_FIELDS: |
     {
       "title": "배포 환경",
-      "value": "${{ github.event.inputs.environment }}",
+      "value": "${{ inputs.environment }}",
+      "short": true
+    },
+    {
+      "title": "트리거",
+      "value": "${{ inputs.triggered_by }}",
       "short": true
     },
     {
       "title": "워크플로우",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cicd.yaml|${{ github.workflow }} 워크플로우>",
+      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/cd.yml|${{ github.workflow }} 워크플로우>",
       "short": true
     },
     {
@@ -67,8 +83,11 @@ env:
     }
 
 jobs:
-  Deploy:
+  deploy:
+    name: Build & Deploy
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -81,54 +100,106 @@ jobs:
           echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
           echo "START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
 
+      # Node.js 및 pnpm 설정 (터보 캐시 활용을 위해)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.12.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'pnpm'
+
+      # 터보레포 로컬 캐시 복원
+      - name: Setup Turbo Cache
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      # 의존성 설치
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # AWS CLI 설치
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          aws --version
+
+      # S3에서 빌드 캐시 복원 시도
+      - name: Restore build cache from S3
+        run: |
+          echo "Checking for build cache in S3..."
+          if aws s3 cp s3://${{ secrets.BUILD_CACHE_S3_BUCKET }}/builds/build-cache-${{ github.sha }}.tar.gz ./build-cache.tar.gz; then
+            echo "✅ Build cache found! Restoring..."
+            tar -xzf build-cache.tar.gz
+            echo "BUILD_CACHE_HIT=true" >> $GITHUB_ENV
+            echo "Cache restored successfully"
+
+            # 복원된 파일 확인
+            echo "Restored files:"
+            find . -name ".next" -o -name "dist" -o -name "generated" 2>/dev/null || true
+          else
+            echo "❌ No build cache found for commit ${{ github.sha }}"
+            echo "BUILD_CACHE_HIT=false" >> $GITHUB_ENV
+          fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      # 캐시 미스시에만 빌드 실행
+      - name: Build applications (cache miss)
+        if: env.BUILD_CACHE_HIT == 'false'
+        run: |
+          echo "🔨 Building applications..."
+          pnpm build
+
+          # 빌드 디렉토리 확인
+          echo "📁 Verifying build directories..."
+          ls -la apps/fe/ || echo "FE directory not found"
+          ls -la apps/be/ || echo "BE directory not found"
+          ls -la packages/db/prisma/ || echo "Prisma directory not found"
+
+          # 빌드 완료 후 S3에 캐시 저장
+          echo "💾 Saving build cache to S3..."
+          tar -czf build-cache-${{ github.sha }}.tar.gz \
+            --ignore-failed-read \
+            apps/fe/.next \
+            apps/fe/public \
+            apps/be/dist \
+            packages/db/prisma/generated
+
+          aws s3 cp build-cache-${{ github.sha }}.tar.gz \
+            s3://${{ secrets.BUILD_CACHE_S3_BUCKET }}/builds/
+
+          echo "Build cache saved to S3"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      # 캐시 히트시 성공 메시지
+      - name: Build cache hit
+        if: env.BUILD_CACHE_HIT == 'true'
+        run: echo "⚡ Using cached build artifacts - no build needed!"
+
+      # Prisma 클라이언트 생성 (캐시 히트시에도 필요)
+      - name: Generate Prisma client (always needed)
+        run: pnpm db:generate
+
       # 마지막 커밋 메시지 추출
       - name: Extract last commit message
         run: |
           SUBJECT=$(git log -1 --pretty=%s)
           echo "COMMIT_SUBJECT=$SUBJECT" >> $GITHUB_ENV
-
-      # 모노레포 환경에서 변경 감지를 통한 선택적 빌드
-      - name: Check for changes
-        id: changes
-        run: |
-          set -e
-          FE_CHANGED=false
-          BE_CHANGED=false
-          ANY_CHANGED=false
-
-          # 기준 커밋 계산
-          BASE=$(git rev-parse HEAD~1 2>/dev/null || echo "")
-
-          # 첫 커밋이거나 얕은 히스토리인 경우 안전하게 모든 앱 빌드
-          if [ -z "$BASE" ]; then
-            git fetch --deepen=1 origin "$GITHUB_REF" || true
-            BASE=$(git rev-parse HEAD~1 2>/dev/null || echo "")
-          fi
-
-          if [ -z "$BASE" ]; then
-            FE_CHANGED=true
-            BE_CHANGED=true
-            ANY_CHANGED=true
-          else
-            CHANGED_FILES=$(git diff --name-only "$BASE"...HEAD || true)
-
-            # 각 앱별 변경사항 확인
-            echo "$CHANGED_FILES" | grep -E '^apps/fe/' >/dev/null && FE_CHANGED=true || true
-            echo "$CHANGED_FILES" | grep -E '^apps/be/' >/dev/null && BE_CHANGED=true || true
-
-            # 공유 패키지 변경 시 모든 앱 빌드
-            if echo "$CHANGED_FILES" | grep -E '^packages/' >/dev/null; then
-              FE_CHANGED=true
-              BE_CHANGED=true
-            fi
-
-            [ "$FE_CHANGED" = "true" ] || [ "$BE_CHANGED" = "true" ] && ANY_CHANGED=true
-          fi
-
-          # 환경변수 설정
-          echo "FE_CHANGED=$FE_CHANGED" >> $GITHUB_ENV
-          echo "BE_CHANGED=$BE_CHANGED" >> $GITHUB_ENV
-          echo "ANY_CHANGED=$ANY_CHANGED" >> $GITHUB_ENV
 
       # Slack 웹훅을 통한 실시간 배포 알림
       - name: Notify Slack on Start
@@ -141,7 +212,7 @@ jobs:
                 {
                   "color": "${{ env.SLACK_START_COLOR }}",
                   "title": "🚀 배포 시작",
-                  "text": "배포 환경: ${{ github.event.inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
+                  "text": "배포 환경: ${{ inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
                   "fields": [
                     {
                       "title": "시작시간",
@@ -187,8 +258,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-region: ${{ secrets.AWS_REGION }}
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -196,48 +267,49 @@ jobs:
 
       # 멀티아키텍처 빌드를 위한 Docker Buildx 설정
       - name: Setup buildx
-        if: env.ANY_CHANGED == 'true'
         run: |
           docker buildx create --use
           docker buildx inspect --bootstrap
 
-      # 조건부 이미지 빌드 및 태깅 전략
-      - name: Build and tag FE image
-        if: env.FE_CHANGED == 'true'
+      # 빌드 결과물 준비 대기
+      - name: Wait for build completion
+        run: |
+          echo "Waiting for build artifacts to be ready..."
+          sleep 2
+
+          # 필요한 디렉토리 존재 확인
+          if [ ! -d "apps/fe/.next" ] && [ ! -d "apps/be/dist" ]; then
+            echo "❌ Build artifacts not found!"
+            exit 1
+          fi
+          echo "✅ Build artifacts ready"
+
+      # 전체 이미지 빌드 (파일 변경 감지 제거)
+      - name: Build and tag images
         run: |
           export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
 
           # ARM64 플랫폼용 빌드
-          DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker-compose build fe
+          DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker-compose build
 
-          # 태그 설정 (latest 및 commit SHA)
+          # FE 이미지 태그 설정
           docker tag ${{ env.ECR_FE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
           docker tag ${{ env.ECR_FE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${{ github.sha }}
 
-      - name: Build and tag BE image
-        if: env.BE_CHANGED == 'true'
-        run: |
-          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-
-          # ARM64 플랫폼용 빌드
-          DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker-compose build be
-
-          # 태그 설정 (latest 및 commit SHA)
+          # BE 이미지 태그 설정
           docker tag ${{ env.ECR_BE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
           docker tag ${{ env.ECR_BE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${{ github.sha }}
 
       # ECR에 이미지 푸시
-      - name: Push FE image to ECR
-        if: env.FE_CHANGED == 'true'
+      - name: Push images to ECR
         run: |
           export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+
+          # FE 이미지 푸시
           docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
           docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${{ github.sha }}
 
-      - name: Push BE image to ECR
-        if: env.BE_CHANGED == 'true'
-        run: |
-          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          # BE 이미지 푸시
           docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
           docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${{ github.sha }}
 
@@ -314,7 +386,7 @@ jobs:
                 {
                   "color": "${{ env.SLACK_SUCCESS_COLOR }}",
                   "title": "✅ 배포 성공",
-                  "text": "배포 환경: ${{ github.event.inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
+                  "text": "배포 환경: ${{ inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
                   "fields": [
                     {
                       "title": "소요시간",
@@ -324,16 +396,6 @@ jobs:
                     {
                       "title": "이미지 태그 (SHA)",
                       "value": "${{ github.sha }}",
-                      "short": true
-                    },
-                    {
-                      "title": "FE 빌드",
-                      "value": "${{ env.FE_CHANGED == 'true' && '빌드됨' || '스킵됨' }}",
-                      "short": true
-                    },
-                    {
-                      "title": "BE 빌드",
-                      "value": "${{ env.BE_CHANGED == 'true' && '빌드됨' || '스킵됨' }}",
                       "short": true
                     },
                     ${{ env.SLACK_COMMON_FIELDS }}
@@ -355,7 +417,7 @@ jobs:
                 {
                   "color": "${{ env.SLACK_FAILURE_COLOR }}",
                   "title": "❌ 배포 실패",
-                  "text": "배포 환경: ${{ github.event.inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
+                  "text": "배포 환경: ${{ inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
                   "fields": [
                     {
                       "title": "소요시간",
@@ -365,16 +427,6 @@ jobs:
                     {
                       "title": "이미지 태그 (SHA)",
                       "value": "${{ github.sha }}",
-                      "short": true
-                    },
-                    {
-                      "title": "FE 빌드",
-                      "value": "${{ env.FE_CHANGED == 'true' && '시도됨' || '스킵됨' }}",
-                      "short": true
-                    },
-                    {
-                      "title": "BE 빌드",
-                      "value": "${{ env.BE_CHANGED == 'true' && '시도됨' || '스킵됨' }}",
                       "short": true
                     },
                     ${{ env.SLACK_COMMON_FIELDS }}
