@@ -88,7 +88,7 @@ export const useShorts = ({
       }
     },
     [
-      stories,
+      stories.length,
       hasNextPage,
       isFetchingNextPage,
       loadMoreThreshold,
