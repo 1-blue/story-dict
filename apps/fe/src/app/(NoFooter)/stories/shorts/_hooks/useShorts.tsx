@@ -53,7 +53,7 @@ export const useShorts = ({
       if (
         hasNextPage &&
         !isFetchingNextPage &&
-        remainingStories === loadMoreThreshold
+        remainingStories <= loadMoreThreshold
       ) {
         fetchNextPage();
       }
@@ -73,9 +73,28 @@ export const useShorts = ({
   const handlePrevious = useCallback(() => {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
   }, []);
-  const handleIndicatorClick = useCallback((index: number) => {
-    setCurrentIndex(index);
-  }, []);
+  const handleIndicatorClick = useCallback(
+    (index: number) => {
+      setCurrentIndex(index);
+
+      const remainingStories = stories.length - index;
+
+      if (
+        hasNextPage &&
+        !isFetchingNextPage &&
+        remainingStories <= loadMoreThreshold
+      ) {
+        fetchNextPage();
+      }
+    },
+    [
+      stories.length,
+      hasNextPage,
+      isFetchingNextPage,
+      loadMoreThreshold,
+      fetchNextPage,
+    ],
+  );
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
