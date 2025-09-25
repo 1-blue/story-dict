@@ -8,10 +8,8 @@
 **/Dockerfile
 **/docker-compose*.yaml
 
-# 빌드 결과물
-**/.next
+# 빌드 결과물 (캐시 활용을 위해 .next와 dist는 포함)
 **/node_modules
-**/dist
 **/build
 **/coverage
 
