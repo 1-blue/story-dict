@@ -6,7 +6,7 @@ export const pureKoreanStories: Pick<
   "title" | "summary" | "content" | "category"
 >[] = [
   {
-    thumbnailPath: `https://storydict.s3.ap-northeast-2.amazonaws.com/images/seed/%E1%84%8B%E1%85%B2%E1%86%AB%E1%84%89%E1%85%B3%E1%86%AF.png`,
+    thumbnailPath: `https://storydict.s3.ap-northeast-2.amazonaws.com/images/seed/pureKorean/%E1%84%8B%E1%85%B2%E1%86%AB%E1%84%89%E1%85%B3%E1%86%AF.png`,
     title: `윤슬`,
     summary: `햇빛이나 달빛이 비치어 반짝이는 잔물결`,
     content: `## ✨ 의미
@@ -24,7 +24,7 @@ export const pureKoreanStories: Pick<
 \`윤슬\`은 시, 노래, 문학 등에서 자주 사용되며 한국어의 아름다움을 잘 보여주는 단어 중 하나로 꼽힙니다.`,
   },
   {
-    thumbnailPath: `https://storydict.s3.ap-northeast-2.amazonaws.com/images/seed/%E1%84%8B%E1%85%A9%E1%86%AB%E1%84%89%E1%85%A2%E1%84%86%E1%85%B5%E1%84%85%E1%85%A9.jpg`,
+    thumbnailPath: `https://storydict.s3.ap-northeast-2.amazonaws.com/images/seed/pureKorean/%E1%84%8B%E1%85%A9%E1%86%AB%E1%84%89%E1%85%A2%E1%84%86%E1%85%B5%E1%84%85%E1%85%A9.jpg`,
     title: `온새미로`,
     summary: `가르거나, 쪼개지 않고, 생긴 그대로, 자연 그대로, 언제나 변함없이`,
     content: `## ✨ 의미
