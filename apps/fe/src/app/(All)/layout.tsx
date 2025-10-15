@@ -12,8 +12,8 @@ const AllLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
       <div className="flex flex-1 flex-col gap-2 md:p-4">
         <Header />
-        <SidebarInset className="flex flex-1 flex-col gap-2 rounded-lg p-4">
-          <Main className="flex-1 py-2">{children}</Main>
+        <SidebarInset className="flex flex-1 flex-col gap-2 rounded-lg p-2 md:p-4">
+          <Main className="flex-1 py-0 md:py-2">{children}</Main>
           <Footer className="flex items-center justify-center gap-3 rounded-md border p-4 text-foreground/50" />
         </SidebarInset>
       </div>

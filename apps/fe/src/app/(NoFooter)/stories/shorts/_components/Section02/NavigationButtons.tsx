@@ -22,7 +22,7 @@ const NavigationButtons: React.FC<IProps> = ({
       className={cn(
         "fixed z-40 flex flex-col gap-4",
         "top-[calc(50vh-2rem)] -translate-y-1/2",
-        "right-4",
+        "right-1 md:right-4",
       )}
     >
       <motion.button

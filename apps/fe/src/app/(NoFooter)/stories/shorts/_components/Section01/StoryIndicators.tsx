@@ -47,7 +47,7 @@ const StoryIndicators: React.FC<IProps> = ({
   return (
     <motion.div
       className={cn(
-        "fixed left-6 top-1/2 z-50 flex -translate-y-1/2 flex-col items-center gap-2 md:left-6",
+        "fixed left-2 top-1/2 z-50 flex -translate-y-1/2 flex-col items-center gap-2 md:left-6",
         sidebarOpen && "md:left-[calc(16rem+1.5rem)]",
       )}
       transition={{ type: "spring", stiffness: 400, damping: 40 }}

@@ -115,7 +115,7 @@ const StoryCard: React.FC<IStoryCardProps> = ({ title, summary, category }) => {
 
 const Section04: React.FC = () => {
   return (
-    <div className="relative flex w-[calc(100vw-64px)] flex-col items-center justify-center overflow-hidden">
+    <div className="relative flex w-[calc(100vw-16px)] flex-col items-center justify-center overflow-hidden md:w-[calc(100vw-64px)]">
       <Marquee pauseOnHover className="[--duration:20s]">
         {firstRow.map((review) => (
           <StoryCard key={review.title} {...review} />

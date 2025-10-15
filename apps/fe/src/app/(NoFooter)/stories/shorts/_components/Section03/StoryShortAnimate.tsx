@@ -12,7 +12,7 @@ interface IProps {
 
 const StoryShortAnimate: React.FC<IProps> = ({ stories, currentIndex }) => {
   return (
-    <div className="mx-auto max-w-4xl px-4">
+    <div className="mx-auto max-w-4xl">
       <AnimatePresence mode="wait" custom={currentIndex}>
         <motion.div
           key={currentIndex}
