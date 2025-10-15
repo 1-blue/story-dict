@@ -29,7 +29,7 @@ const Header: React.FC = () => {
   if (pathname === "/") return null;
 
   return (
-    <header className="sticky top-4 z-10 mx-auto flex w-[98%] shrink-0 items-center gap-2 rounded-md border bg-sidebar-background p-4">
+    <header className="sticky top-1 z-10 mx-auto flex w-[98%] shrink-0 items-center gap-2 rounded-md border bg-sidebar-background p-4 md:top-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mx-1 h-4" />

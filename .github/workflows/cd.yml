@@ -49,21 +49,16 @@ env:
   # 시간대 설정
   TZ: "Asia/Seoul"
 
-  # Slack 공통 필드 - 모든 알림에서 재사용
+  # Slack 공통 필드 - 종료 알림에서 재사용
   SLACK_COMMON_FIELDS: |
-    {
-      "title": "배포 환경",
-      "value": "${{ inputs.environment }}",
-      "short": true
-    },
     {
       "title": "트리거",
       "value": "${{ inputs.triggered_by }}",
       "short": true
     },
     {
-      "title": "워크플로우",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/ci.yml|${{ github.workflow }} 워크플로우>",
+      "title": "워크플로우 목록",
+      "value": "<https://github.com/1-blue/story-dict/actions|Actions 목록>",
       "short": true
     },
     {
@@ -93,10 +88,16 @@ env:
     }
 
 jobs:
-  deploy:
-    name: Build & Deploy
+  # 빌드 작업 (공통)
+  build:
+    name: Build Images
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    outputs:
+      source_hash: ${{ steps.source-hash.outputs.SOURCE_HASH }}
+      skip_fe_build: ${{ steps.early-ecr-check.outputs.FE_EXISTS }}
+      skip_be_build: ${{ steps.early-ecr-check.outputs.BE_EXISTS }}
+      skip_all_build: ${{ steps.early-ecr-check.outputs.SKIP_ALL_BUILD }}
 
     steps:
       - name: Checkout code
@@ -104,151 +105,23 @@ jobs:
         with:
           fetch-depth: 2
 
-      # Node.js 및 pnpm 설정 (터보 캐시 활용을 위해)
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9.12.0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: "pnpm"
-
-      # 의존성 설치
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # AWS CLI 설치/업데이트
-      - name: Install/Update AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install --update
-          aws --version
-
-      # 시작 시간 추적을 통한 배포 소요시간 계산
-      - name: Set start time
+      # 시작 시간 및 커밋 정보 설정 (통합)
+      - name: Set deploy info and start time
         run: |
           echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
           echo "START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
-
-      # 마지막 커밋 메시지 추출
-      - name: Extract last commit message
-        run: |
           SUBJECT=$(git log -1 --pretty=%s)
           echo "COMMIT_SUBJECT=$SUBJECT" >> $GITHUB_ENV
 
-      # 배포 시작 알림
-      - name: Notify Slack on Start
-        id: slack-start
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "${{ env.SLACK_START_COLOR }}",
-                  "title": "🚀 배포 시작",
-                  "text": "배포 환경: ${{ inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}",
-                  "fields": [
-                    {
-                      "title": "시작시간",
-                      "value": "${{ env.START_TIME_FORMATTED }}",
-                      "short": true
-                    },
-                    {
-                      "title": "이미지 태그 (해시)",
-                      "value": "${{ steps.source-hash.outputs.SOURCE_HASH }}",
-                      "short": true
-                    },
-                    ${{ env.SLACK_COMMON_FIELDS }}
-                  ]
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-
-      # 소스코드 해시 계산 (CI와 동일한 방식)
+      # 소스코드 해시 계산 (조기 실행)
       - name: Calculate source hash
         id: source-hash
         run: |
           SOURCE_HASH=$(find apps packages -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.prisma" | grep -v "/dist/" | grep -v "/.next/" | sort | xargs cat | sha256sum | cut -d' ' -f1)
           echo "SOURCE_HASH=$SOURCE_HASH" >> $GITHUB_OUTPUT
-          echo "계산된 소스코드 해시: $SOURCE_HASH"
+          echo "✅ 소스코드 해시: $SOURCE_HASH"
 
-      # 소스코드 해시로 S3 캐시 복원
-      - name: Restore build cache from S3
-        run: |
-          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
-          if aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/builds/${SOURCE_HASH}.tar.gz; then
-            echo "✅ 빌드 캐시 발견. 복원 중... (해시: $SOURCE_HASH)"
-            aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/builds/${SOURCE_HASH}.tar.gz ./build-cache.tar.gz
-            tar -xzf build-cache.tar.gz
-            echo "BUILD_CACHE_HIT=true" >> $GITHUB_ENV
-            echo "캐시 복원 완료"
-          else
-            echo "❌ 빌드 캐시 없음. 새로 빌드합니다 (해시: $SOURCE_HASH)"
-            echo "BUILD_CACHE_HIT=false" >> $GITHUB_ENV
-          fi
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-
-      # cache miss 시 빌드 실행
-      - name: Build applications (cache miss)
-        if: env.BUILD_CACHE_HIT == 'false'
-        run: |
-          echo "🔨 애플리케이션 빌드 중..."
-          pnpm build
-
-          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
-          echo "💾 S3에 빌드 캐시 저장 중..."
-          tar -czf ${SOURCE_HASH}.tar.gz \
-            --ignore-failed-read \
-            apps/fe/.next \
-            apps/fe/public \
-            apps/be/dist \
-            packages/database/dist
-
-          aws s3 cp ${SOURCE_HASH}.tar.gz \
-            s3://${{ secrets.AWS_S3_BUCKET }}/builds/
-
-          echo "✅ 빌드 캐시 저장 완료 (해시: $SOURCE_HASH)"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-
-      # Prisma 클라이언트 생성 (캐시 히트시에도 필요)
-      - name: Generate Prisma client (always needed)
-        run: pnpm db:generate
-
-      # 환경 파일 설정
-      - name: Create Frontend env files
-        run: |
-          mkdir -p ./envs/fe ./apps/fe
-          echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./envs/fe/.env.production
-          echo "${{ secrets.FRENTEND_ENV_FILE }}" > ./apps/fe/.env.production
-
-      - name: Create Backend env files
-        run: |
-          mkdir -p ./envs/be ./apps/be
-          echo "${{ secrets.BACKEND_ENV_FILE }}" > ./envs/be/.env.production
-          echo "${{ secrets.BACKEND_ENV_FILE }}" > ./apps/be/.env.production
-
-      # Docker Compose 최신 버전 설치
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VERSION }}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-
-      # AWS 인증 및 ECR 로그인
+      # AWS 인증 설정 (조기 실행)
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -260,111 +133,326 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # QEMU 설정 (ARM64 빌드를 위해)
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      # ECR 이미지 조기 확인
+      - name: Early ECR image check
+        id: early-ecr-check
+        run: |
+          export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
+          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
+
+          # FE 이미지 확인
+          if aws ecr describe-images \
+            --repository-name ${{ env.ECR_FE_REPO }} \
+            --image-ids imageTag=${SOURCE_HASH} \
+            --region ${{ secrets.AWS_REGION }} 2>/dev/null; then
+            echo "FE_EXISTS=true" >> $GITHUB_OUTPUT
+            echo "✅ FE 이미지 존재 (${SOURCE_HASH})"
+          else
+            echo "FE_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "❌ FE 이미지 없음"
+          fi
+
+          # BE 이미지 확인
+          if aws ecr describe-images \
+            --repository-name ${{ env.ECR_BE_REPO }} \
+            --image-ids imageTag=${SOURCE_HASH} \
+            --region ${{ secrets.AWS_REGION }} 2>/dev/null; then
+            echo "BE_EXISTS=true" >> $GITHUB_OUTPUT
+            echo "✅ BE 이미지 존재 (${SOURCE_HASH})"
+          else
+            echo "BE_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "❌ BE 이미지 없음"
+          fi
+
+          # 둘 다 있으면 빌드 완전 스킵
+          if [[ "$FE_EXISTS" == "true" && "$BE_EXISTS" == "true" ]]; then
+            echo "SKIP_ALL_BUILD=true" >> $GITHUB_OUTPUT
+            echo "🎉 모든 이미지 존재 - 빌드 완전 스킵, 배포만 진행"
+          else
+            echo "SKIP_ALL_BUILD=false" >> $GITHUB_OUTPUT
+            echo "🔨 일부 이미지 없음 - 빌드 필요"
+          fi
+
+      # 의존성 설치 (빌드가 필요한 경우만)
+      - name: Setup pnpm and dependencies
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false'
+        run: |
+          curl -fsSL https://get.pnpm.io/install.sh | sh -
+          export PATH="$HOME/.local/share/pnpm:$PATH"
+          pnpm --version
+          pnpm install --frozen-lockfile
+
+      # S3 빌드 캐시 복원 (빌드가 필요한 경우만)
+      - name: Restore build cache from S3
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false'
+        id: s3-cache
+        run: |
+          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
+          if aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/builds/${SOURCE_HASH}.tar.gz; then
+            echo "✅ 빌드 캐시 발견. 복원 중... (해시: $SOURCE_HASH)"
+            aws s3 cp s3://${{ secrets.AWS_S3_BUCKET }}/builds/${SOURCE_HASH}.tar.gz ./build-cache.tar.gz
+            tar -xzf build-cache.tar.gz
+            echo "BUILD_CACHE_HIT=true" >> $GITHUB_OUTPUT
+            echo "캐시 복원 완료"
+          else
+            echo "❌ 빌드 캐시 없음. 새로 빌드합니다 (해시: $SOURCE_HASH)"
+            echo "BUILD_CACHE_HIT=false" >> $GITHUB_OUTPUT
+          fi
+
+      # 빌드 실행 (캐시 미스 시에만)
+      - name: Build applications (cache miss)
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false' && steps.s3-cache.outputs.BUILD_CACHE_HIT == 'false'
+        run: |
+          echo "🔨 애플리케이션 빌드 중..."
+          export PATH="$HOME/.local/share/pnpm:$PATH"
+          pnpm build
+
+          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
+          echo "💾 S3에 빌드 캐시 저장 중..."
+          tar -czf ${SOURCE_HASH}.tar.gz \
+            --ignore-failed-read \
+            apps/fe/.next/standalone \
+            apps/fe/.next/static \
+            apps/fe/.next \
+            apps/fe/public \
+            apps/be/dist \
+            packages/
+
+          aws s3 cp ${SOURCE_HASH}.tar.gz \
+            s3://${{ secrets.AWS_S3_BUCKET }}/builds/
+
+          echo "✅ 빌드 캐시 저장 완료 (해시: $SOURCE_HASH)"
+
+      # Prisma 클라이언트 생성 (빌드가 필요한 경우만)
+      - name: Generate Prisma client
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false'
+        run: |
+          export PATH="$HOME/.local/share/pnpm:$PATH"
+          pnpm db:generate
+
+      # CD 시작 알림 (간소화)
+      - name: Notify Slack on Start
+        uses: slackapi/slack-github-action@v1.26.0
         with:
-          platforms: "arm64,arm"
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ env.SLACK_START_COLOR }}",
+                  "title": "🚀 배포 시작",
+                  "text": "${{ env.COMMIT_SUBJECT }}",
+                  "fields": [
+                    {
+                      "title": "환경",
+                      "value": "${{ inputs.environment }}",
+                      "short": true
+                    },
+                    {
+                      "title": "트리거",
+                      "value": "${{ inputs.triggered_by }}",
+                      "short": true
+                    },
+                    {
+                      "title": "실행자",
+                      "value": "${{ github.actor }}",
+                      "short": true
+                    },
+                    {
+                      "title": "액션작업",
+                      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }} 작업>",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-      # Docker Buildx 설정
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # Docker 설정 (이미지 빌드가 필요한 경우만)
+      - name: Set up QEMU and Docker Buildx
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false'
+        run: |
+          # QEMU 설정
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          # Buildx 설정
+          docker buildx create --use --name multi-arch-builder --driver docker-container || true
+          docker buildx inspect --bootstrap
 
-      # 전체 이미지 빌드
-      - name: Build and tag images
+      # Docker 이미지 빌드 및 태그 (필요한 이미지만)
+      - name: Build and tag Docker images
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false'
         run: |
           export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
 
-          # Docker Compose 빌드 (플랫폼 설정)
-          DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker-compose build
+          # FE 이미지 빌드 (없는 경우만)
+          if [[ "${{ steps.early-ecr-check.outputs.FE_EXISTS }}" == "false" ]]; then
+            echo "🔨 FE 이미지 빌드 중..."
+            DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker build \
+              -f apps/fe/Dockerfile \
+              -t ${{ env.ECR_FE_REPO }}:latest \
+              -t $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest \
+              -t $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${SOURCE_HASH} \
+              .
+          fi
 
-          # FE 이미지 태그 설정 (소스 해시 사용)
-          docker tag ${{ env.ECR_FE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
-          docker tag ${{ env.ECR_FE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${SOURCE_HASH}
+          # BE 이미지 빌드 (없는 경우만)
+          if [[ "${{ steps.early-ecr-check.outputs.BE_EXISTS }}" == "false" ]]; then
+            echo "🔨 BE 이미지 빌드 중..."
+            DOCKER_DEFAULT_PLATFORM=${{ env.DOCKER_PLATFORM }} docker build \
+              -f apps/be/Dockerfile \
+              -t ${{ env.ECR_BE_REPO }}:latest \
+              -t $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest \
+              -t $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${SOURCE_HASH} \
+              .
+          fi
 
-          # BE 이미지 태그 설정 (소스 해시 사용)
-          docker tag ${{ env.ECR_BE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
-          docker tag ${{ env.ECR_BE_REPO }}:latest $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${SOURCE_HASH}
-
-      # ECR에 이미지 푸시
+      # ECR에 이미지 푸시 (빌드된 이미지만)
       - name: Push images to ECR
+        if: steps.early-ecr-check.outputs.SKIP_ALL_BUILD == 'false'
         run: |
           export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
 
-          # FE 이미지 푸시
-          docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
-          docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${SOURCE_HASH}
+          # FE 이미지 푸시 (빌드된 경우만)
+          if [[ "${{ steps.early-ecr-check.outputs.FE_EXISTS }}" == "false" ]]; then
+            echo "📤 FE 이미지 푸시 중..."
+            docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:latest
+            docker push $ECR_REGISTRY/${{ env.ECR_FE_REPO }}:${SOURCE_HASH}
+            echo "✅ FE 이미지 푸시 완료"
+          fi
 
-          # BE 이미지 푸시
-          docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
-          docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${SOURCE_HASH}
+          # BE 이미지 푸시 (빌드된 경우만)
+          if [[ "${{ steps.early-ecr-check.outputs.BE_EXISTS }}" == "false" ]]; then
+            echo "📤 BE 이미지 푸시 중..."
+            docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:latest
+            docker push $ECR_REGISTRY/${{ env.ECR_BE_REPO }}:${SOURCE_HASH}
+            echo "✅ BE 이미지 푸시 완료"
+          fi
 
-      # 동적 보안 그룹 관리로 SSH 접근 제한
-      - name: Add GitHub Actions IP to Security Group
-        id: add-ip
+  # FE 배포 작업
+  deploy-fe:
+    name: Deploy Frontend
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 시작 시간 설정
+      - name: Set start time
+        run: |
+          echo "FE_START_TIME=$(date +%s)" >> $GITHUB_ENV
+          echo "FE_START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
+
+      # AWS 인증
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 동적 보안 그룹 관리
+      - name: Add GitHub Actions IP to FE Security Group
+        id: add-ip-fe
         run: |
           RUNNER_IP=$(curl -s https://api.ipify.org)
-          echo "RUNNER_IP=$RUNNER_IP" >> $GITHUB_ENV
-          echo "보안 그룹에 GitHub Actions IP 추가 중: $RUNNER_IP"
+          echo "FE_RUNNER_IP=$RUNNER_IP" >> $GITHUB_ENV
+          echo "FE 보안 그룹에 GitHub Actions IP 추가 중: $RUNNER_IP"
 
           aws ec2 authorize-security-group-ingress \
-            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --group-id ${{ secrets.AWS_FE_SECURITY_GROUP_ID }} \
             --protocol tcp \
             --port 22 \
             --cidr $RUNNER_IP/32
 
-      # SSH를 통한 EC2 배포 및 ECR 이미지 자동 배포
-      - name: Deploy to EC2
+      # FE 배포
+      - name: Deploy Frontend to EC2
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          FE_ENV: ${{ secrets.FRONTEND_ENV_FILE }}
+          SOURCE_HASH: ${{ needs.build.outputs.source_hash }}
         with:
-          host: ${{ secrets.AWS_EC2_SSH_DNS }}
-          username: ${{ secrets.AWS_EC2_SSH_USER_NAME }}
-          key: ${{ secrets.AWS_EC2_SSH_PEM_KEY }}
-          port: ${{ secrets.AWS_EC2_SSH_PORT }}
+          host: ${{ secrets.AWS_FE_EC2_SSH_DNS }}
+          username: ${{ secrets.AWS_FE_EC2_SSH_USER_NAME }}
+          key: ${{ secrets.AWS_FE_EC2_SSH_PEM_KEY }}
+          port: ${{ secrets.AWS_FE_EC2_SSH_PORT }}
+          envs: ECR_REGISTRY,AWS_REGION,FE_ENV,SOURCE_HASH
           script: |
-            cd workspace
+            set -e
 
-            # ECR 인증 및 로그인
-            export ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | sudo docker login --username AWS --password-stdin $ECR_REGISTRY
+            # 디렉토리 생성
+            mkdir -p ~/workspace/envs
+            cd ~/workspace
 
-            # 기존 컨테이너 정리
-            sudo docker stop $(sudo docker ps -aq) || true
-            sudo docker system prune -a --volumes -f
+            # docker-compose.fe.yml 생성
+            cat > docker-compose.fe.yml << EOF
+            version: "3"
 
-            # 최신 이미지로 서비스 시작
-            sudo docker-compose pull
-            sudo docker-compose up -d
+            services:
+              fe:
+                container_name: fe
+                platform: linux/arm64
+                image: $ECR_REGISTRY/1-blue/story-dict-fe:latest
+                restart: always
+                env_file:
+                  - ./envs/.env.production
+                ports:
+                  - 9000:9000
+            EOF
 
-            # 서비스 상태 확인
-            sudo docker-compose ps
+            # 환경 파일 생성
+            echo "$FE_ENV" > ./envs/.env.production
 
-      # 보안 그룹 정리 (실패 시에도 실행)
-      - name: Remove GitHub Actions IP from Security Group
+            # ECR 로그인
+            aws ecr get-login-password --region $AWS_REGION | \
+              docker login --username AWS --password-stdin $ECR_REGISTRY
+
+            # 컨테이너 정리
+            if [ "$(docker ps -aq)" ]; then
+              docker stop $(docker ps -aq)
+            fi
+            docker system prune -a --volumes -f
+
+            # 배포
+            docker-compose -f docker-compose.fe.yml pull
+            docker-compose -f docker-compose.fe.yml up -d
+            docker-compose -f docker-compose.fe.yml ps
+
+      # 보안 그룹 정리
+      - name: Remove GitHub Actions IP from FE Security Group
         if: always()
         run: |
-          echo "보안 그룹에서 GitHub Actions IP 제거 중: ${{ env.RUNNER_IP }}"
+          echo "FE 보안 그룹에서 GitHub Actions IP 제거 중: ${{ env.FE_RUNNER_IP }}"
           aws ec2 revoke-security-group-ingress \
-            --group-id ${{ secrets.AWS_SECURITY_GROUP_ID }} \
+            --group-id ${{ secrets.AWS_FE_SECURITY_GROUP_ID }} \
             --protocol tcp \
             --port 22 \
-            --cidr ${{ env.RUNNER_IP }}/32 || true
+            --cidr ${{ env.FE_RUNNER_IP }}/32 || true
 
-      # 배포 소요시간 계산
-      - name: Calculate duration
+      # FE 배포 소요시간 계산
+      - name: Calculate FE duration
         if: always()
         run: |
           END_TIME=$(date +%s)
-          DURATION=$((END_TIME - START_TIME))
+          DURATION=$((END_TIME - FE_START_TIME))
           MINUTES=$((DURATION / 60))
           SECONDS=$((DURATION % 60))
-          echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
-          echo "총 배포 시간: ${MINUTES}분 ${SECONDS}초"
+          echo "FE_DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
 
-      # 배포 결과 알림 ( 성공/실패 통합 )
-      - name: Notify Slack on Completion
+      # FE 배포 결과 알림 (상세 정보 포함)
+      - name: Notify Slack on FE Completion
         if: always()
         uses: slackapi/slack-github-action@v1.26.0
         with:
@@ -373,17 +461,31 @@ jobs:
               "attachments": [
                 {
                   "color": "${{ job.status == 'success' && env.SLACK_SUCCESS_COLOR || env.SLACK_FAILURE_COLOR }}",
-                  "title": "${{ job.status == 'success' && '✅ 배포 성공' || '❌ 배포 실패' }}",
-                  "text": "배포 환경: ${{ inputs.environment }}\n커밋: ${{ env.COMMIT_SUBJECT }}\n상태: ${{ job.status }}",
+                  "title": "${{ job.status == 'success' && '✅ FE 배포 성공' || '❌ FE 배포 실패' }}",
                   "fields": [
                     {
-                      "title": "소요시간",
-                      "value": "${{ env.DURATION }}",
+                      "title": "환경",
+                      "value": "${{ inputs.environment }}",
                       "short": true
                     },
                     {
-                      "title": "이미지 태그 (해시)",
-                      "value": "${{ steps.source-hash.outputs.SOURCE_HASH }}",
+                      "title": "상태",
+                      "value": "${{ job.status }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소요시간",
+                      "value": "${{ env.FE_DURATION }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소스 해시",
+                      "value": "${{ needs.build.outputs.source_hash }}",
+                      "short": true
+                    },
+                    {
+                      "title": "FE 서버",
+                      "value": "${{ secrets.AWS_FE_EC2_SSH_DNS }}",
                       "short": true
                     },
                     ${{ env.SLACK_COMMON_FIELDS }}
@@ -394,3 +496,237 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  # BE 배포 작업
+  deploy-be:
+    name: Deploy Backend
+    needs: build
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 시작 시간 설정
+      - name: Set start time
+        run: |
+          echo "BE_START_TIME=$(date +%s)" >> $GITHUB_ENV
+          echo "BE_START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
+
+      # AWS 인증
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 동적 보안 그룹 관리
+      - name: Add GitHub Actions IP to BE Security Group
+        id: add-ip-be
+        run: |
+          RUNNER_IP=$(curl -s https://api.ipify.org)
+          echo "BE_RUNNER_IP=$RUNNER_IP" >> $GITHUB_ENV
+          echo "BE 보안 그룹에 GitHub Actions IP 추가 중: $RUNNER_IP"
+
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.AWS_BE_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr $RUNNER_IP/32
+
+      # BE 배포
+      - name: Deploy Backend to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          BE_ENV: ${{ secrets.BACKEND_ENV_FILE }}
+          SOURCE_HASH: ${{ needs.build.outputs.source_hash }}
+        with:
+          host: ${{ secrets.AWS_BE_EC2_SSH_DNS }}
+          username: ${{ secrets.AWS_BE_EC2_SSH_USER_NAME }}
+          key: ${{ secrets.AWS_BE_EC2_SSH_PEM_KEY }}
+          port: ${{ secrets.AWS_BE_EC2_SSH_PORT }}
+          envs: ECR_REGISTRY,AWS_REGION,BE_ENV,SOURCE_HASH
+          script: |
+            set -e
+
+            # 디렉토리 생성
+            mkdir -p ~/workspace/envs
+            cd ~/workspace
+
+            # docker-compose.be.yml 생성
+            cat > docker-compose.be.yml << EOF
+            version: "3"
+
+            services:
+              be:
+                container_name: be
+                platform: linux/arm64
+                image: $ECR_REGISTRY/1-blue/story-dict-be:latest
+                restart: always
+                env_file:
+                  - ./envs/.env.production
+                ports:
+                  - 9050:9050
+            EOF
+
+            # 환경 파일 생성
+            echo "$BE_ENV" > ./envs/.env.production
+
+            # ECR 로그인
+            aws ecr get-login-password --region $AWS_REGION | \
+              docker login --username AWS --password-stdin $ECR_REGISTRY
+
+            # 컨테이너 정리
+            if [ "$(docker ps -aq)" ]; then
+              docker stop $(docker ps -aq)
+            fi
+            docker system prune -a --volumes -f
+
+            # 배포
+            docker-compose -f docker-compose.be.yml pull
+            docker-compose -f docker-compose.be.yml up -d
+            docker-compose -f docker-compose.be.yml ps
+
+      # 보안 그룹 정리
+      - name: Remove GitHub Actions IP from BE Security Group
+        if: always()
+        run: |
+          echo "BE 보안 그룹에서 GitHub Actions IP 제거 중: ${{ env.BE_RUNNER_IP }}"
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.AWS_BE_SECURITY_GROUP_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${{ env.BE_RUNNER_IP }}/32 || true
+
+      # BE 배포 소요시간 계산
+      - name: Calculate BE duration
+        if: always()
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - BE_START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          echo "BE_DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
+
+      # BE 배포 결과 알림 (상세 정보 포함)
+      - name: Notify Slack on BE Completion
+        if: always()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ job.status == 'success' && env.SLACK_SUCCESS_COLOR || env.SLACK_FAILURE_COLOR }}",
+                  "title": "${{ job.status == 'success' && '✅ BE 배포 성공' || '❌ BE 배포 실패' }}",
+                  "fields": [
+                    {
+                      "title": "환경",
+                      "value": "${{ inputs.environment }}",
+                      "short": true
+                    },
+                    {
+                      "title": "상태",
+                      "value": "${{ job.status }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소요시간",
+                      "value": "${{ env.BE_DURATION }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소스 해시",
+                      "value": "${{ needs.build.outputs.source_hash }}",
+                      "short": true
+                    },
+                    {
+                      "title": "BE 서버",
+                      "value": "${{ secrets.AWS_BE_EC2_SSH_DNS }}",
+                      "short": true
+                    },
+                    ${{ env.SLACK_COMMON_FIELDS }}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+  # 전체 배포 결과 알림
+  notify-completion:
+    name: Notify Overall Completion
+    needs: [build, deploy-fe, deploy-be]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Slack on Overall Completion
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ needs.deploy-fe.result == 'success' && needs.deploy-be.result == 'success' && env.SLACK_SUCCESS_COLOR || env.SLACK_FAILURE_COLOR }}",
+                  "title": "${{ needs.deploy-fe.result == 'success' && needs.deploy-be.result == 'success' && '✅ 전체 배포 성공' || '❌ 전체 배포 실패' }}",
+                  "fields": [
+                    {
+                      "title": "환경",
+                      "value": "${{ inputs.environment }}",
+                      "short": true
+                    },
+                    {
+                      "title": "FE 상태",
+                      "value": "${{ needs.deploy-fe.result }}",
+                      "short": true
+                    },
+                    {
+                      "title": "BE 상태",
+                      "value": "${{ needs.deploy-be.result }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소스 해시",
+                      "value": "${{ needs.build.outputs.source_hash }}",
+                      "short": true
+                    },
+                    {
+                      "title": "S3 캐시",
+                      "value": "${{ needs.build.outputs.skip_all_build == 'true' && '✅ 전체 히트' || '❌ 미스' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "FE 이미지",
+                      "value": "${{ needs.build.outputs.skip_fe_build == 'true' && '✅ 스킵' || '🔨 빌드' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "BE 이미지",
+                      "value": "${{ needs.build.outputs.skip_be_build == 'true' && '✅ 스킵' || '🔨 빌드' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "배포된 웹사이트 주소",
+                      "value": "<https://story-dict.com|story-dict.com>",
+                      "short": true
+                    },
+                    ${{ env.SLACK_COMMON_FIELDS }}
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_SUCCESS_COLOR: "#00a63e"
+          SLACK_FAILURE_COLOR: "#e7000b"

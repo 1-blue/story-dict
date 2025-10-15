@@ -25,34 +25,6 @@ env:
   # 시간대 설정
   TZ: "Asia/Seoul"
 
-  # Slack 공통 필드 - 모든 알림에서 재사용
-  SLACK_COMMON_FIELDS: |
-    {
-      "title": "워크플로우",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/workflows/ci.yml|${{ github.workflow }} 워크플로우>",
-      "short": true
-    },
-    {
-      "title": "액션작업",
-      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }} 작업>",
-      "short": true
-    },
-    {
-      "title": "브랜치",
-      "value": "${{ github.ref_name }}",
-      "short": true
-    },
-    {
-      "title": "실행자",
-      "value": "${{ github.actor }}",
-      "short": true
-    },
-    {
-      "title": "S3 빌드 캐시",
-      "value": "<https://ap-northeast-2.console.aws.amazon.com/s3/buckets/storydict?region=ap-northeast-2&bucketType=general&prefix=builds/&showversions=false|S3 버킷>",
-      "short": true
-    }
-
 jobs:
   ci:
     name: Code Quality & Tests
@@ -67,15 +39,11 @@ jobs:
         with:
           fetch-depth: 2
 
-      # 시작 시간 추적
-      - name: Set start time
+      # 시작 시간 및 CI 정보 설정 (통합)
+      - name: Set CI info and start time
         run: |
           echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
           echo "START_TIME_FORMATTED=$(date '+%Y년 %m월 %d일 %H시 %M분 %S초')" >> $GITHUB_ENV
-
-      # 커밋/PR 정보 추출
-      - name: Extract commit/PR info
-        run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "CI_TITLE=${{ github.event.pull_request.title }}" >> $GITHUB_ENV
             echo "CI_TYPE=PR" >> $GITHUB_ENV
@@ -85,19 +53,48 @@ jobs:
             echo "CI_TYPE=수동" >> $GITHUB_ENV
           fi
 
+      # 소스코드 해시 계산 (조기 실행으로 캐시 확인 가능)
+      - name: Calculate source hash
+        id: source-hash
+        run: |
+          SOURCE_HASH=$(find apps packages -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.prisma" | grep -v "/dist/" | grep -v "/.next/" | sort | xargs cat | sha256sum | cut -d' ' -f1)
+          echo "SOURCE_HASH=$SOURCE_HASH" >> $GITHUB_OUTPUT
+          echo "✅ 소스코드 해시: $SOURCE_HASH"
+
+      # S3 빌드 캐시 조기 확인 (의존성 설치 전)
+      - name: Early build cache check
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        id: early-cache-check
+        run: |
+          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
+          if aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/builds/${SOURCE_HASH}.tar.gz; then
+            echo "🎉 빌드 캐시 존재 - CI 작업만 실행 (해시: $SOURCE_HASH)"
+            echo "CACHE_EXISTS=true" >> $GITHUB_OUTPUT
+            echo "SKIP_BUILD=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ 빌드 캐시 없음 - 전체 빌드 실행 (해시: $SOURCE_HASH)"
+            echo "CACHE_EXISTS=false" >> $GITHUB_OUTPUT
+            echo "SKIP_BUILD=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
           version: 9.12.0
 
-      - name: Setup Node.js
+      - name: Setup Node.js with optimized caching
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: "pnpm"
 
+      # Turbo 원격 캐시 설정 (로컬과 원격 모두)
       - name: Setup Turbo Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -110,21 +107,19 @@ jobs:
       - name: Generate Prisma client
         run: pnpm db:generate
 
-      - name: Run CI (affected packages only)
+      - name: Create frontend .env file
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+        run: |
+          echo "${{ secrets.FRONTEND_ENV_FILE }}" > apps/fe/.env.production
+          echo "${{ secrets.BACKEND_ENV_FILE }}" > apps/be/.env.production
+          echo "✅ 프론트엔드, 백엔드 환경변수 파일 생성 완료"
+
+      - name: Run CI (lint, type-check only)
         run: pnpm ci:affected
 
-      # 소스코드 해시 계산 (빌드 캐시 키로 사용)
-      - name: Calculate source hash
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
-        id: source-hash
-        run: |
-          SOURCE_HASH=$(find apps packages -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.prisma" | grep -v "/dist/" | grep -v "/.next/" | sort | xargs cat | sha256sum | cut -d' ' -f1)
-          echo "SOURCE_HASH=$SOURCE_HASH" >> $GITHUB_OUTPUT
-          echo "계산된 소스코드 해시: $SOURCE_HASH"
-
-      # CI 시작 알림
+      # CI 시작 알림 (간소화)
       - name: Notify Slack on Start
-        id: slack-start
+        if: github.event_name != 'pull_request'
         uses: slackapi/slack-github-action@v1.26.0
         with:
           payload: |
@@ -133,19 +128,28 @@ jobs:
                 {
                   "color": "${{ env.SLACK_START_COLOR }}",
                   "title": "🔍 CI 시작",
-                  "text": "타입: ${{ env.CI_TYPE }}\n제목: ${{ env.CI_TITLE }}",
+                  "text": "${{ env.CI_TITLE }}",
                   "fields": [
                     {
-                      "title": "시작시간",
-                      "value": "${{ env.START_TIME_FORMATTED }}",
+                      "title": "타입",
+                      "value": "${{ env.CI_TYPE }}",
                       "short": true
                     },
                     {
-                      "title": "소스 해시",
-                      "value": "${{ steps.source-hash.outputs.SOURCE_HASH || 'PR/브랜치: 계산안함' }}",
+                      "title": "실행자",
+                      "value": "${{ github.actor }}",
                       "short": true
                     },
-                    ${{ env.SLACK_COMMON_FIELDS }}
+                    {
+                      "title": "브랜치",
+                      "value": "${{ github.ref_name }}",
+                      "short": true
+                    },
+                    {
+                      "title": "액션작업",
+                      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }} 작업>",
+                      "short": true
+                    }
                   ]
                 }
               ]
@@ -154,28 +158,9 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PR_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
-      # S3에서 기존 빌드 캐시 확인
-      - name: Check existing build cache
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
-        id: cache-check
-        run: |
-          SOURCE_HASH=${{ steps.source-hash.outputs.SOURCE_HASH }}
-
-          if aws s3 ls s3://${{ secrets.AWS_S3_BUCKET }}/builds/${SOURCE_HASH}.tar.gz; then
-            echo "✅ 빌드 캐시 존재 (해시: $SOURCE_HASH)"
-            echo "CACHE_EXISTS=true" >> $GITHUB_OUTPUT
-          else
-            echo "❌ 빌드 캐시 없음. 새로 빌드합니다 (해시: $SOURCE_HASH)"
-            echo "CACHE_EXISTS=false" >> $GITHUB_OUTPUT
-          fi
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-
-      # 캐시가 없을 때만 빌드 및 S3 저장
+      # 빌드 및 S3 캐시 저장 (캐시 없을 때만)
       - name: Build and cache to S3
-        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.cache-check.outputs.CACHE_EXISTS == 'false'
+        if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && steps.early-cache-check.outputs.SKIP_BUILD == 'false'
         run: |
           echo "🔨 애플리케이션 빌드 중..."
           pnpm build
@@ -187,7 +172,7 @@ jobs:
             apps/fe/.next \
             apps/fe/public \
             apps/be/dist \
-            packages/database/dist
+            packages/
 
           aws s3 cp ${SOURCE_HASH}.tar.gz \
             s3://${{ secrets.AWS_S3_BUCKET }}/builds/
@@ -202,6 +187,102 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ACCESS_SECRET_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
+
+      # CI 소요시간 계산
+      - name: Calculate CI duration
+        if: always()
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          MINUTES=$((DURATION / 60))
+          SECONDS=$((DURATION % 60))
+          echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
+
+      # CI 완료 알림 (상세 정보 포함)
+      - name: Notify Slack on Completion
+        if: always() && github.event_name != 'pull_request'
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "attachments": [
+                {
+                  "color": "${{ job.status == 'success' && env.SLACK_SUCCESS_COLOR || env.SLACK_FAILURE_COLOR }}",
+                  "title": "${{ job.status == 'success' && '✅ CI 성공' || '❌ CI 실패' }}",
+                  "text": "${{ env.CI_TITLE }}",
+                  "fields": [
+                    {
+                      "title": "타입",
+                      "value": "${{ env.CI_TYPE }}",
+                      "short": true
+                    },
+                    {
+                      "title": "상태",
+                      "value": "${{ job.status }}",
+                      "short": true
+                    },
+                    {
+                      "title": "빌드 캐시",
+                      "value": "${{ steps.early-cache-check.outputs.CACHE_EXISTS == 'true' && '✅ 히트' || '❌ 미스' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "빌드 실행",
+                      "value": "${{ steps.early-cache-check.outputs.SKIP_BUILD == 'true' && '⏭️ 스킵' || '🔨 실행' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "CD 실행",
+                      "value": "${{ steps.check-deploy.outputs.should_deploy == 'true' && '🚀 예' || '⏹️ 아니요' }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소요시간",
+                      "value": "${{ env.DURATION }}",
+                      "short": true
+                    },
+                    {
+                      "title": "소스 해시",
+                      "value": "${{ steps.source-hash.outputs.SOURCE_HASH }}",
+                      "short": true
+                    },
+                    {
+                      "title": "시작시간",
+                      "value": "${{ env.START_TIME_FORMATTED }}",
+                      "short": true
+                    },
+                    {
+                      "title": "워크플로우 목록",
+                      "value": "<https://github.com/1-blue/story-dict/actions/workflows/ci.yml|CI 워크플로우 목록>",
+                      "short": true
+                    },
+                    {
+                      "title": "액션작업",
+                      "value": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|#${{ github.run_number }} 작업>",
+                      "short": true
+                    },
+                    {
+                      "title": "브랜치",
+                      "value": "${{ github.ref_name }}",
+                      "short": true
+                    },
+                    {
+                      "title": "실행자",
+                      "value": "${{ github.actor }}",
+                      "short": true
+                    },
+                    {
+                      "title": "S3 빌드 캐시",
+                      "value": "<https://ap-northeast-2.console.aws.amazon.com/s3/buckets/storydict?region=ap-northeast-2&bucketType=general&prefix=builds/&showversions=false|S3 버킷>",
+                      "short": true
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PR_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Check if deployment needed
         id: check-deploy
@@ -220,48 +301,6 @@ jobs:
             echo "should_deploy=false" >> $GITHUB_OUTPUT
             echo "⏹️ PR 실행: 배포는 제외하고 CI만 실행합니다"
           fi
-
-      # CI 소요시간 계산
-      - name: Calculate CI duration
-        if: always()
-        run: |
-          END_TIME=$(date +%s)
-          DURATION=$((END_TIME - START_TIME))
-          MINUTES=$((DURATION / 60))
-          SECONDS=$((DURATION % 60))
-          echo "DURATION=${MINUTES}분 ${SECONDS}초" >> $GITHUB_ENV
-
-      # CI 완료 알림 (성공/실패 통합)
-      - name: Notify Slack on Completion
-        if: always()
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "attachments": [
-                {
-                  "color": "${{ job.status == 'success' && env.SLACK_SUCCESS_COLOR || env.SLACK_FAILURE_COLOR }}",
-                  "title": "${{ job.status == 'success' && '✅ CI 성공' || '❌ CI 실패' }}",
-                  "text": "타입: ${{ env.CI_TYPE }}\n제목: ${{ env.CI_TITLE }}\n상태: ${{ job.status }}\nCD 실행: ${{ steps.check-deploy.outputs.should_deploy == 'true' && '🚀 예' || '⏹️ 아니요' }}",
-                  "fields": [
-                    {
-                      "title": "소요시간",
-                      "value": "${{ env.DURATION }}",
-                      "short": true
-                    },
-                    {
-                      "title": "소스 해시",
-                      "value": "${{ steps.source-hash.outputs.SOURCE_HASH || 'PR/브랜치: 계산안함' }}",
-                      "short": true
-                    },
-                    ${{ env.SLACK_COMMON_FIELDS }}
-                  ]
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_PR_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
   trigger-cd:
     name: Trigger Deployment

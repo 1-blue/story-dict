@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  be:
+    container_name: be
+    platform: linux/arm64
+    build:
+      context: .
+      dockerfile: ./apps/be/Dockerfile
+    env_file:
+      - ./envs/be/.env.production
+    image: 1-blue/story-dict-be:latest
+    restart: always
+    ports:
+      - 9050:9050

@@ -38,11 +38,11 @@ RUN pnpm install
 COPY --from=installer /app/out/full/ .
 
 # 빌드 처리 (빌드 파일 존재 여부 확인)
-RUN if [ -d "apps/be/dist" ] && [ -d "packages/database/dist" ]; then \
+RUN if [ -d "apps/be/dist" ] && [ -d "packages/database/dist" ] && [ -d "packages/utils/dist" ]; then \
       echo "✅ 빌드 파일이 존재합니다. 캐시를 사용합니다."; \
     else \
       echo "🔨 빌드 파일이 없습니다. 새로 빌드합니다."; \
-      pnpm turbo build; \
+      pnpm db:generate && pnpm build; \
     fi
 
 # ======================================== 실행 전용 실행 스테이지 ========================================
@@ -57,11 +57,14 @@ RUN npm install -g pnpm
 # 작업 디렉토리 설정 
 WORKDIR /app
 
-# 빌드된 파일 복사
+# 빌드된 파일과 node_modules, packages 복사 (심볼릭 링크 해결을 위해)
 COPY --from=builder /app/apps/be/dist ./apps/be/dist
 COPY --from=builder /app/apps/be/node_modules ./apps/be/node_modules
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/package.json ./package.json
+
+RUN pnpm db:generate
 
 # 포트 노출
 EXPOSE 9050

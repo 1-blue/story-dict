@@ -59,8 +59,10 @@ const bootstrap = async () => {
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("api", app, document);
 
-    // openapi/index.yaml 파일 생성
-    fs.writeFileSync("./src/@openapi/index.yaml", dump(document));
+    // 개발모드일때만 openapi/index.yaml 파일 생성
+    if (process.env.NODE_ENV === "development") {
+      fs.writeFileSync("./src/@openapi/index.yaml", dump(document));
+    }
 
     await app.listen(process.env.PORT);
 

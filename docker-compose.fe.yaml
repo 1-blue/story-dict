@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  fe:
+    container_name: fe
+    platform: linux/arm64
+    build:
+      context: .
+      dockerfile: ./apps/fe/Dockerfile
+    image: 1-blue/story-dict-fe:latest
+    restart: always
+    env_file:
+      - ./envs/fe/.env.production
+    ports:
+      - 9000:9000

@@ -44,7 +44,7 @@ RUN if [ -d "apps/fe/.next" ] && [ -d "apps/fe/public" ]; then \
       echo "✅ 빌드 파일이 존재합니다. 캐시를 사용합니다."; \
     else \
       echo "🔨 빌드 파일이 없습니다. 새로 빌드합니다."; \
-      pnpm turbo build; \
+      pnpm build; \
     fi
 
 # ======================================== 실행 전용 실행 스테이지 ========================================
@@ -60,10 +60,19 @@ ENV PORT=9000
 ENV HOSTNAME="0.0.0.0"
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
+# 루트 node_modules 복사 (pnpm 실제 패키지들)
+COPY --from=builder /app/node_modules ./node_modules
+
 # 실행 파일 복사
 COPY --from=builder /app/apps/fe/.next/standalone ./
 COPY --from=builder /app/apps/fe/.next/static ./apps/fe/.next/static
 COPY --from=builder /app/apps/fe/public ./apps/fe/public
+
+# apps/fe의 node_modules 복사 (next 모듈 포함)
+COPY --from=builder /app/apps/fe/node_modules ./apps/fe/node_modules
+
+# packages 복사 (심볼릭 링크 해결을 위해)
+COPY --from=builder /app/packages ./packages
 
 # 포트 노출
 EXPOSE 9000
