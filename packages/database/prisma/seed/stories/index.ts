@@ -28,5 +28,5 @@ export const seedStories: Prisma.StoryCreateManyInput[] = datas.flatMap(
         id: `${frontId}-0000-0000-0000-${backId}`,
         userId: `00000000-0000-0000-0000-000000000000`,
       };
-    })
+    }),
 );

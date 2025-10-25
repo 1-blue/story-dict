@@ -12,52 +12,57 @@ import CategoryStories from "#fe/app/(All)/stories/category/[category]/_componen
 import { getQueryClient } from "#fe/libs/getQueryClient";
 
 interface IProps {
-  params: {
+  params: Promise<{
     category: StoryCategory;
-  };
+  }>;
 }
 
-export const revalidate = 60 * 30;
+export const revalidate = 1800;
 
 const queryClient = getQueryClient();
-const getManyCategoryStory = cache(({ params }: IProps) => {
-  return queryClient.fetchQuery(
-    openapi.queryOptions("get", "/apis/v1/stories/category/{category}", {
-      params: { path: { category: params.category } },
-    }),
-  );
-});
+const getManyCategoryStory = cache(
+  ({ category }: { category: StoryCategory }) => {
+    return queryClient.fetchQuery(
+      openapi.queryOptions("get", "/apis/v1/stories/category/{category}", {
+        params: { path: { category } },
+      }),
+    );
+  },
+);
 
 export const generateMetadata = async ({
   params,
 }: IProps): Promise<Metadata> => {
-  const { payload: stories } = await getManyCategoryStory({ params });
+  const { category } = await params;
+  const { payload: stories } = await getManyCategoryStory({ category });
   const post = stories[0];
 
   if (!post) {
     return getSharedMetadata({
-      title: `${storyCategoryToKoreanMap[params.category]} 이야기`,
+      title: `${storyCategoryToKoreanMap[category]} 이야기`,
     });
   }
 
   return getSharedMetadata({
-    title: `${storyCategoryToKoreanMap[params.category]} 이야기`,
-    description: `[${params.category}] ${post.title}: ${post.summary.replace(/\n/g, " ")}`,
-    keywords: [params.category, ...stories.map((post) => post.title)],
+    title: `${storyCategoryToKoreanMap[category]} 이야기`,
+    description: `[${category}] ${post.title}: ${post.summary.replace(/\n/g, " ")}`,
+    keywords: [category, ...stories.map((post) => post.title)],
     ...(post.thumbnailPath && { images: [post.thumbnailPath] }),
   });
 };
 
 const Page: NextPage<IProps> = async ({ params }) => {
-  if (!Object.keys(storyCategoryToKoreanMap).includes(params.category)) {
+  const { category } = await params;
+
+  if (!Object.keys(storyCategoryToKoreanMap).includes(category)) {
     return redirect(routes.story.category.detail.url(CATEGORIES[0]!.value));
   }
 
-  await getManyCategoryStory({ params });
+  await getManyCategoryStory({ category });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <CategoryStories category={params.category} />
+      <CategoryStories category={category} />
     </HydrationBoundary>
   );
 };
