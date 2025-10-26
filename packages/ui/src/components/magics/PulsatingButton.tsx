@@ -38,7 +38,7 @@ export function PulsatingButton({
       variants={FADE_ANIMATION_VARIANTS}
       className={cn(
         "relative text-center cursor-pointer flex justify-center items-center rounded-lg bg-primary text-white dark:bg-primary dark:text-white px-4 py-2",
-        className
+        className,
       )}
       style={
         {
