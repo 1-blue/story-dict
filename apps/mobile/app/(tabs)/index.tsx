@@ -5,7 +5,9 @@ const HomeScreen = () => {
   return (
     <SafeAreaView>
       <View>
-        <Text>메인 페이지</Text>
+        <Text className="text-red-500 font-bold bg-indigo-500">
+          메인 페이지
+        </Text>
       </View>
     </SafeAreaView>
   );
