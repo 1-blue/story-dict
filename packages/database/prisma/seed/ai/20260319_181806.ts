@@ -1,7 +1,7 @@
 import type { Prisma } from "@sd/db";
 
 /** AI 자동 생성 스토리 - 20260319_181806 */
-export const stories: Pick
+export const stories: Pick<
   Prisma.StoryCreateInput,
   "title" | "summary" | "content" | "category" | "thumbnailPath"
 >[] = [
