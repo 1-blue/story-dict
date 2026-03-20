@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { redirect } from "next/navigation";
 import { Form, Tabs, TabsContent, TabsList, TabsTrigger, toast } from "@sd/ui";
@@ -27,19 +27,19 @@ const formSchema = z.object({
 const DEV_DEFAULT_VALUES =
   process.env.NODE_ENV === "development"
     ? ({
-        title: "이야기 제목 " + Date.now(),
-        summary: "이야기 요약 " + Date.now(),
-        content: "## 제목\n대충 내용 아무거나 작성" + Date.now(),
-        category: "GENERAL_KNOWLEDGE",
-        thumbnailPath: null,
-      } as const)
+      title: "이야기 제목 " + Date.now(),
+      summary: "이야기 요약 " + Date.now(),
+      content: "## 제목\n대충 내용 아무거나 작성" + Date.now(),
+      category: "GENERAL_KNOWLEDGE",
+      thumbnailPath: null,
+    } as const)
     : ({
-        title: "",
-        summary: "",
-        content: "",
-        category: "GENERAL_KNOWLEDGE",
-        thumbnailPath: null,
-      } as const);
+      title: "",
+      summary: "",
+      content: "",
+      category: "GENERAL_KNOWLEDGE",
+      thumbnailPath: null,
+    } as const);
 
 interface IProps {
   ownerId?: string;
@@ -53,25 +53,45 @@ const StoryForm: React.FC<IProps> = ({ ownerId, storyId, defaultValues }) => {
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues ?? DEV_DEFAULT_VALUES,
   });
+  const content = useWatch({ control: form.control, name: "content" })
 
   const [tab, setTab] = useState<"editor" | "metadata">("editor");
+  const errors = form.formState.errors;
+  const hasContentError = !!errors.content;
+  const hasMetadataError = !!(
+    errors.title ||
+    errors.summary ||
+    errors.category
+  );
+
+  // 에러가 있으면 해당 탭으로, 없으면 사용자 선택 유지 (effect 내 setState 제거로 연쇄 렌더 방지)
+  const tabFromErrors = hasContentError
+    ? "editor"
+    : hasMetadataError
+      ? "metadata"
+      : null;
+  const activeTab = tabFromErrors ?? tab;
+
   useEffect(() => {
-    const errors = form.formState.errors;
     if (errors.content) {
-      setTab("editor");
-      toast.error(errors.content?.message);
+      toast.error(errors.content?.message, { id: "form-error-content" });
       return;
     }
     if (errors.title || errors.summary || errors.category) {
-      setTab("metadata");
       toast.error(
         errors.title?.message ||
-          errors.summary?.message ||
-          errors.category?.message,
+        errors.summary?.message ||
+        errors.category?.message,
+        { id: "form-error-metadata" },
       );
-      return;
     }
-  }, [form.formState.errors]);
+  }, [
+    form.formState.errors,
+    errors.content,
+    errors.title,
+    errors.summary,
+    errors.category,
+  ]);
 
   const isEdit = !!storyId;
 
@@ -128,7 +148,7 @@ const StoryForm: React.FC<IProps> = ({ ownerId, storyId, defaultValues }) => {
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex flex-col gap-4">
-        <Tabs value={tab}>
+        <Tabs value={activeTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="editor" onClick={() => setTab("editor")}>
               에디터
@@ -142,7 +162,7 @@ const StoryForm: React.FC<IProps> = ({ ownerId, storyId, defaultValues }) => {
           </TabsContent>
           <TabsContent value="editor">
             <Editor
-              content={form.watch("content")}
+              content={content}
               onChange={(value) => form.setValue("content", value)}
             />
           </TabsContent>

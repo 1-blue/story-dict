@@ -1,4 +1,6 @@
-import type { StoryCategory } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
+
+type StoryCategory = components["schemas"]["StoryCategory"];
 import {
   LockOpenIcon as OLockOpenIcon,
   KeyIcon as OKeyIcon,
@@ -51,7 +53,7 @@ export const routes = {
     OIcon: OHomeIcon,
     SIcon: SHomeIcon,
     detail: {
-      url: (title: string) => `/stories/${title}`,
+      url: (title: string) => `/stories/${encodeURIComponent(title)}`,
       accessLevel: "public",
       OIcon: OCupChipIcon,
       SIcon: SCupChipIcon,
@@ -63,7 +65,7 @@ export const routes = {
       SIcon: SBookOpenIcon,
     },
     edit: {
-      url: (title: string) => `/stories/edit/${title}`,
+      url: (title: string) => `/stories/edit/${encodeURIComponent(title)}`,
       accessLevel: "authenticated",
       OIcon: OPencilSquareIcon,
       SIcon: SPencilSquareIcon,

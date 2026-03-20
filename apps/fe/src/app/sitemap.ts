@@ -33,7 +33,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const { payload: stories } = await getAllStoryAPI();
     const storyRoutes = stories.map((story) => ({
-      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/stories/${story.title}`,
+      url: `${process.env.NEXT_PUBLIC_CLIENT_URL}/stories/${encodeURIComponent(story.title)}`,
       lastModified: new Date(story.updatedAt),
     }));
 

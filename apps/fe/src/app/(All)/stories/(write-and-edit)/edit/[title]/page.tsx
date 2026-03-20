@@ -7,13 +7,12 @@ import StoryForm from "#fe/app/(All)/stories/(write-and-edit)/_components/StoryF
 const queryClient = getQueryClient();
 
 interface IProps {
-  params: {
-    title: string;
-  };
+  params: Promise<{ title: string }>;
 }
 
 const Page: NextPage<IProps> = async ({ params }) => {
-  const title = decodeURIComponent(params.title);
+  const { title: encodedTitle } = await params;
+  const title = decodeURIComponent(encodedTitle);
 
   const { payload: story } = await queryClient.fetchQuery(
     openapi.queryOptions("get", "/apis/v1/stories/title/{title}", {
