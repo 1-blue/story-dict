@@ -13,7 +13,8 @@ const StoryPanelPopover: React.FC<IProps> = ({ storyId }) => {
   const { title } = useParams<{ title: string }>();
   const router = useRouter();
 
-  const onClickEditButton = () => router.replace(`/stories/edit/${title}`);
+  const onClickEditButton = () =>
+    router.replace(`/stories/edit/${encodeURIComponent(title)}`);
 
   const { storyDeleteMutation } = useStoryMutations();
   const onClickDeleteButton = () => {

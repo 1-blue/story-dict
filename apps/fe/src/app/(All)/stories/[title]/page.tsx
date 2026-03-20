@@ -41,6 +41,8 @@ export const generateMetadata = async ({
 
 const Page: NextPage<IProps> = async ({ params }) => {
   const { title } = await params;
+  console.log("🐬 title >> ", title);
+
   await getOneByTitle(title);
 
   return (
