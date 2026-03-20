@@ -1,5 +1,6 @@
 import { PrismaClient } from "@sd/db";
 
+import { seedAiStories } from "./ai";
 import { seedUsers } from "./users";
 import { seedStories } from "./stories";
 import { seedComments } from "./comments";
@@ -28,6 +29,20 @@ async function main() {
   for (const story of seedStories) {
     await prisma.story.upsert({
       where: { id: story.id },
+      update: {
+        summary: story.summary,
+        content: story.content,
+        category: story.category,
+        thumbnailPath: story.thumbnailPath,
+      },
+      create: story,
+    });
+  }
+
+  console.log(`✅ seeding to ai stories ...`);
+  for (const story of seedAiStories) {
+    await prisma.story.upsert({
+      where: { title: story.title },
       update: {
         summary: story.summary,
         content: story.content,

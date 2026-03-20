@@ -10,11 +10,14 @@ import {
 } from "@sd/ui";
 import { Marquee } from "@sd/ui/magics";
 
-import type { Story } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
 import { routes } from "#fe/constants";
 import { storyCategoryToKoreanMap } from "@sd/utils";
 
-const stories: Pick<Story, "title" | "summary" | "category">[] = [
+const stories: Pick<
+  components["schemas"]["GetAllStoriesResponsePayloadDTO"],
+  "title" | "summary" | "category"
+>[] = [
   {
     title: `윤슬`,
     summary: `햇빛이나 달빛이 비치어 반짝이는 잔물결`,
@@ -80,10 +83,13 @@ const stories: Pick<Story, "title" | "summary" | "category">[] = [
 const firstRow = stories.slice(0, stories.length / 2);
 const secondRow = stories.slice(stories.length / 2);
 
+type StoryPayload =
+  components["schemas"]["GetAllStoriesResponsePayloadDTO"];
+
 interface IStoryCardProps {
-  title: Story["title"];
-  summary: Story["summary"];
-  category: Story["category"];
+  title: StoryPayload["title"];
+  summary: StoryPayload["summary"];
+  category: StoryPayload["category"];
 }
 
 const StoryCard: React.FC<IStoryCardProps> = ({ title, summary, category }) => {

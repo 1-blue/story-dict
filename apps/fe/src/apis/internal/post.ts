@@ -1,4 +1,4 @@
-import { Story } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
 import { fetchInstance, type IAPIResponse } from "..";
 
 // ============================== 모든 이야기 가져오기 ==============================
@@ -6,7 +6,10 @@ import { fetchInstance, type IAPIResponse } from "..";
 /** 모든 이야기 가져오기 요청 타입 */
 export interface IGetAllStoryAPIRequest {}
 /** 모든 이야기 가져오기 응답 타입 */
-export interface IGetAllStoryAPIResponse extends IAPIResponse<Story[]> {}
+export interface IGetAllStoryAPIResponse
+  extends IAPIResponse<
+    components["schemas"]["GetAllStoriesResponsePayloadDTO"][]
+ > {}
 /** 모든 이야기 가져오기 함수 */
 export const getAllStoryAPI = async (): Promise<IGetAllStoryAPIResponse> => {
   return fetchInstance(

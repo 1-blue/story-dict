@@ -1,4 +1,8 @@
-import { StoryCommentReaction, ReactionType } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
+
+type StoryReactionBasicEntity =
+  components["schemas"]["StoryReactionBasicEntity"];
+type ReactionType = components["schemas"]["ReactionType"];
 import useMe from "#fe/hooks/queries/users/useMe";
 import useStoryReactionMutations from "#fe/hooks/mutations/stories/reactions/useStoryReactionMutations";
 import { reactionTypeToEmojiMap } from "@sd/utils";
@@ -6,7 +10,7 @@ import { FaceIcon } from "@radix-ui/react-icons";
 import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
 interface IProps {
-  reactions: Pick<StoryCommentReaction, "id" | "type" | "userId">[];
+  reactions: Pick<StoryReactionBasicEntity, "id" | "type" | "userId">[];
   storyId: string;
 }
 
