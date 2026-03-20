@@ -2,13 +2,13 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export const revalidatePathForServer = (path: string) => {
+export const revalidatePathForServer = async (path: string) => {
   revalidatePath(path);
 };
-export const revalidateTagForServer = (tags: string[]) => {
+export const revalidateTagForServer = async (tags: string[]) => {
   const METHODS = ["GET", "POST", "PATCH", "PUT", "DELETE"];
 
   tags
-    .filter((tag) => !METHODS.includes(tag.toUpperCase()))
-    .forEach((tag) => revalidateTag(tag));
+    .filter((tag) => METHODS.includes(tag.toUpperCase()))
+    .forEach((tag) => revalidateTag(tag, "max"));
 };

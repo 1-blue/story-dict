@@ -8,21 +8,19 @@ import { getSharedMetadata } from "#fe/libs/sharedMetadata";
 
 import StoryDetail from "#fe/app/(All)/stories/[title]/_components/StoryDetail";
 
-export const revalidate = 60 * 30;
+export const revalidate = 1800; // 30분
 export const dynamicParams = true;
 export const generateStaticParams = async () => [];
 
 interface IProps {
-  params: {
-    title: string;
-  };
+  params: Promise<{ title: string }>;
 }
 
 const queryClient = getQueryClient();
-const getOneByTitle = cache(({ params }: IProps) => {
+const getOneByTitle = cache((title: string) => {
   return queryClient.fetchQuery(
     openapi.queryOptions("get", "/apis/v1/stories/title/{title}", {
-      params: { path: { title: params.title } },
+      params: { path: { title } },
     }),
   );
 });
@@ -30,7 +28,8 @@ const getOneByTitle = cache(({ params }: IProps) => {
 export const generateMetadata = async ({
   params,
 }: IProps): Promise<Metadata> => {
-  const { payload: story } = await getOneByTitle({ params });
+  const { title } = await params;
+  const { payload: story } = await getOneByTitle(title);
 
   return getSharedMetadata({
     title: story.title,
@@ -41,11 +40,12 @@ export const generateMetadata = async ({
 };
 
 const Page: NextPage<IProps> = async ({ params }) => {
-  await getOneByTitle({ params });
+  const { title } = await params;
+  await getOneByTitle(title);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <StoryDetail storyTitle={params.title} />
+      <StoryDetail storyTitle={title} />
     </HydrationBoundary>
   );
 };

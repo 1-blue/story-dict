@@ -1,4 +1,6 @@
-import type { StoryCategory } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
+
+type StoryCategory = components["schemas"]["StoryCategory"];
 import {
   LockOpenIcon as OLockOpenIcon,
   KeyIcon as OKeyIcon,

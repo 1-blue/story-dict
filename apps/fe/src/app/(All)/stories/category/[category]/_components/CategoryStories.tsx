@@ -1,6 +1,8 @@
 "use client";
 
-import { StoryCategory } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
+
+type StoryCategory = components["schemas"]["StoryCategory"];
 import { openapi } from "#fe/apis";
 import StoryCard from "#fe/components/StoryCard";
 import EmptyAlert from "#fe/components/EmptyAlert";

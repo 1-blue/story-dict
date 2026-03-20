@@ -4,11 +4,10 @@ import { useParams, useRouter } from "next/navigation";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@sd/ui";
 
-import type { Story } from "@sd/db";
 import useStoryMutations from "#fe/hooks/mutations/stories/useStoryMutations";
 
 interface IProps {
-  storyId: Story["id"];
+  storyId: string;
 }
 const StoryPanelPopover: React.FC<IProps> = ({ storyId }) => {
   const { title } = useParams<{ title: string }>();

@@ -1,4 +1,5 @@
 import { Prisma } from "@sd/db";
+import { SEED_ADMIN_USER_ID, toSeedUuid } from "../seed-ids";
 import { etymologyStories } from "./etymology";
 import { generalKnowledgeStories } from "./generalKnowledge";
 import { informationStories } from "./information";
@@ -25,8 +26,8 @@ export const seedStories: Prisma.StoryCreateManyInput[] = datas.flatMap(
 
       return {
         ...story,
-        id: `${frontId}-0000-0000-0000-${backId}`,
-        userId: `00000000-0000-0000-0000-000000000000`,
+        id: toSeedUuid(frontId, backId),
+        userId: SEED_ADMIN_USER_ID,
       };
     })
 );

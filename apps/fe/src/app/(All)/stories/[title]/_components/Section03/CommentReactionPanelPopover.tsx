@@ -2,13 +2,11 @@
 
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { Button, Popover, PopoverContent, PopoverTrigger } from "@sd/ui";
-import type { StoryComment, Story } from "@sd/db";
-
 import useStoryCommentMutations from "#fe/hooks/mutations/stories/comments/useStoryCommentMutations";
 
 interface IProps {
-  storyId: Story["id"];
-  commentId: StoryComment["id"];
+  storyId: string;
+  commentId: string;
 }
 const CommentReactionPanelPopover: React.FC<IProps> = ({
   storyId,

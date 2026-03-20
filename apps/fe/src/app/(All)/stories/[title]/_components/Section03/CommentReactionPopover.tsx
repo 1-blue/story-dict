@@ -1,13 +1,17 @@
 import { FaceIcon } from "@radix-ui/react-icons";
 import { Button, Popover, PopoverContent, PopoverTrigger, toast } from "@sd/ui";
 
-import type { StoryReaction, ReactionType } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
+
+type StoryCommentReactionBasicEntity =
+  components["schemas"]["StoryCommentReactionBasicEntity"];
+type ReactionType = components["schemas"]["ReactionType"];
 import useMe from "#fe/hooks/queries/users/useMe";
 import useStoryCommentReactionMutations from "#fe/hooks/mutations/stories/comments/reactions/useStoryCommentReactionMutations";
 import { reactionTypeToEmojiMap } from "@sd/utils";
 
 interface IProps {
-  reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
+  reactions: Pick<StoryCommentReactionBasicEntity, "id" | "type" | "userId">[];
   storyId: string;
   commentId: string;
 }

@@ -1,6 +1,10 @@
 "use client";
 
-import { StoryReaction, ReactionType } from "@sd/db";
+import type { components } from "#fe/@types/openapi";
+
+type StoryReactionBasicEntity =
+  components["schemas"]["StoryReactionBasicEntity"];
+type ReactionType = components["schemas"]["ReactionType"];
 import useMe from "#fe/hooks/queries/users/useMe";
 import useStoryReactionMutations from "#fe/hooks/mutations/stories/reactions/useStoryReactionMutations";
 import { reactionTypeToEmojiMap } from "@sd/utils";
@@ -8,7 +12,7 @@ import { toast } from "@sd/ui";
 import { cn } from "@sd/ui/libs";
 
 interface IProps {
-  reactions: Pick<StoryReaction, "id" | "type" | "userId">[];
+  reactions: Pick<StoryReactionBasicEntity, "id" | "type" | "userId">[];
   storyId: string;
 }
 
